@@ -1,0 +1,134 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url('imagenes/bici.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+header {
+  background-color: #8060f1; /* Color de fondo del encabezado */
+  padding: 20px;
+  text-align: center;
+}
+main {
+  padding: 20px;
+}
+/* Estilos para el botón de inicio de sesión */
+.logo-btn {
+  background-color: #bc79e9; /* Color de fondo del botón */
+  border: none;
+  color: #fff;
+  padding: 10px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  position: absolute; /* Alinea el botón a la derecha */
+  top: 0;
+  right: 0;
+}
+
+.logo-btn:hover {
+  background-color: #8e73ee; /* Cambia el color de fondo al pasar el cursor sobre el botón */
+}
+
+.login-form, .register {
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente para formularios */
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.login-form input, .register input, .login-form button, .register button {
+  width: 10%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+.login-form button, .register button {
+  background-color: #8f9df0;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.login-form button:hover, .register button:hover {
+  background-color: #ff8533;
+}
+.error, .success {
+  color: #ff0000; /* Color rojo para mensajes de error */
+}
+.register-link a {
+  color: #0000ff; /* Color azul para el enlace de registro */
+}
+.redes-sociales {
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente para la sección de redes sociales */
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.redes-sociales h2 {
+  margin-top: 0;
+}
+.redes-sociales ul {
+  list-style-type: none;
+  padding: 0;
+}
+.redes-sociales ul li {
+  display: inline;
+  margin-right: 10px;
+}
+.redes-sociales ul li a {
+  color: #000; /* Color de enlaces a las redes sociales */
+  text-decoration: none;
+}
+.about-us {
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente para la sección "Sobre nosotros" */
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.about-us h2 {
+  margin-top: 0;
+}
+footer {
+  background-color: #333; /* Color de fondo del pie de página */
+  color: #fff; /* Color de texto blanco */
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+/* Estilos para el carrusel */
+.carousel-item img {
+  height: 400px; /* Altura de las imágenes del carrusel */
+}
+
+/* Estilos para el texto sobre el carrusel */
+.carousel-caption {
+  position: absolute;
+  top: 30%;
+  transform: translateY(-50%);
+  width: 60%;
+  text-align: center;
+  color: #fff; /* Color del texto */
+}
+
+/* Estilos adicionales si lo deseas */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.5); /* Color de fondo de los controles */
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: auto;
+}
+.carousel {
+  max-width: 600px; /* Ancho máximo del carrusel */
+  margin: auto; /* Centrar horizontalmente */
+}
