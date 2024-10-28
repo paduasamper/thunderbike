@@ -59,30 +59,46 @@ if (isset($_POST['reg_user'])) {
 
 // INICIAR SESIÓN USUARIO
 if (isset($_POST['login_user'])) {
-    $username = mysqli_real_escape_string($db, $_POST['username']);
-    $password = mysqli_real_escape_string($db, $_POST['password']);
-  
-    if (empty($username)) {
-        array_push($errors, "Nombre de Usuario requerido");
-    }
-    if (empty($password)) {
-        array_push($errors, "Contraseña es requerida");
-    }
-  
-    if (count($errors) == 0) {
-        $password = md5($password);
-        $query = "SELECT * FROM usuarios WHERE nombre='$username' AND clave='$password'";
-        $results = mysqli_query($db, $query);
-        if (mysqli_num_rows($results) == 1) {
+  $username = mysqli_real_escape_string($db, $_POST['username']);
+  $password = mysqli_real_escape_string($db, $_POST['password']);
+
+  if (empty($username)) {
+      array_push($errors, "Nombre de Usuario requerido");
+  }
+  if (empty($password)) {
+      array_push($errors, "Contraseña es requerida");
+  }
+
+  if (count($errors) == 0) {
+      $password = md5($password);
+      $query = "SELECT * FROM usuarios WHERE nombre='$username' AND clave='$password'";
+      $results = mysqli_query($db, $query);
+      if (mysqli_num_rows($results) == 1) {
           $_SESSION['username'] = $username;
-          $_SESSION['success'] = "Ahora está conectado";
           // Obtener el rol del usuario y guardarlo en la sesión
           $user = mysqli_fetch_assoc($results);
           $_SESSION['role'] = $user['rol'];
-          header('location: inicio.php');
-        } else {
-            array_push($errors, "Combinación incorrecta de nombre de usuario/contraseña");
-        }
-    }
+
+          // Redirigir según el rol del usuario
+          switch ($_SESSION['role']) {
+              case 'administrador':
+                  header('location: inicio.php');
+                  break;
+              case 'mecanico':
+                  header('location: mecanico_dashboard.php');
+                  break;
+              case 'vendedor':
+                  header('location: vendedor_dashboard.php');
+                  break;
+              default:
+                  header('location: inicio.php');
+                  break;
+          }
+          exit();
+      } else {
+          array_push($errors, "Combinación incorrecta de nombre de usuario/contraseña");
+      }
+  }
 }
+
 ?>
