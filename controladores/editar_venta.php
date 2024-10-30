@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt_update->bindParam(':id', $id, PDO::PARAM_INT);
 
     if ($stmt_update->execute()) {
-        header("Location: ventas.php");
+        header("Location: ../ventas.php");
         exit();
     } else {
         echo "Error: No se pudo actualizar la venta.";
@@ -176,7 +176,7 @@ $pdo = null; // Cerrar la conexión después de procesar la consulta
             <input type="submit" value="Actualizar Venta" class="btn">
         </form>
         <div class="button" ></div>
-        <a href="ventas.php" class="btn-back">Volver a Ventas</a>
+        <a href="../ventas.php" class="btn-back">Volver a Ventas</a>
     </div>
 </body>
 </html>

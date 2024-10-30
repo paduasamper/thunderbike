@@ -20,7 +20,7 @@ $stmt_delete = $pdo->prepare($sql_delete);
 $stmt_delete->bindParam(':id', $id, PDO::PARAM_INT);
 
 if ($stmt_delete->execute()) {
-    header("Location: ventas.php");
+    header("Location: ../ventas.php");
     exit();
 } else {
     echo "Error: No se pudo eliminar la venta.";

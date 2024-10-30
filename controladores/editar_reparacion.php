@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql_update = "UPDATE reparaciones SET cliente_id='$cliente_id', producto_id='$producto_id', descripcion='$descripcion', costo='$costo', fecha_reparacion='$fecha_reparacion', usuario_id='$usuario_id' WHERE id=$id";
     if ($conn->query($sql_update) === TRUE) {
-        header("Location: reparaciones.php");
+        header("Location: ../reparaciones.php");
         exit();
     } else {
         echo "Error: " . $sql_update . "<br>" . $conn->error;
@@ -155,7 +155,7 @@ $conn->close();
       <input type="submit" value="Actualizar Reparación">
     </form>
     <div class="button" ></div>
-    <a href="reparaciones.php" id="volverarepacionesBtn" class="button">Volver a Reparaciones</a>
+    <a href="../reparaciones.php" id="volverarepacionesBtn" class="button">Volver a Reparaciones</a>
         
   </div>
 </body>

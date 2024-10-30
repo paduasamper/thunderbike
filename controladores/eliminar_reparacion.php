@@ -14,7 +14,7 @@ if (isset($_GET['id'])) {
     $sql = "DELETE FROM reparaciones WHERE id = $id";
     
     if ($conn->query($sql) === TRUE) {
-        header("Location: reparaciones.php");
+        header("Location: ../reparaciones.php");
         exit();
     } else {
         echo "Error al eliminar: " . $conn->error;
