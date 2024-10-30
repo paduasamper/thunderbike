@@ -1,17 +1,15 @@
 <?php
 session_start();
 
-// Verificar si el usuario está autenticado
 if (!isset($_SESSION['username'])) {
-    header('location: logeo.php'); // Redirigir a la página de inicio de sesión
+    header('location: logeo.php');
     exit();
 }
 
 $username = $_SESSION['username'];
 $role = $_SESSION['role'];
 
-// Si el rol no es 'vendedor', redirigir a la página correspondiente
-if ($role != 'vendedor') {
+if ($role != 'mecanico') {
     header('Location: index.php'); // Cambia 'index.php' según tu lógica
     exit();
 }
@@ -22,7 +20,7 @@ if ($role != 'vendedor') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Vendedor</title>
+    <title>Panel de Mecánico</title>
     <link rel="icon" type="image/png" href="img/thunderbikes.png">
     <style>
         /* Normalización de márgenes y padding */
@@ -239,11 +237,7 @@ if ($role != 'vendedor') {
         <div class="container">
             <div class="button-container">
                 <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-                    <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="proveedores.php" id="proveedoresBtn" class="button active">Proveedores</a>
-                    <a href="productos.php" id="productosBtn" class="button">Productos</a>
-                    <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
-                    <a href="facturacion.php" id="facturacionBtn" class="button">Facturacion</a>
+                <a href="reparaciones.php">Reparaciones</a>
                 <a href="logout.php" id="cerrarSesionBtn" class="button special">Cerrar Sesión</a>
             </div>
         </div>
@@ -261,6 +255,4 @@ if ($role != 'vendedor') {
   </video>
 </body>
 </html>
-
-
 
