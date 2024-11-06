@@ -21,7 +21,7 @@ if ($role != 'mecanico') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Mecánico</title>
-    <link rel="icon" type="image/png" href="img/thunderbikes.png">
+    <link rel="icon" type="image/png" href="../img/thunderbikes.png">
     <style>
         /* Normalización de márgenes y padding */
         * {
@@ -232,13 +232,13 @@ if ($role != 'mecanico') {
 <body>
     <nav class="navtop">
     <div>
-        <img src="img/thunderbikes.png" alt="thunderbikes" style="width: 55px; height: 55px;">
+        <img src="../img/thunderbikes.png" alt="thunderbikes" style="width: 55px; height: 55px;">
         <h1>THUNDERBIKE</h1>
         <div class="container">
             <div class="button-container">
                 <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
                 <a href="reparaciones.php">Reparaciones</a>
-                <a href="logout.php" id="cerrarSesionBtn" class="button special">Cerrar Sesión</a>
+                <a href="../logout.php" id="cerrarSesionBtn" class="button special">Cerrar Sesión</a>
             </div>
         </div>
     </div>
@@ -250,8 +250,7 @@ if ($role != 'mecanico') {
 </div>
 
   <video id="background-video" autoplay muted loop>
-    <source src="img/salto2.mp4" type="video/mp4">
-    Tu navegador no admite la etiqueta de video.
+    <source src="../img/salto2.mp4" type="video/mp4">
   </video>
 </body>
 </html>

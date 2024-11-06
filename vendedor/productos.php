@@ -208,7 +208,7 @@ $productos = $conexionProductos->obtenerProductos($offset, $productosPorPagina);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos</title>
-    <link rel="icon" type="image/png" href="img/thunderbikes.png">
+    <link rel="icon" type="image/png" href="../img/thunderbikes.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
@@ -286,21 +286,19 @@ $productos = $conexionProductos->obtenerProductos($offset, $productosPorPagina);
             <div class="container">
                 <div class="button-container">
                     <!-- Botones de navegación -->
-                    <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
+                    <a href="vendedor_dashboard.php" id="indexBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="productos.php" id="productosBtn" class="button">Productos</a>
-                    <a href="proveedores.php" id="proveedoresBtn" class="button active">Proveedores</a>
                     <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
-                    <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
+                    <a href="facturacion.php" id="facturacionBtn" class="button">Facturacion</a>
                 </div>
             </div>
         </div>
     </nav>
     <!-- Video de fondo -->
     <video class="background-video" autoplay muted loop>
-        <source src="img/montaña.mp4" type="video/mp4">
-        Tu navegador no soporta el elemento de video.
+        <source src="../img/montaña.mp4" type="video/mp4">
     </video>
     
     <div class="container">

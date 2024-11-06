@@ -1,5 +1,5 @@
 <?php
-include "controladores/conexions.php"; // Asegúrate de que este archivo exista y esté configurado correctamente
+include "conexions.php"; // Asegúrate de que este archivo exista y esté configurado correctamente
 
 // Obtener el ID del cliente desde la URL
 $clientId = isset($_GET['client_id']) ? intval($_GET['client_id']) : 0;
@@ -81,10 +81,10 @@ if ($clientId > 0) {
     <div class="container">
         <?php if ($error): ?>
             <p><?php echo htmlspecialchars($error); ?></p>
-            <a href="clientes.php" class="button">Volver a Clientes</a>
+            <a href="../clientes.php" class="button">Volver a Clientes</a>
         <?php else: ?>
             <h1>Historial de Compras de <?php echo htmlspecialchars($client['nombre']); ?></h1>
-            <a href="clientes.php" class="button">Volver a Clientes</a>
+            <a href="../clientes.php" class="button">Volver a Clientes</a>
             <?php if ($purchases): ?>
                 <table>
                     <tr>

@@ -85,10 +85,10 @@ if (isset($_POST['login_user'])) {
                   header('location: inicio.php');
                   break;
               case 'mecanico':
-                  header('location: mecanico_dashboard.php');
+                  header('location: mecanico/mecanico_dashboard.php');
                   break;
               case 'vendedor':
-                  header('location: vendedor_dashboard.php');
+                  header('location: vendedor/vendedor_dashboard.php');
                   break;
               default:
                   header('location: inicio.php');

@@ -52,7 +52,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reparaciones</title>
-  <link rel="icon" type="image/png" href="img/thunderbikes.png">
+  <link rel="icon" type="image/png" href="../img/thunderbikes.png">
   <style>
     /* Estilos CSS generales */
     body {
@@ -180,21 +180,15 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
   <div>
     <div class="container">
       <div class="button-container">
-        <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
+        <a href="mecanico_dashboard.php" id="indexBtn" class="button">Inicio</a>
         <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-        <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-        <a href="productos.php" id="productosBtn" class="button">Productos</a>
-        <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
-        <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
-        <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
       </div>
     </div>
   </div>
 </nav>
 <!-- Video de fondo -->
 <video id="background-video" autoplay muted loop>
-  <source src="img/reparaciones.mp4" type="video/mp4">
-  Tu navegador no admite la etiqueta de video.
+  <source src="../img/reparaciones.mp4" type="video/mp4">
 </video>
 <br>
 <div class="container">
@@ -244,8 +238,8 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
                 echo "<td>" . htmlspecialchars($row["fecha_reparacion"]) . "</td>";
                 echo "<td>" . htmlspecialchars($row["nombre_mecanico"]) . "</td>";
                 echo "<td>";
-                echo "<a href='controladores/editar_reparacion.php?id=" . htmlspecialchars($row['id']) . "' class='btn'>Editar</a> ";
-                echo "<a href='controladores/eliminar_reparacion.php?id=" . htmlspecialchars($row['id']) . "' class='btn' onclick='return confirm(\"¿Estás seguro de que deseas eliminar esta reparación?\");'>Eliminar</a>";
+                echo "<a href='../controladores/editar_reparacion.php?id=" . htmlspecialchars($row['id']) . "' class='btn'>Editar</a> ";
+                echo "<a href='../controladores/eliminar_reparacion.php?id=" . htmlspecialchars($row['id']) . "' class='btn' onclick='return confirm(\"¿Estás seguro de que deseas eliminar esta reparación?\");'>Eliminar</a>";
                 echo "</td>";
                 echo "</tr>";
             }

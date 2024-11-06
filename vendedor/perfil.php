@@ -64,14 +64,14 @@
   </style>
 </head>
 <body>
-<a href="inicio.php" id="indexBtn" class="button">Inicio</a>
+<a href="vendedor_dashboard.php" id="indexBtn" class="button">Inicio</a>
   <div class="container">
     <div class="card">
       <h2 class="profile-name">Perfil</h2>
 
       <!-- Imagen de perfil -->
       <div class="profile-image">
-        <img src="img/avatar.png" alt="Avatar">
+        <img src="../img/avatar.png" alt="Avatar">
       </div>
 
       <!-- Acerca de mí -->
@@ -95,11 +95,11 @@
 
       <!-- Redes sociales -->
       <div class="social-icons">
-        <img src="img/facebook.png" alt="" style="width: 30px; height: 30px;">
+        <img src="../img/facebook.png" alt="" style="width: 30px; height: 30px;">
         <a href="https://facebook.com" target="_blank">Facebook</a>
-        <img src="img/Twitter.png" alt="" style="width: 30px; height: 30px;">
+        <img src="../img/Twitter.png" alt="" style="width: 30px; height: 30px;">
         <a href="https://twitter.com" target="_blank">Twitter</a>
-        <img src="img/instagram.png" alt="" style="width: 30px; height: 30px;">
+        <img src="../img/instagram.png" alt="" style="width: 30px; height: 30px;">
         <a href="https://instagram.com" target="_blank">Instagram</a>
       </div>
     </div>

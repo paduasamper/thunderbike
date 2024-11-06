@@ -272,7 +272,7 @@
         // Función para mostrar el historial de compras del cliente
         function showPurchaseHistory(id) {
             alert('Mostrar historial de compra del cliente con ID: ' + id);
-            window.location.href = 'historial_compras.php?client_id=' + id;
+            window.location.href = 'controladores/historial_compras.php?client_id=' + id;
         }
 
         // Función para cancelar y ocultar el formulario
