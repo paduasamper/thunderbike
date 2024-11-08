@@ -162,7 +162,7 @@
                     <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="productos.php" id="productosBtn" class="button">Productos</a>
+                    <a href="insumos.php" id="InsumosBtn" class="button">Insumos</a>
                     <a href="proveedores.php" id="proveedoresBtn" class="button active">Proveedores</a>
                     <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
                     <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>

@@ -51,7 +51,7 @@
 
         .navtop {
             background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente más oscuro */
-            padding: 20px 0; /* Relleno de 10px arriba y abajo */
+            padding: 30px 0; /* Relleno de 10px arriba y abajo */
             width: 100%; /* Ancho del 100% */
             position: fixed; /* Fija la posición en la parte superior */
             top: 0; /* Posición en la parte superior */
@@ -61,9 +61,9 @@
 
         .container {
             background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
-            padding: 30px; /* Relleno de 20px */
-            margin: auto; /* Centra horizontalmente */
-            width: 100%; /* Ancho del 60% */
+            padding: 35px; /* Relleno de 20px */
+            margin: relative; /* Centra horizontalmente */
+            width: 70%; /* Ancho del 60% */
             max-width: 750px; /* Ancho máximo de 750px */
             border-radius: 5px; /* Bordes redondeados */
             position: relative; /* Posición relativa */
@@ -154,22 +154,28 @@
     </style>
 </head>
 <body>
-    <nav class="navtop">
-        <div>
-            <div class="container">
-                <div class="button-container">
-                    <!-- Botones de navegación -->
+<nav class="navtop">
+    <div>
+        <div class="container">
+            <div class="button-container" style="display: flex; justify-content: space-between; align-items: center;">
+                <!-- Imagen alineada completamente a la izquierda, tamaño ajustado y centrada verticalmente -->
+                <img src="img/thunderbikes.png" alt="thunderbikes" style="width: 50px; height: 50px; margin-left: 0;">
+                <!-- Botones de navegación alineados y centrados frente a la imagen -->
+                <div class="nav-buttons" style="margin-left: 20px; display: flex; align-items: center;">
                     <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="productos.php" id="productosBtn" class="button">Productos</a>
+                    <a href="insumos.php" id="InsumosBtn" class="button">Insumos</a>
                     <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
                     <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
                     <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
+
+
     <!-- Video de fondo -->
     <video id="background-video" autoplay muted loop>
         <source src="img/clientes.mp4" type="video/mp4">

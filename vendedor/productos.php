@@ -38,7 +38,7 @@ class ConexionProductos {
     // Crear un nuevo producto
 // Crear un nuevo producto y reflejarlo en la tabla de insumos
 public function crearProducto($nombre, $descripcion, $precio, $cantidad, $imagenArchivo) {
-    $directorio = "uploads/";
+    $directorio = "..\uploads/";
 
     // Verificar si la carpeta 'uploads' existe, y si no, crearla
     if (!is_dir($directorio)) {

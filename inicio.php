@@ -269,11 +269,6 @@ $role = $_SESSION['role'];
                 <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="insumos.php" id="insumosBtn" class="button">Insumos</a>
-                    <a href="productos.php" id="productosBtn" class="button">Productos</a>
-                    <div class="tooltip" id="productosTooltip">
-                        <a href="bicicletas.php" class="dropdown-item">Bicicletas</a><br>
-                        <a href="accesorios.php" class="dropdown-item">Accesorios</a>
-                    </div>
                     <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
                     <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
                     <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
@@ -370,7 +365,7 @@ $role = $_SESSION['role'];
     const myChart = new Chart(ctx, {
         type: 'bar', // Tipo de gráfico: barra
         data: {
-            labels: ['Ventas', 'Productos', 'Reparaciones', 'Clientes'], // Etiquetas
+            labels: ['Ventas', 'Insumos', 'Reparaciones', 'Clientes'], // Etiquetas
             datasets: [{
                 label: 'Estadísticas',
                 data: [<?= $totalVentas ?>, <?= $totalProductos ?>, <?= $totalReparaciones ?>, <?= $totalClientes ?>], // Datos de PHP

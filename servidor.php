@@ -96,9 +96,10 @@ if (isset($_POST['login_user'])) {
           }
           exit();
       } else {
-          array_push($errors, "Combinación incorrecta de nombre de usuario/contraseña");
+          array_push($errors, "Combinación incorrecta de nombre de Usuario/Contraseña");
       }
   }
 }
 
 ?>
+

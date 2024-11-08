@@ -85,7 +85,6 @@
   <source src="img/lujo.mp4" type="video/mp4">
   Tu navegador no admite la etiqueta de video.
 </video>
-
 <div class="form-wrapper">
   <div class="header">
     <img src="img/thunderbikes.png" alt="thunderbike">
@@ -94,21 +93,12 @@
   <form method="post" action="logeo.php">
     <?php include('errores.php'); ?>
     <div class="input-group">
-      <label>Nombre Usuario: </label>
+      <label>Nombre Usuario o Correo: </label>
       <input type="text" name="username">
     </div>
     <div class="input-group">
       <label>Clave: </label>
       <input type="password" name="password">
-    </div>
-    <!-- Agregar el menú de rol aquí -->
-    <div class="input-group">
-      <label>Cargo:</label>
-      <select name="role">
-        <option value="administrador">Administrador</option>
-        <option value="mecanico">Mecánico</option>
-        <option value="vendedor">Vendedor</option>
-      </select>
     </div>
     <div class="input-group">
     <script>

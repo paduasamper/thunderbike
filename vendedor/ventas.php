@@ -237,7 +237,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
     </nav>
 
     <video id="background-video" autoplay muted loop>
-        <source src="img/ventas.mp4" type="video/mp4">
+        <source src="..\img/ventas.mp4" type="video/mp4">
         Tu navegador no admite la etiqueta de video.
     </video>
     <br>
@@ -274,8 +274,8 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
                 echo "<td>" . htmlspecialchars($row["fecha_venta"]) . "</td>";
                 echo "<td>" . htmlspecialchars($row["nombre_vendedor"]) . "</td>";
                 echo "<td>
-                        <a href='controladores/editar_venta.php?id=" . htmlspecialchars($row["id"]) . "' class='btn'>Editar</a>
-                        <a href='controladores/eliminar_venta.php?id=" . htmlspecialchars($row["id"]) . "' class='btn' onclick='return confirm(\"¿Estás seguro de que deseas eliminar esta venta?\");'>Eliminar</a>
+                        <a href='..\controladores/editar_venta.php?id=" . htmlspecialchars($row["id"]) . "' class='btn'>Editar</a>
+                        <a href='..\controladores/eliminar_venta.php?id=" . htmlspecialchars($row["id"]) . "' class='btn' onclick='return confirm(\"¿Estás seguro de que deseas eliminar esta venta?\");'>Eliminar</a>
                     </td>";
                 echo "</tr>";
             }
