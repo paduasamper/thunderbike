@@ -158,9 +158,7 @@
     <div>
         <div class="container">
             <div class="button-container" style="display: flex; justify-content: space-between; align-items: center;">
-                <!-- Imagen alineada completamente a la izquierda, tamaño ajustado y centrada verticalmente -->
                 <img src="..\img/thunderbikes.png" alt="thunderbikes" style="width: 50px; height: 50px; margin-left: 0;">
-                <!-- Botones de navegación alineados y centrados frente a la imagen -->
                 <div class="nav-buttons" style="margin-left: 20px; display: flex; align-items: center;">
                     <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
