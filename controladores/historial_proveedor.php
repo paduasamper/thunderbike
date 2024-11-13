@@ -1,47 +1,81 @@
-<?php
-// historial_proveedor.php
-
-header('Content-Type: application/json');
-
-// Configuración de la conexión a la base de datos
-$host = 'localhost'; // Cambia esto si tu base de datos no está en el mismo servidor
-$db = 'thunderbike'; // Cambia esto al nombre de tu base de datos
-$user = 'root'; // Cambia esto al usuario de tu base de datos
-$pass = ''; // Cambia esto a la contraseña del usuario
+// Conexión a la base de datos usando PDO
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "thunderbike";
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo json_encode(['error' => 'Conexión fallida: ' . $e->getMessage()]);
-    exit;
+    die("Error de conexión: " . $e->getMessage());
 }
 
-// Obtén el ID del proveedor desde la solicitud
-$proveedor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+// Controlador de productos
+class ConexionProductos {
+    private $pdo;
 
-if ($proveedor_id <= 0) {
-    echo json_encode([]);
-    exit;
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+    }
+
+    // Obtener el historial de productos de un proveedor
+    public function obtenerHistorialProveedor($proveedorId) {
+        $sql = "
+            SELECT p.nombre, p.descripcion, p.precio, p.cantidad, p.imagen, hp.fecha_entrega
+            FROM historial_proveedores hp
+            JOIN productos p ON hp.producto_id = p.id
+            WHERE hp.proveedor_id = :proveedor_id
+            ORDER BY hp.fecha_entrega DESC
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':proveedor_id' => $proveedorId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 
-// Prepara la consulta SQL para obtener el historial de reparaciones
-$sql = '
-    SELECT p.nombre AS proveedor, pr.nombre AS producto, r.descripcion, r.fecha_reparacion
-    FROM reparaciones_proveedores rp
-    JOIN proveedores p ON rp.proveedor_id = p.id
-    JOIN reparaciones r ON rp.reparacion_id = r.id
-    JOIN productos pr ON r.producto_id = pr.id
-    WHERE p.id = :proveedor_id
-    ORDER BY r.fecha_reparacion DESC
-';
+// Instanciar el controlador de productos
+$conexionProductos = new ConexionProductos($pdo);
 
-// Prepara y ejecuta la consulta
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['proveedor_id' => $proveedor_id]);
+// Verificar si se ha pasado el ID del proveedor
+if (isset($_GET['proveedor_id'])) {
+    $proveedorId = $_GET['proveedor_id'];
+    $historialProductos = $conexionProductos->obtenerHistorialProveedor($proveedorId);
+} else {
+    die("No se ha proporcionado un ID de proveedor.");
+}
+?>
 
-// Obtén los resultados
-$historial = $stmt->fetchAll(PDO::FETCH_ASSOC);
+<!-- Mostrar historial de productos del proveedor -->
+<div class="historial-proveedor">
+    <h2>Historial de Productos del Proveedor</h2>
 
-// Devuelve los resultados en formato JSON
-echo json_encode($historial);
+    <?php if (empty($historialProductos)): ?>
+        <p>No se encontraron productos para este proveedor.</p>
+    <?php else: ?>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Imagen</th>
+                    <th>Fecha de Entrega</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($historialProductos as $producto): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($producto['nombre']); ?></td>
+                        <td><?php echo htmlspecialchars($producto['descripcion']); ?></td>
+                        <td><?php echo number_format($producto['precio'], 2); ?></td>
+                        <td><?php echo htmlspecialchars($producto['cantidad']); ?></td>
+                        <td><img src="<?php echo htmlspecialchars($producto['imagen']); ?>" alt="Imagen del producto" width="50"></td>
+                        <td><?php echo date('d-m-Y H:i', strtotime($producto['fecha_entrega'])); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+</div>

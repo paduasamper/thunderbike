@@ -15,7 +15,7 @@ try {
 }
 
 // Obtener opciones para el menú desplegable de productos
-$sql_productos = "SELECT id, nombre FROM productos";
+$sql_productos = "SELECT id, nombre, precio FROM productos";
 $stmt_productos = $pdo->query($sql_productos);
 $result_productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
 
@@ -301,13 +301,13 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
             <br>
             <label for="producto_vendido_id">Producto:</label>
             <select name="producto_vendido_id" id="producto_vendido_id" required>
-                <?php
-                if (count($result_productos) > 0) {
-                    foreach ($result_productos as $row) {
-                        echo "<option value='" . htmlspecialchars($row["id"]) . "'>" . htmlspecialchars($row["nombre"]) . "</option>";
-                    }
-                }
-                ?>
+              <?php
+              if (count($result_productos) > 0) {
+                  foreach ($result_productos as $row) {
+                      echo "<option value='" . htmlspecialchars($row["id"]) . "' data-precio='" . htmlspecialchars($row["precio"]) . "'>" . htmlspecialchars($row["nombre"]) . "</option>";
+                  }
+              }
+              ?>
             </select>
             <br>
             <label for="descripcion_venta">Descripción:</label>
@@ -346,5 +346,21 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
             }
         });
     </script>
+    <script>
+    // Seleccionar el campo de producto y el campo de total
+    const productoSelect = document.getElementById('producto_vendido_id');
+    const totalInput = document.getElementById('total');
+
+    // Evento cuando se selecciona un producto
+    productoSelect.addEventListener('change', function() {
+        // Obtener el precio del producto seleccionado
+        const selectedOption = productoSelect.options[productoSelect.selectedIndex];
+        const precio = selectedOption.getAttribute('data-precio');
+        
+        // Asignar el precio al campo de total
+        totalInput.value = precio;
+    });
+</script>
+
 </body>
 </html>

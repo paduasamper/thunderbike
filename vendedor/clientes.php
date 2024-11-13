@@ -4,7 +4,7 @@
     <meta charset="UTF-8"> <!-- Define el juego de caracteres del documento como UTF-8 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para dispositivos móviles -->
     <title>Clientes</title> <!-- Título de la página -->
-    <link rel="icon" type="image/png" href="../img/thunderbikes.png"> <!-- Icono de la página -->
+    <link rel="icon" type="image/png" href="..\img/thunderbikes.png"> <!-- Icono de la página -->
     <style>
         body {
             font-family: Arial, sans-serif; /* Establece la fuente del cuerpo del documento */
@@ -51,7 +51,7 @@
 
         .navtop {
             background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente más oscuro */
-            padding: 20px 0; /* Relleno de 10px arriba y abajo */
+            padding: 30px 0; /* Relleno de 10px arriba y abajo */
             width: 100%; /* Ancho del 100% */
             position: fixed; /* Fija la posición en la parte superior */
             top: 0; /* Posición en la parte superior */
@@ -61,9 +61,9 @@
 
         .container {
             background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
-            padding: 30px; /* Relleno de 20px */
-            margin: auto; /* Centra horizontalmente */
-            width: 100%; /* Ancho del 60% */
+            padding: 35px; /* Relleno de 20px */
+            margin: relative; /* Centra horizontalmente */
+            width: 70%; /* Ancho del 60% */
             max-width: 750px; /* Ancho máximo de 750px */
             border-radius: 5px; /* Bordes redondeados */
             position: relative; /* Posición relativa */
@@ -154,24 +154,31 @@
     </style>
 </head>
 <body>
-    <nav class="navtop">
-        <div>
-            <div class="container">
-                <div class="button-container">
-                    <!-- Botones de navegación -->
-                    <a href="vendedor_dashboard.php" id="inicioBtn" class="button">Inicio</a>
+<nav class="navtop">
+    <div>
+        <div class="container">
+            <div class="button-container" style="display: flex; justify-content: space-between; align-items: center;">
+                <!-- Imagen alineada completamente a la izquierda, tamaño ajustado y centrada verticalmente -->
+                <img src="..\img/thunderbikes.png" alt="thunderbikes" style="width: 50px; height: 50px; margin-left: 0;">
+                <!-- Botones de navegación alineados y centrados frente a la imagen -->
+                <div class="nav-buttons" style="margin-left: 20px; display: flex; align-items: center;">
+                    <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="productos.php" id="productosBtn" class="button">Productos</a>
+                    <a href="productos.php" id="ProductosBtn" class="button">Productos</a>
                     <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
-                    <a href="facturacion.php" id="facturacionBtn" class="button">Facturacion</a>
+                    <a href="facturacion.php" id="FactuaracionBtn" class="button">Facturacion</a>
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
+
+
     <!-- Video de fondo -->
     <video id="background-video" autoplay muted loop>
-        <source src="../img/clientes.mp4" type="video/mp4">
+        <source src="..\img/clientes.mp4" type="video/mp4">
+        Tu navegador no admite la etiqueta de video.
     </video>
     <div class="container">
         <h1>Listado de Clientes</h1>
@@ -187,7 +194,7 @@
                 <th>Acciones</th>
             </tr>
             <!-- Conexión y consulta a la base de datos -->
-            <?php include "../controladores/conexion.php"; ?>
+            <?php include "..\controladores/conexion.php"; ?>
             <?php
             $stmt = $pdo->query('SELECT * FROM clientes');
             while ($row = $stmt->fetch()) {
@@ -228,7 +235,7 @@
         // Función para mostrar el formulario de agregar cliente
         function showAddForm() {
             document.getElementById('formTitle').innerText = 'Agregar Cliente';
-            document.getElementById('clientForm').action = '../controladores/save_client.php?action=add';
+            document.getElementById('clientForm').action = 'controladores/save_client.php?action=add';
             document.getElementById('clientId').value = '';
             document.getElementById('clientName').value = '';
             document.getElementById('clientAddress').value = '';
@@ -239,7 +246,7 @@
         // Función para mostrar el formulario de editar cliente
         function showEditForm(id, name, address, phone) {
             document.getElementById('formTitle').innerText = 'Editar Cliente';
-            document.getElementById('clientForm').action = '../controladores/save_client.php?action=edit';
+            document.getElementById('clientForm').action = 'controladores/save_client.php?action=edit';
             document.getElementById('clientId').value = id;
             document.getElementById('clientName').value = name;
             document.getElementById('clientAddress').value = address;
@@ -250,7 +257,7 @@
     // Función para eliminar cliente de forma asíncrona
     function deleteClient(id) {
         if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
-            fetch('../controladores/save_client.php?action=delete', {
+            fetch('controladores/save_client.php?action=delete', {
                 method: 'POST',
                 body: new URLSearchParams({ clientId: id })
             })
@@ -270,7 +277,7 @@
         // Función para mostrar el historial de compras del cliente
         function showPurchaseHistory(id) {
             alert('Mostrar historial de compra del cliente con ID: ' + id);
-            window.location.href = '../controladores/historial_compras.php?client_id=' + id;
+            window.location.href = 'controladores/historial_compras.php?client_id=' + id;
         }
 
         // Función para cancelar y ocultar el formulario

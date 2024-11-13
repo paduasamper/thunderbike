@@ -35,9 +35,18 @@ class ConexionProductos {
         $this->pdo = $pdo;
     }
 
+    // Método para verificar si el producto existe
+    public function verificarProductoExiste($productoId) {
+        $sql = "SELECT id FROM productos WHERE id = :producto_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':producto_id' => $productoId]);
+        return $stmt->fetch() ? true : false;
+    }
+    
+
     // Crear un nuevo producto
 // Crear un nuevo producto y reflejarlo en la tabla de insumos
-public function crearProducto($nombre, $descripcion, $precio, $cantidad, $imagenArchivo) {
+public function crearProducto($nombre, $descripcion, $precio, $cantidad, $imagenArchivo, $proveedorId) {
     $directorio = "..\uploads/";
 
     // Verificar si la carpeta 'uploads' existe, y si no, crearla
@@ -71,6 +80,10 @@ public function crearProducto($nombre, $descripcion, $precio, $cantidad, $imagen
 
                 // Obtener el ID del producto recién insertado
                 $productoId = $this->pdo->lastInsertId();
+                // Verificar si el producto existe en la tabla productos
+                if (!$this->verificarProductoExiste($productoId)) {
+                    throw new Exception("Error: el producto no existe en la tabla productos.");
+                }
 
                 // Insertar insumo relacionado al producto en la tabla 'insumos'
                 $sqlInsumo = "INSERT INTO insumos (producto_id, nombre, cantidad, descripcion, imagen) VALUES (:producto_id, :nombre, :cantidad, :descripcion, :imagen)";
@@ -82,7 +95,13 @@ public function crearProducto($nombre, $descripcion, $precio, $cantidad, $imagen
                     ':descripcion' => $descripcion,
                     ':imagen' => $rutaArchivo
                 ]);
-
+                // Insertar en la tabla de historial_proveedores
+                $sqlHistorial = "INSERT INTO historial_proveedores (proveedor_id, producto_id) VALUES (:proveedor_id, :producto_id)";
+                $stmtHistorial = $this->pdo->prepare($sqlHistorial);
+                $stmtHistorial->execute([
+                    ':proveedor_id' => $proveedorId,
+                    ':producto_id' => $productoId
+                ]);
                 // Confirmar la transacción
                 $this->pdo->commit();
             } catch (Exception $e) {
@@ -97,7 +116,12 @@ public function crearProducto($nombre, $descripcion, $precio, $cantidad, $imagen
         throw new Exception("El archivo no es una imagen válida.");
     }
 }
-
+    // Obtener proveedores para el menú desplegable
+    public function obtenerProveedores() {
+        $sql = "SELECT * FROM proveedores";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     // Obtener todos los productos
     public function obtenerProductos($offset = 0, $limit = 10) {
@@ -173,7 +197,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'crear':
-                $conexionProductos->crearProducto($_POST['nombre'], $_POST['descripcion'], $_POST['precio'], $_POST['cantidad'],$_FILES['imagen']);
+                $conexionProductos->crearProducto(
+                    $_POST['nombre'], 
+                    $_POST['descripcion'], 
+                    $_POST['precio'], 
+                    $_POST['cantidad'], 
+                    $_FILES['imagen'],
+                    $_POST['proveedor']);
                 break;
             case 'actualizar':
                 $conexionProductos->actualizarProducto($_POST['id'], $_POST['nombre'], $_POST['descripcion'], $_POST['precio'], $_POST['cantidad'], $_FILES['imagen']);
@@ -184,6 +214,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+
 
 // Número de productos por página
 $productosPorPagina = 6;
@@ -201,6 +233,8 @@ $totalPaginas = ceil($totalProductos / $productosPorPagina);
 
 // Obtener los productos para la página actual
 $productos = $conexionProductos->obtenerProductos($offset, $productosPorPagina);
+// Obtener los proveedores para el menú desplegable
+$proveedores = $conexionProductos->obtenerProveedores();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -325,6 +359,14 @@ $productos = $conexionProductos->obtenerProductos($offset, $productosPorPagina);
     <div class="form-group">
         <label for="cantidad">Cantidad:</label>
         <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="proveedor">Proveedor:</label>
+        <select class="form-control" id="proveedor" name="proveedor" required>
+            <?php foreach ($proveedores as $proveedor): ?>
+                <option value="<?php echo $proveedor['id']; ?>"><?php echo htmlspecialchars($proveedor['nombre']); ?></option>
+            <?php endforeach; ?>
+        </select>
     </div>
     <div class="form-group">
         <label for="imagen">Subir Imagen:</label>
