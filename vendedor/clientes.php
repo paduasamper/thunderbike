@@ -162,7 +162,7 @@
                 <img src="..\img/thunderbikes.png" alt="thunderbikes" style="width: 50px; height: 50px; margin-left: 0;">
                 <!-- Botones de navegación alineados y centrados frente a la imagen -->
                 <div class="nav-buttons" style="margin-left: 20px; display: flex; align-items: center;">
-                    <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
+                    <a href="vendedor_dashboard.php" id="Vendedor_dashboardBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="productos.php" id="ProductosBtn" class="button">Productos</a>
