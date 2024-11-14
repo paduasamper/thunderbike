@@ -2,22 +2,33 @@
 ob_start(); // Iniciar el almacenamiento en búfer de salida
 
 // Conexión a la base de datos (ya existente en tu código)
-$dsn = 'mysql:host=localhost;dbname=thunderbike;charset=utf8';
-$username = 'root';
-$password = '';
+$dsn = 'mysql:host=localhost;dbname=thunderbike';
+$username = 'root';      // Cambia 'tu_usuario' por el nombre de usuario correcto
+$password = ''; 
 
 try {
-    // Crear una nueva conexión PDO
+    // Establecer la conexión
     $pdo = new PDO($dsn, $username, $password);
+    // Configurar el modo de error de PDO para que lance excepciones
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Conexión fallida: " . $e->getMessage());
-}
 
+    // Definir la consulta SQL
+    $sql_facturas = 'SELECT f.id, c.nombre, f.total FROM facturas AS f JOIN clientes AS c ON f.cliente_id = c.id';
+
+    // Ejecutar la consulta
+    $resultado = $pdo->query($sql_facturas);
+
+    // Procesar los resultados
+    foreach ($resultado as $fila) {
+        echo "ID: " . $fila['id'] . " - Cliente: " . $fila['nombre'] . " - Total: " . $fila['total'] . "<br>";
+    }
+
+} catch (PDOException $e) {
+    echo "Conexión fallida: " . $e->getMessage();
+}
 // Consulta para obtener las facturas
-$sql_facturas = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.detalles
-                 FROM facturas f
-                 JOIN clientes c ON f.cliente_id = c.id";
+$query = 'SELECT f.id, c.nombre, f.total FROM facturas AS f JOIN clientes AS c ON f.cliente_id = c.id';
+
 $stmt_facturas = $pdo->query($sql_facturas);
 $result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
 
@@ -33,7 +44,6 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facturación</title>
     <style>
-        /* Reutiliza los estilos que ya tienes definidos */
         /* ... copia los estilos de tu archivo ventas.php o define estilos similares */
     </style>
 </head>

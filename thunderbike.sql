@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-11-2024 a las 12:57:01
+-- Tiempo de generación: 14-11-2024 a las 20:16:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
 
@@ -52,6 +52,13 @@ CREATE TABLE `clientes` (
   `telefono` varchar(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `clientes`
+--
+
+INSERT INTO `clientes` (`id`, `nombre`, `direccion`, `telefono`) VALUES
+(35, 'Marcos Llorente', 'Calle 32 #87-65', '3215648956');
+
 -- --------------------------------------------------------
 
 --
@@ -70,17 +77,38 @@ CREATE TABLE `detalle_venta` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `facturacion`
+-- Estructura de tabla para la tabla `facturas`
 --
 
-CREATE TABLE `facturacion` (
+CREATE TABLE `facturas` (
   `id` int(11) NOT NULL,
   `cliente_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
   `fecha_factura` date NOT NULL,
-  `total_factura` decimal(10,2) NOT NULL,
-  `estado` varchar(20) DEFAULT 'pendiente'
+  `estado` varchar(20) DEFAULT 'pendiente',
+  `total` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `historial_proveedores`
+--
+
+CREATE TABLE `historial_proveedores` (
+  `id` int(11) NOT NULL,
+  `proveedor_id` int(11) NOT NULL,
+  `producto_id` int(11) NOT NULL,
+  `fecha_entrega` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `historial_proveedores`
+--
+
+INSERT INTO `historial_proveedores` (`id`, `proveedor_id`, `producto_id`, `fecha_entrega`) VALUES
+(5, 2, 41, '2024-11-12 16:19:35'),
+(6, 1, 42, '2024-11-12 19:29:43');
 
 -- --------------------------------------------------------
 
@@ -103,7 +131,10 @@ CREATE TABLE `insumos` (
 --
 
 INSERT INTO `insumos` (`id`, `nombre`, `cantidad`, `descripcion`, `imagen`, `usuario_id`, `producto_id`) VALUES
-(4, 'Bicicleta de montaña', 2, 'gfyutfyu', 0x2e2e5c75706c6f6164732f74657272656e6f2e706e67, NULL, 33);
+(4, 'Bicicleta de montaña', 2, 'gfyutfyu', 0x2e2e5c75706c6f6164732f74657272656e6f2e706e67, NULL, 33),
+(6, ' SAVADECK', 3, 'vxnsf', 0x2e2e5c75706c6f6164732f6269636c657461206465206d7565737472612e6a7067, NULL, 35),
+(12, 'Casco de ciclismo', 20, 'sfhrw', 0x2e2e5c75706c6f6164732f434153434f204445204d5545535452412e6a70672e77656270, NULL, 41),
+(13, ' SAVADECK', 63, 'ghefwejft', 0x2e2e5c75706c6f6164732f42494349204d5545535452412e77656270, NULL, 42);
 
 -- --------------------------------------------------------
 
@@ -125,7 +156,10 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `imagen`, `cantidad`) VALUES
-(33, 'Bicicleta de montaña', 'gfyutfyu', 1111111.00, 0x2e2e5c75706c6f6164732f74657272656e6f2e706e67, 2);
+(33, 'Bicicleta de montaña', 'gfyutfyu', 1111111.00, 0x2e2e5c75706c6f6164732f74657272656e6f2e706e67, 2),
+(35, ' SAVADECK', 'vxnsf', 2222222.00, 0x2e2e5c75706c6f6164732f6269636c657461206465206d7565737472612e6a7067, 3),
+(41, 'Casco de ciclismo', 'sfhrw', 22222.00, 0x2e2e5c75706c6f6164732f434153434f204445204d5545535452412e6a70672e77656270, 20),
+(42, ' SAVADECK', 'ghefwejft', 1122526.00, 0x2e2e5c75706c6f6164732f42494349204d5545535452412e77656270, 63);
 
 -- --------------------------------------------------------
 
@@ -231,6 +265,13 @@ CREATE TABLE `ventas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`id`, `cliente_id`, `fecha_venta`, `total`, `descripcion_venta`, `producto_vendido_id`, `usuario_id`, `vendedor`) VALUES
+(26, 35, '2024-11-15', 22222.00, 'fgfdytj', 41, 10, '');
+
+--
 -- Índices para tablas volcadas
 --
 
@@ -249,12 +290,20 @@ ALTER TABLE `detalle_venta`
   ADD KEY `producto_id` (`producto_id`);
 
 --
--- Indices de la tabla `facturacion`
+-- Indices de la tabla `facturas`
 --
-ALTER TABLE `facturacion`
+ALTER TABLE `facturas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cliente_id` (`cliente_id`),
   ADD KEY `usuario_id` (`usuario_id`);
+
+--
+-- Indices de la tabla `historial_proveedores`
+--
+ALTER TABLE `historial_proveedores`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `proveedor_id` (`proveedor_id`),
+  ADD KEY `historial_proveedores_ibfk_2` (`producto_id`);
 
 --
 -- Indices de la tabla `insumos`
@@ -323,7 +372,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
@@ -332,22 +381,28 @@ ALTER TABLE `detalle_venta`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `facturacion`
+-- AUTO_INCREMENT de la tabla `facturas`
 --
-ALTER TABLE `facturacion`
+ALTER TABLE `facturas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `historial_proveedores`
+--
+ALTER TABLE `historial_proveedores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
@@ -371,7 +426,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Restricciones para tablas volcadas
@@ -385,11 +440,18 @@ ALTER TABLE `detalle_venta`
   ADD CONSTRAINT `detalle_venta_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
 
 --
--- Filtros para la tabla `facturacion`
+-- Filtros para la tabla `facturas`
 --
-ALTER TABLE `facturacion`
-  ADD CONSTRAINT `facturacion_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`),
-  ADD CONSTRAINT `facturacion_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+ALTER TABLE `facturas`
+  ADD CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`),
+  ADD CONSTRAINT `facturas_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
+-- Filtros para la tabla `historial_proveedores`
+--
+ALTER TABLE `historial_proveedores`
+  ADD CONSTRAINT `historial_proveedores_ibfk_1` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`),
+  ADD CONSTRAINT `historial_proveedores_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `insumos`
@@ -424,7 +486,7 @@ ALTER TABLE `reparaciones_proveedores`
 -- Filtros para la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`),
+  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `ventas_ibfk_2` FOREIGN KEY (`producto_vendido_id`) REFERENCES `productos` (`id`),
   ADD CONSTRAINT `ventas_ibfk_3` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 COMMIT;

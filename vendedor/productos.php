@@ -288,30 +288,43 @@ $proveedores = $conexionProductos->obtenerProveedores();
         .formulario-producto {
             display: none;
         }
-        .card {
-            border: 1px solid #ddd; /* Borde gris claro alrededor de la tarjeta */
-            border-radius: 5px; /* Bordes ligeramente redondeados */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para profundidad */
-            background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
-            transition: box-shadow 0.3s; /* Transición suave para el efecto de sombra */
-        }
-        .card:hover {
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Efecto de sombra al pasar el mouse */
-        }
-        .card-img-top {
-            border-radius: 5px 5px 0 0; /* Bordes redondeados en la parte superior de la imagen */
-        }
-        .card-title, .card-text {
-            color: #000; /* Color negro para los textos dentro de la tarjeta */
-        }
-        .modal-content {
-            border-radius: 10px;
-        }
-        /* Asegurar que el contenido no quede oculto detrás del video */
-        .container {
-            position: relative;
-            z-index: 1;
-        }
+/* Estilo para las tarjetas de productos */
+.card {
+    position: relative;
+    width: 300px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+/* Contenedor para los botones */
+.card-buttons {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+/* Estilo para los botones */
+.card-buttons button {
+    background-color: #ffcc00;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.card-buttons button:hover {
+    background-color: #e6b800;
+}
+
     </style>
 </head>
 <body>
