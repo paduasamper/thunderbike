@@ -238,7 +238,6 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
 
     <video id="background-video" autoplay muted loop>
         <source src="..\img/ventas.mp4" type="video/mp4">
-        Tu navegador no admite la etiqueta de video.
     </video>
     <br>
     <div class="container">

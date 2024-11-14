@@ -233,7 +233,7 @@
         // Función para mostrar el formulario de agregar cliente
         function showAddForm() {
             document.getElementById('formTitle').innerText = 'Agregar Cliente';
-            document.getElementById('clientForm').action = 'controladores/save_client.php?action=add';
+            document.getElementById('clientForm').action = '..\controladores/save_client.php?action=add';
             document.getElementById('clientId').value = '';
             document.getElementById('clientName').value = '';
             document.getElementById('clientAddress').value = '';
@@ -244,7 +244,7 @@
         // Función para mostrar el formulario de editar cliente
         function showEditForm(id, name, address, phone) {
             document.getElementById('formTitle').innerText = 'Editar Cliente';
-            document.getElementById('clientForm').action = 'controladores/save_client.php?action=edit';
+            document.getElementById('clientForm').action = '..\controladores/save_client.php?action=edit';
             document.getElementById('clientId').value = id;
             document.getElementById('clientName').value = name;
             document.getElementById('clientAddress').value = address;
@@ -255,7 +255,7 @@
     // Función para eliminar cliente de forma asíncrona
     function deleteClient(id) {
         if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
-            fetch('controladores/save_client.php?action=delete', {
+            fetch('..\controladores/save_client.php?action=delete', {
                 method: 'POST',
                 body: new URLSearchParams({ clientId: id })
             })
@@ -275,7 +275,7 @@
         // Función para mostrar el historial de compras del cliente
         function showPurchaseHistory(id) {
             alert('Mostrar historial de compra del cliente con ID: ' + id);
-            window.location.href = 'controladores/historial_compras.php?client_id=' + id;
+            window.location.href = '..\controladores/historial_compras.php?client_id=' + id;
         }
 
         // Función para cancelar y ocultar el formulario
