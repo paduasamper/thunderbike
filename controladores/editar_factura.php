@@ -33,11 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cliente_id = $_POST['cliente_id'];
     $total = $_POST['total'];
     $fecha_factura = $_POST['fecha_factura'];
-    $detalles = $_POST['detalles'];
 
-    $sql = "UPDATE facturas SET cliente_id = ?, total = ?, fecha_factura = ?, detalles = ? WHERE id = ?";
+    $sql = "UPDATE facturas SET cliente_id = ?, total = ?, fecha_factura = ? WHERE id = ?";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$cliente_id, $total, $fecha_factura, $detalles, $factura_id]);
+    $stmt->execute([$cliente_id, $total, $fecha_factura, $factura_id]);
 
     echo "Factura actualizada con éxito.";
 }
@@ -62,11 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label>Fecha de Factura:</label>
         <input type="date" name="fecha_factura" value="<?php echo $factura['fecha_factura']; ?>" required><br>
         
-        <label>Detalles:</label>
-        <textarea name="detalles"><?php echo $factura['detalles']; ?></textarea><br>
-        
         <button type="submit">Guardar Cambios</button>
     </form>
     <a href="..\vendedor/facturacion.php">Regresar a Facturación</a>
 </body>
 </html>
+

@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
     $factura_id = $_GET['id'];
 
     // Obtener datos de la factura desde la base de datos
-    $sql = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.detalles
+    $sql = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura
             FROM facturas f
             JOIN clientes c ON f.cliente_id = c.id
             WHERE f.id = ?";
@@ -48,8 +48,6 @@ if (isset($_GET['id'])) {
     $pdf->Cell(40, 10, 'Total: $' . $factura['total']);
     $pdf->Ln(8);
     $pdf->Cell(40, 10, 'Fecha: ' . $factura['fecha_factura']);
-    $pdf->Ln(8);
-    $pdf->Cell(40, 10, 'Detalles: ' . $factura['detalles']);
     $pdf->Ln(10);
 
     // Salida del PDF
@@ -58,3 +56,4 @@ if (isset($_GET['id'])) {
     die("ID de factura no proporcionado.");
 }
 ?>
+
