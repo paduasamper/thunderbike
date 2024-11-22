@@ -238,8 +238,8 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
                 echo "<td>" . htmlspecialchars($row["fecha_reparacion"]) . "</td>";
                 echo "<td>" . htmlspecialchars($row["nombre_mecanico"]) . "</td>";
                 echo "<td>";
-                echo "<a href='../controladores/editar_reparacion.php?id=" . htmlspecialchars($row['id']) . "' class='btn'>Editar</a> ";
-                echo "<a href='../controladores/eliminar_reparacion.php?id=" . htmlspecialchars($row['id']) . "' class='btn' onclick='return confirm(\"¿Estás seguro de que deseas eliminar esta reparación?\");'>Eliminar</a>";
+                echo "<a href='../controladores/EDITAR_REPARACIONES.PHP?id=" . htmlspecialchars($row['id']) . "' class='btn'>Editar</a> ";
+                echo "<a href='../controladores/ELIMINAR_REPARACIONES.PHP?id=" . htmlspecialchars($row['id']) . "' class='btn' onclick='return confirm(\"¿Estás seguro de que deseas eliminar esta reparación?\");'>Eliminar</a>";
                 echo "</td>";
                 echo "</tr>";
             }

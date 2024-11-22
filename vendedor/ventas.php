@@ -273,8 +273,8 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
                 echo "<td>" . htmlspecialchars($row["fecha_venta"]) . "</td>";
                 echo "<td>" . htmlspecialchars($row["nombre_vendedor"]) . "</td>";
                 echo "<td>
-                        <a href='..\controladores/editar_venta.php?id=" . htmlspecialchars($row["id"]) . "' class='btn'>Editar</a>
-                        <a href='..\controladores/eliminar_venta.php?id=" . htmlspecialchars($row["id"]) . "' class='btn' onclick='return confirm(\"¿Estás seguro de que deseas eliminar esta venta?\");'>Eliminar</a>
+                        <a href='..\controladores/EDITAR_VENTAS.PHP?id=" . htmlspecialchars($row["id"]) . "' class='btn'>Editar</a>
+                        <a href='..\controladores/ELIMINAR_VENTAS.PHP?id=" . htmlspecialchars($row["id"]) . "' class='btn' onclick='return confirm(\"¿Estás seguro de que deseas eliminar esta venta?\");'>Eliminar</a>
                     </td>";
                 echo "</tr>";
             }

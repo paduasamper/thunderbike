@@ -176,7 +176,6 @@
     <!-- Video de fondo -->
     <video id="background-video" autoplay muted loop>
         <source src="..\img/clientes.mp4" type="video/mp4">
-        Tu navegador no admite la etiqueta de video.
     </video>
     <div class="container">
         <h1>Listado de Clientes</h1>
@@ -192,7 +191,7 @@
                 <th>Acciones</th>
             </tr>
             <!-- Conexión y consulta a la base de datos -->
-            <?php include "..\controladores/conexion.php"; ?>
+            <?php include "../controladores/conexion.php"; ?>
             <?php
             $stmt = $pdo->query('SELECT * FROM clientes');
             while ($row = $stmt->fetch()) {

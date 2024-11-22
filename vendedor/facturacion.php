@@ -2,51 +2,62 @@
 ob_start(); // Iniciar el almacenamiento en búfer de salida
 
 // Conexión a la base de datos
-$dsn = 'mysql:host=localhost;dbname=thunderbike';
+$dsn = 'mysql:host=localhost;dbname=thunderbike;charset=utf8';
 $username = 'root';
-$password = ''; 
+$password = '';
 
 try {
     // Establecer la conexión
     $pdo = new PDO($dsn, $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Definir la consulta SQL con los campos disponibles
+    // Obtener las facturas existentes
     $sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado 
                      FROM facturas AS f 
                      JOIN clientes AS c ON f.cliente_id = c.id';
-
-    // Ejecutar la consulta
     $stmt_facturas = $pdo->query($sql_facturas);
     $result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
 
+    // Obtener todos los clientes
+    $sql_clientes = "SELECT id, nombre FROM clientes";
+    $stmt_clientes = $pdo->query($sql_clientes);
+    $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
-    echo "Conexión fallida: " . $e->getMessage();
-    $result_facturas = []; // Asignar un array vacío en caso de error
+    echo "Conexión fallida: " . htmlspecialchars($e->getMessage());
+    $result_facturas = [];
+    $clientes = [];
 }
 
 // Verificar si se ha enviado el formulario para agregar una nueva factura
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente_id'], $_POST['total'], $_POST['fecha_factura'], $_POST['estado'])) {
-    $cliente_id = $_POST['cliente_id'];
-    $total = $_POST['total'];
-    $fecha_factura = $_POST['fecha_factura'];
-    $estado = $_POST['estado'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['cliente_id'], $_POST['total'], $_POST['fecha_factura'], $_POST['estado'])) {
+        $cliente_id = $_POST['cliente_id'];
+        $total = $_POST['total'];
+        $fecha_factura = $_POST['fecha_factura'];
+        $estado = $_POST['estado'];
 
-    // Insertar la nueva factura en la base de datos
-    $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado) VALUES (?, ?, ?, ?)";
-    $stmt_insert = $pdo->prepare($sql_insert);
+        // Validar datos antes de insertar
+        if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado)) {
+            // Insertar la nueva factura en la base de datos
+            $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado) VALUES (?, ?, ?, ?)";
+            $stmt_insert = $pdo->prepare($sql_insert);
 
-    try {
-        $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado]);
-        header("Location: facturacion.php"); // Redireccionar a la misma página para evitar reenvío de formulario
-        exit();
-    } catch (PDOException $e) {
-        echo "Error al agregar la factura: " . $e->getMessage();
+            try {
+                $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado]);
+                header("Location: facturacion.php"); // Redireccionar para evitar reenvíos
+                exit();
+            } catch (PDOException $e) {
+                echo "Error al agregar la factura: " . htmlspecialchars($e->getMessage());
+            }
+        } else {
+            echo "Error: Todos los campos son obligatorios.";
+        }
     }
 }
 
-$pdo = null; // Cerrar la conexión después de procesar la consulta
-ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el contenido al navegador
+$pdo = null; // Cerrar la conexión
+ob_end_flush(); // Liberar el almacenamiento en búfer
 ?>
 
 <!DOCTYPE html>
@@ -56,35 +67,89 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facturación</title>
     <style>
-        /* ... copia los estilos de tu archivo ventas.php o define estilos similares */
+        /* Estilos personalizados */
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .navtop {
+            background: #333;
+            padding: 10px 20px;
+            color: white;
+            text-align: center;
+        }
+        .navtop .button {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .scrollable-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #f4f4f4;
+        }
+        button, select, input {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
     <nav class="navtop">
         <div>
-            <div class="container">
-                <div class="button-container">
-                    <a href="vendedor_dashboard.php" class="button">Inicio</a>
-                    <a href="perfil.php" class="button">Perfil</a>
-                    <a href="clientes.php" class="button">Clientes</a>
-                    <a href="productos.php" class="button">Productos</a>
-                    <a href="ventas.php" class="button">Ventas</a>
-                    <a href="facturacion.php" class="button">Facturación</a>
-                </div>
-            </div>
+            <a href="vendedor_dashboard.php" class="button">Inicio</a>
+            <a href="perfil.php" class="button">Perfil</a>
+            <a href="clientes.php" class="button">Clientes</a>
+            <a href="productos.php" class="button">Productos</a>
+            <a href="ventas.php" class="button">Ventas</a>
+            <a href="facturacion.php" class="button">Facturación</a>
         </div>
     </nav>
-
-    <video id="background-video" autoplay muted loop>
-        <source src="..\img/facturacion.mp4" type="video/mp4">
-        Tu navegador no admite la etiqueta de video.
-    </video>
 
     <div class="container">
         <h2>Agregar Nueva Factura</h2>
         <form action="facturacion.php" method="POST">
-            <label for="cliente_id">Cliente ID:</label>
-            <input type="number" name="cliente_id" id="cliente_id" required><br>
+            <label for="cliente_id">Cliente:</label>
+            <select name="cliente_id" id="cliente_id" required>
+                <?php foreach ($clientes as $cliente): ?>
+                    <option value="<?= htmlspecialchars($cliente['id']) ?>">
+                        <?= htmlspecialchars($cliente['nombre']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select><br>
 
             <label for="total">Total:</label>
             <input type="number" name="total" id="total" step="0.01" required><br>
@@ -118,32 +183,33 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
                     </tr>
                 </thead>
                 <tbody>
-                <?php
-                if (is_array($result_facturas) && count($result_facturas) > 0) {
-                    foreach ($result_facturas as $row) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($row["id"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($row["nombre_cliente"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($row["total"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($row["fecha_factura"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($row["estado"]) . "</td>";
-                        echo "<td>
-                                <a href='..\controladores/editar_factura.php?id=" . htmlspecialchars($row["id"]) . "' class='btn'>Editar</a>
-                                <a href='..\controladores/eliminar_factura.php?id=" . htmlspecialchars($row["id"]) . "' class='btn' onclick='return confirm(\"¿Estás seguro de que deseas eliminar esta factura?\");'>Eliminar</a>
-                                <a href='generar_pdf.php?id=" . htmlspecialchars($row["id"]) . "' class='btn'>Generar PDF</a>
-                              </td>";
-                        echo "</tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='6'>No se encontraron facturas.</td></tr>";
-                }
-                ?>
+                <?php if (!empty($result_facturas)): ?>
+                    <?php foreach ($result_facturas as $row): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($row["id"]) ?></td>
+                            <td><?= htmlspecialchars($row["nombre_cliente"]) ?></td>
+                            <td><?= htmlspecialchars($row["total"]) ?></td>
+                            <td><?= htmlspecialchars($row["fecha_factura"]) ?></td>
+                            <td><?= htmlspecialchars($row["estado"]) ?></td>
+                            <td>
+                                <a href="../controladores/editar_factura.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Editar</a>
+                                <a href="../controladores/eliminar_factura.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta factura?');">Eliminar</a>
+                                <a href="generar_pdf.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Generar PDF</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr><td colspan="6">No se encontraron facturas.</td></tr>
+                <?php endif; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </body>
 </html>
+
+
+
 
 
 
