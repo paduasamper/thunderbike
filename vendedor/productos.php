@@ -124,9 +124,11 @@ public function crearProducto($nombre, $descripcion, $precio, $cantidad, $imagen
     }
 
     // Obtener todos los productos
-    public function obtenerProductos($offset = 0, $limit = 10) {
-        $sql = "SELECT * FROM productos LIMIT :offset, :limit";
+    public function obtenerProductos($offset = 0, $limit = 10, $filtro="") {
+        $sql = "SELECT * FROM productos WHERE nombre LIKE :filtro OR descripcion LIKE :filtro LIMIT :offset, :limit";
         $stmt = $this->pdo->prepare($sql);
+        $filtro = "%$filtro%"; // Asegurarse de que el filtro funcione como un comodín
+        $stmt->bindParam(':filtro', $filtro, PDO::PARAM_STR);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
@@ -215,7 +217,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
+// Obtener el término de búsqueda desde el formulario
+$busqueda = isset($_GET['busqueda']) ? $_GET['busqueda'] : "";
 
 // Número de productos por página
 $productosPorPagina = 6;
@@ -232,7 +235,7 @@ $totalProductos = $conexionProductos->obtenerTotalProductos();
 $totalPaginas = ceil($totalProductos / $productosPorPagina);
 
 // Obtener los productos para la página actual
-$productos = $conexionProductos->obtenerProductos($offset, $productosPorPagina);
+$productos = $conexionProductos->obtenerProductos($offset, $productosPorPagina, $busqueda);
 // Obtener los proveedores para el menú desplegable
 $proveedores = $conexionProductos->obtenerProveedores();
 ?>
@@ -353,7 +356,12 @@ $proveedores = $conexionProductos->obtenerProveedores();
 
         <!-- Botón para agregar producto -->
         <button class="btn btn-primary btn-agregar mb-4" id="btn-agregar">Agregar Producto</button>
-
+        <div class="mb-4">
+    <form action="productos.php" method="GET" class="form-inline">
+        <input type="text" name="busqueda" class="form-control mr-sm-2" placeholder="Buscar productos..." value="<?php echo htmlspecialchars($busqueda); ?>">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+</div>
 <!-- Formulario para crear producto -->
 <form action="productos.php" method="POST" enctype="multipart/form-data" class="mb-4 formulario-producto">
     <input type="hidden" name="action" value="crear">
