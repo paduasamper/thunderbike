@@ -267,6 +267,7 @@ $role = $_SESSION['role'];
         <div class="container">
             <div class="button-container">
                 <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
+                    <a href="usuarios.php" id="UsuariosBtn" class="button">Usuarios</a>
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="insumos.php" id="insumosBtn" class="button">Insumos</a>
                     <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>

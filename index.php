@@ -164,24 +164,5 @@ h1 {
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome -->
-  
-  <script>
-    // Función para alternar entre mostrar/ocultar la contraseña al hacer clic en el icono del ojo
-    var passwordToggles = document.querySelectorAll(".password-toggle");
-    passwordToggles.forEach(function(toggle) {
-      toggle.addEventListener("click", function() {
-        var passwordInput = this.previousElementSibling;
-        if (passwordInput.type === "password") {
-          passwordInput.type = "text";
-          this.classList.remove("fa-eye-slash");
-          this.classList.add("fa-eye");
-        } else {
-          passwordInput.type = "password";
-          this.classList.remove("fa-eye");
-          this.classList.add("fa-eye-slash");
-        }
-      });
-    });
-  </script>
 </body>
 </html>
