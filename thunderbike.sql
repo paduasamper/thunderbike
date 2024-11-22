@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-11-2024 a las 20:16:11
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.1.25
+-- Tiempo de generación: 22-11-2024 a las 14:32:22
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -57,7 +57,13 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`id`, `nombre`, `direccion`, `telefono`) VALUES
-(35, 'Marcos Llorente', 'Calle 32 #87-65', '3215648956');
+(35, 'Marcos Llorente', 'Calle 32 #87-65', '3215648956'),
+(36, 'Juan Pérez', 'Calle 123, Ciudad', '33211234569'),
+(38, 'mnbm', 'fgbg', '4333443'),
+(39, 'bvv', 'fgbg', '4333443'),
+(40, 'x c', 'fgbg', '4333443'),
+(41, 'bn vnb ', '133', 'fcfef'),
+(42, 'ghghgh', 'dc', 'fcfef');
 
 -- --------------------------------------------------------
 
@@ -83,11 +89,18 @@ CREATE TABLE `detalle_venta` (
 CREATE TABLE `facturas` (
   `id` int(11) NOT NULL,
   `cliente_id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL,
   `fecha_factura` date NOT NULL,
   `estado` varchar(20) DEFAULT 'pendiente',
   `total` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `facturas`
+--
+
+INSERT INTO `facturas` (`id`, `cliente_id`, `fecha_factura`, `estado`, `total`) VALUES
+(14, 35, '2024-11-06', 'Pendiente', 20000.00),
+(16, 41, '2024-11-12', 'Cancelada', 240000.00);
 
 -- --------------------------------------------------------
 
@@ -210,6 +223,14 @@ CREATE TABLE `reparaciones` (
   `mecanico_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `reparaciones`
+--
+
+INSERT INTO `reparaciones` (`id`, `cliente_id`, `producto_id`, `descripcion`, `costo`, `fecha_reparacion`, `usuario_id`, `mecanico_id`) VALUES
+(25, 35, 41, 'GHJJHBs', 344444.00, '2024-11-22', 15, NULL),
+(26, 35, 42, 'JGJVGHVGHVH', 6.00, '2024-11-22', 15, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -269,7 +290,8 @@ CREATE TABLE `ventas` (
 --
 
 INSERT INTO `ventas` (`id`, `cliente_id`, `fecha_venta`, `total`, `descripcion_venta`, `producto_vendido_id`, `usuario_id`, `vendedor`) VALUES
-(26, 35, '2024-11-15', 22222.00, 'fgfdytj', 41, 10, '');
+(26, 35, '2024-11-15', 22222.00, 'fgfdyt', 41, 10, ''),
+(36, 42, '2024-11-20', 55766776.00, 'vggvh', 33, 10, '');
 
 --
 -- Índices para tablas volcadas
@@ -294,8 +316,7 @@ ALTER TABLE `detalle_venta`
 --
 ALTER TABLE `facturas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `cliente_id` (`cliente_id`),
-  ADD KEY `usuario_id` (`usuario_id`);
+  ADD KEY `cliente_id` (`cliente_id`);
 
 --
 -- Indices de la tabla `historial_proveedores`
@@ -372,7 +393,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
@@ -384,7 +405,7 @@ ALTER TABLE `detalle_venta`
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_proveedores`
@@ -414,7 +435,7 @@ ALTER TABLE `proveedores`
 -- AUTO_INCREMENT de la tabla `reparaciones`
 --
 ALTER TABLE `reparaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -426,7 +447,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- Restricciones para tablas volcadas
@@ -443,8 +464,7 @@ ALTER TABLE `detalle_venta`
 -- Filtros para la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  ADD CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`),
-  ADD CONSTRAINT `facturas_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+  ADD CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`);
 
 --
 -- Filtros para la tabla `historial_proveedores`
