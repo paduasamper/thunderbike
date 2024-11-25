@@ -192,6 +192,7 @@
             </tr>
             <!-- Conexión y consulta a la base de datos -->
             <?php include "../controladores/conexion.php"; ?>
+            <?php include "../controladores/historial_compras.php"?>
             <?php
             $stmt = $pdo->query('SELECT * FROM clientes');
             while ($row = $stmt->fetch()) {
@@ -232,7 +233,7 @@
         // Función para mostrar el formulario de agregar cliente
         function showAddForm() {
             document.getElementById('formTitle').innerText = 'Agregar Cliente';
-            document.getElementById('clientForm').action = '..\controladores/save_client.php?action=add';
+            document.getElementById('clientForm').action = '../controladores/save_client.php?action=add';
             document.getElementById('clientId').value = '';
             document.getElementById('clientName').value = '';
             document.getElementById('clientAddress').value = '';
@@ -243,7 +244,7 @@
         // Función para mostrar el formulario de editar cliente
         function showEditForm(id, name, address, phone) {
             document.getElementById('formTitle').innerText = 'Editar Cliente';
-            document.getElementById('clientForm').action = '..\controladores/save_client.php?action=edit';
+            document.getElementById('clientForm').action = '../controladores/save_client.php?action=edit';
             document.getElementById('clientId').value = id;
             document.getElementById('clientName').value = name;
             document.getElementById('clientAddress').value = address;
