@@ -58,117 +58,78 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Insumos</title>
     <style>
-        table {
-            width: 50%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        .insumo-imagen {
-        width: 100px;  /* Ajusta el ancho de la imagen */
-        height: auto; /* Mantiene la proporción de la imagen */
-    }
+        /* Estilo global */
         body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        overflow-y: scroll;
-        position: relative;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
         }
-    .navtop {
-        background-color: rgba(0, 0, 0, 0.5);
-        padding: 10px;
-        text-align: center;
-        position: relative;
-        z-index: 2;
-    }
-
-    .navtop a {
-        color: black;
-        text-decoration: none;
-        margin: 0 10px;
-    }
-
-    .navtop a:hover {
-        color: goldenrod;
-    }
-    .container {
-      max-width: 650px;
-      margin: auto;
-      overflow: hidden;
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      position: relative;
-      z-index: 2;
-    }
-    h2 {
-      margin-bottom: 10px;
-    }
-    form {
-      margin-bottom: 10px;
-      display: none;
-    }
-
-    textarea {
-      height: 100px;
-      resize: vertical;
-    }
-
-    .button-container {
-      margin-top: 20px;
-    }
-    .button-container button {
-      background-color: #333;
-      color: #fff;
-      padding: 5px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .button-container button:hover {
-      background-color: #555;
-    }
-    #background-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 1;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    .show-form {
-      display: block;
-      margin-top: 20px;
-    }
-            /* Estilos de la paginación */
-            .pagination {
+        h1 {
             text-align: center;
             margin-top: 20px;
         }
+
+        /* Barra de navegación */
+        .navtop {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .navtop img {
+            width: 40px;
+            height: 40px;
+        }
+        .navtop a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .navtop a:hover {
+            color: #FFD700;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        /* Tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .insumo-imagen {
+            width: 80px;
+            height: auto;
+        }
+
+        /* Estilo de paginación */
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
         .pagination a {
-            padding: 8px 16px;
-            margin: 0 4px;
+            padding: 10px 15px;
+            margin: 0 5px;
             text-decoration: none;
             border: 1px solid #ddd;
             color: #333;
@@ -180,74 +141,100 @@ try {
             background-color: #4CAF50;
             color: white;
         }
+
+        /* Reglas de diseño responsivo */
+        @media (max-width: 768px) {
+            .navtop {
+                font-size: 14px;
+            }
+            table {
+                display: block;
+                overflow-x: auto; /* Hacer tabla desplazable */
+            }
+            .insumo-imagen {
+                width: 60px; /* Reducir tamaño de imagen */
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 18px;
+            }
+            .navtop a {
+                display: block; /* Cambiar enlaces a bloques */
+                margin: 5px 0;
+            }
+            table {
+                font-size: 12px; /* Reducir tamaño del texto en tablas */
+            }
+        }
     </style>
 </head>
 <body>
-<nav class="navtop">
+    <!-- Barra de navegación -->
+    <nav class="navtop">
     <div>
-        <div class="container">
-            <div class="button-container">
-            <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
-                <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-                <a href="usuarios.php" id="usuariosBtn" class="button">Usuarios</a>
-                    <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="insumos.php" id="insumosBtn" class="button">Insumos</a>
-                    <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
-                    <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
-                    <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
-            </div>
-        </div>
+        <img src="img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">
+        <h1>THUNDERBIKE</h1>
     </div>
-</nav>
+        <div>
+            <a href="inicio.php">Inicio</a>
+            <a href="perfil.php">Perfil</a>
+            <a href="usuarios.php">Usuarios</a>
+            <a href="clientes.php">Clientes</a>
+            <a href="insumos.php">Insumos</a>
+            <a href="proveedores.php">Proveedores</a>
+            <a href="ventas.php">Ventas</a>
+            <a href="reparaciones.php">Reparaciones</a>
+        </div>
+    </nav>
 
-<h1>Lista de Insumos</h1>
-
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Cantidad</th>
-                <th>Descripción</th>
-                <th>Producto ID</th>
-                <th>Imagen</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (count($insumos) > 0): ?>
-                <?php foreach ($insumos as $insumo): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($insumo['id']); ?></td>
-                        <td><?php echo htmlspecialchars($insumo['nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($insumo['cantidad']); ?></td>
-                        <td><?php echo htmlspecialchars($insumo['descripcion']); ?></td>
-                        <td><?php echo htmlspecialchars($insumo['producto_id']); ?></td>
-                        <td>
-                            <?php if (!empty($insumo['imagen'])): ?>
-                                <img src="uploads/<?php echo htmlspecialchars($insumo['imagen']); ?>" alt="Imagen del insumo" class="insumo-imagen">
-                            <?php else: ?>
-                                Sin imagen
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
+    <!-- Contenido principal -->
+    <div class="container">
+        <h1>Lista de Insumos</h1>
+        <table>
+            <thead>
                 <tr>
-                    <td colspan="6">No hay insumos disponibles.</td>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Descripción</th>
+                    <th>Producto ID</th>
+                    <th>Imagen</th>
                 </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php if (count($insumos) > 0): ?>
+                    <?php foreach ($insumos as $insumo): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($insumo['id']); ?></td>
+                            <td><?php echo htmlspecialchars($insumo['nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($insumo['cantidad']); ?></td>
+                            <td><?php echo htmlspecialchars($insumo['descripcion']); ?></td>
+                            <td><?php echo htmlspecialchars($insumo['producto_id']); ?></td>
+                            <td>
+                                <?php if (!empty($insumo['imagen'])): ?>
+                                    <img src="uploads/<?php echo htmlspecialchars($insumo['imagen']); ?>" alt="Imagen del insumo" class="insumo-imagen">
+                                <?php else: ?>
+                                    Sin imagen
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="6">No hay insumos disponibles.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
 
-    <!-- Paginación -->
-    <div class="pagination">
-        <?php
-        // Enlaces de paginación
-        for ($i = 1; $i <= $totalPaginas; $i++) {
-            $activeClass = ($i == $paginaActual) ? 'active' : '';
-            echo "<a href='insumos.php?pagina=$i' class='$activeClass'>$i</a>";
-        }
-        ?>
+        <!-- Paginación -->
+        <div class="pagination">
+            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                <a href="insumos.php?pagina=<?php echo $i; ?>" class="<?php echo ($i == $paginaActual) ? 'active' : ''; ?>"><?php echo $i; ?></a>
+            <?php endfor; ?>
+        </div>
     </div>
 </body>
 </html>
