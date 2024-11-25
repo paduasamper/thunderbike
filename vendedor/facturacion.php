@@ -13,8 +13,8 @@ try {
 
     // Obtener las facturas existentes
     $sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado 
-                     FROM facturas AS f 
-                     JOIN clientes AS c ON f.cliente_id = c.id';
+                    FROM facturas AS f 
+                    JOIN clientes AS c ON f.cliente_id = c.id';
     $stmt_facturas = $pdo->query($sql_facturas);
     $result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
 
@@ -132,7 +132,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
         <div>
             <a href="vendedor_dashboard.php" class="button">Inicio</a>
             <a href="perfil.php" class="button">Perfil</a>
-            <a href="clientes.php" class="button">Clientes</a>
+            <a href="client.php" class="button">Clientes</a>
             <a href="productos.php" class="button">Productos</a>
             <a href="ventas.php" class="button">Ventas</a>
             <a href="facturacion.php" class="button">Facturación</a>

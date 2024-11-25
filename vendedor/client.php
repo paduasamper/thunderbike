@@ -162,7 +162,7 @@
                 <div class="nav-buttons" style="margin-left: 20px; display: flex; align-items: center;">
                     <a href="vendedor_dashboard.php" id="Vendedor_dashboardBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-                    <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
+                    <a href="client.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="productos.php" id="ProductosBtn" class="button">Productos</a>
                     <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
                     <a href="facturacion.php" id="FactuaracionBtn" class="button">Facturacion</a>
@@ -192,7 +192,7 @@
             </tr>
             <!-- Conexión y consulta a la base de datos -->
             <?php include "../controladores/conexion.php"; ?>
-            <?php include "../controladores/historial_compras.php"?>
+            
             <?php
             $stmt = $pdo->query('SELECT * FROM clientes');
             while ($row = $stmt->fetch()) {
@@ -275,7 +275,7 @@
         // Función para mostrar el historial de compras del cliente
         function showPurchaseHistory(id) {
             alert('Mostrar historial de compra del cliente con ID: ' + id);
-            window.location.href = '..\controladores/historial_compras.php?client_id=' + id;
+            window.location.href = '../controladores/historial_com.php?client_id=' + id;
         }
 
         // Función para cancelar y ocultar el formulario

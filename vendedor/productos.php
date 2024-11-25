@@ -338,7 +338,7 @@ $proveedores = $conexionProductos->obtenerProveedores();
                     <!-- Botones de navegación -->
                     <a href="vendedor_dashboard.php" id="indexBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-                    <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
+                    <a href="client.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="productos.php" id="productosBtn" class="button">Productos</a>
                     <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
                     <a href="facturacion.php" id="facturacionBtn" class="button">Facturacion</a>
