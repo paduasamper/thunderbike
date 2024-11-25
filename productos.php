@@ -288,6 +288,7 @@ $productos = $conexionProductos->obtenerProductos($offset, $productosPorPagina);
                     <!-- Botones de navegación -->
                     <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
+                    <a href="usuarios.php" id="usuariosBtn" class="button">Usuarios</a>
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="productos.php" id="productosBtn" class="button">Productos</a>
                     <a href="proveedores.php" id="proveedoresBtn" class="button active">Proveedores</a>

@@ -227,6 +227,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
                 <div class="button-container">
                     <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
+                    <a href="usuarios.php" id="usuariosBtn" class="button">Usuarios</a>
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="insumos.php" id="InsumosBtn" class="button">Insumos</a>
                     <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
