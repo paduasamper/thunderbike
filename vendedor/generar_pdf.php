@@ -30,25 +30,52 @@ if (isset($_GET['id'])) {
         die("Factura no encontrada.");
     }
 
+    // Calcular subtotal e IVA (19%)
+    $total = (float) $factura['total'];
+    $iva = $total * 0.19;
+    $subtotal = $total - $iva;
+
     // Crear un nuevo PDF
     $pdf = new FPDF();
     $pdf->AddPage();
 
-    // Encabezado de la factura
+    // Agregar logo
+    $logoPath = '../img/thunderbikes.png';
+    $pdf->Image($logoPath, 80, 10, 50); // Centrado en la página (ajusta según tus necesidades)
+    $pdf->Ln(30); // Salto de línea para separar el logo del resto del contenido
+
+    // Título de la factura
     $pdf->SetFont('Arial', 'B', 16);
     $pdf->Cell(0, 10, 'Factura', 0, 1, 'C');
     $pdf->Ln(10);
 
     // Información de la factura
     $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(40, 10, 'ID Factura: ' . $factura['id']);
-    $pdf->Ln(8);
-    $pdf->Cell(40, 10, 'Cliente: ' . $factura['nombre_cliente']);
-    $pdf->Ln(8);
-    $pdf->Cell(40, 10, 'Total: $' . $factura['total']);
-    $pdf->Ln(8);
-    $pdf->Cell(40, 10, 'Fecha: ' . $factura['fecha_factura']);
+    $pdf->Cell(0, 10, 'ID Factura: ' . $factura['id'], 0, 1);
+    $pdf->Cell(0, 10, 'Cliente: ' . $factura['nombre_cliente'], 0, 1);
+    $pdf->Cell(0, 10, 'Fecha: ' . $factura['fecha_factura'], 0, 1);
     $pdf->Ln(10);
+
+    // Tabla con detalles financieros
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->Cell(95, 10, 'Descripcion', 1, 0, 'C');
+    $pdf->Cell(95, 10, 'Cantidad', 1, 1, 'C');
+
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->Cell(95, 10, 'Subtotal', 1, 0, 'C');
+    $pdf->Cell(95, 10, '$' . number_format($subtotal, 2), 1, 1, 'C');
+
+    $pdf->Cell(95, 10, 'IVA (19%)', 1, 0, 'C');
+    $pdf->Cell(95, 10, '$' . number_format($iva, 2), 1, 1, 'C');
+
+    $pdf->Cell(95, 10, 'Total', 1, 0, 'C');
+    $pdf->Cell(95, 10, '$' . number_format($total, 2), 1, 1, 'C');
+
+    $pdf->Ln(20); // Salto de línea antes del pie de página
+
+    // Pie de página
+    $pdf->SetFont('Arial', 'I', 10);
+    $pdf->Cell(0, 10, 'Gracias por su compra. Thunderbike.', 0, 1, 'C');
 
     // Salida del PDF
     $pdf->Output('I', 'Factura_' . $factura['id'] . '.pdf');

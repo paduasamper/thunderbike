@@ -12,9 +12,9 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Obtener las facturas existentes
-    $sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado 
-                    FROM facturas AS f 
-                    JOIN clientes AS c ON f.cliente_id = c.id';
+    $sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos
+                     FROM facturas AS f 
+                     JOIN clientes AS c ON f.cliente_id = c.id';
     $stmt_facturas = $pdo->query($sql_facturas);
     $result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
 
@@ -31,20 +31,21 @@ try {
 
 // Verificar si se ha enviado el formulario para agregar una nueva factura
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['cliente_id'], $_POST['total'], $_POST['fecha_factura'], $_POST['estado'])) {
+    if (isset($_POST['cliente_id'], $_POST['total'], $_POST['fecha_factura'], $_POST['estado'], $_POST['productos'])) {
         $cliente_id = $_POST['cliente_id'];
         $total = $_POST['total'];
         $fecha_factura = $_POST['fecha_factura'];
         $estado = $_POST['estado'];
+        $productos = $_POST['productos'];
 
         // Validar datos antes de insertar
-        if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado)) {
+        if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos)) {
             // Insertar la nueva factura en la base de datos
-            $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado) VALUES (?, ?, ?, ?)";
+            $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado, productos) VALUES (?, ?, ?, ?, ?)";
             $stmt_insert = $pdo->prepare($sql_insert);
 
             try {
-                $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado]);
+                $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado, $productos]);
                 header("Location: facturacion.php"); // Redireccionar para evitar reenvíos
                 exit();
             } catch (PDOException $e) {
@@ -160,9 +161,12 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
             <label for="estado">Estado:</label>
             <select name="estado" id="estado" required>
                 <option value="Pendiente">Pendiente</option>
-                <option value="Pagada">Pagada</option>
+                <option value="Credito">Credito</option>
                 <option value="Cancelada">Cancelada</option>
             </select><br>
+
+            <label for="productos">Productos:</label>
+            <textarea name="productos" id="productos" required></textarea><br>
 
             <button type="submit">Agregar Factura</button>
         </form>
@@ -179,6 +183,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
                         <th>Total</th>
                         <th>Fecha de Factura</th>
                         <th>Estado</th>
+                        <th>Productos</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -191,6 +196,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
                             <td><?= htmlspecialchars($row["total"]) ?></td>
                             <td><?= htmlspecialchars($row["fecha_factura"]) ?></td>
                             <td><?= htmlspecialchars($row["estado"]) ?></td>
+                            <td><?= htmlspecialchars($row["productos"]) ?></td>
                             <td>
                                 <a href="../controladores/editar_factura.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Editar</a>
                                 <a href="../controladores/eliminar_factura.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta factura?');">Eliminar</a>
@@ -199,7 +205,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <tr><td colspan="6">No se encontraron facturas.</td></tr>
+                    <tr><td colspan="7">No se encontraron facturas.</td></tr>
                 <?php endif; ?>
                 </tbody>
             </table>
@@ -207,6 +213,8 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
     </div>
 </body>
 </html>
+
+
 
 
 
