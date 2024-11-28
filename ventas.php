@@ -104,16 +104,23 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
       margin: 0;
-      overflow-y: scroll;
-      position: relative;
+      padding: 0;
     }
-    .navtop {
-        background-color: rgba(0, 0, 0, 0.5);
-        padding: 10px;
-        text-align: center;
-        position: relative;
-        z-index: 2;
-    }
+    h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Barra de navegación */
+        .navtop {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
     .navtop a {
         color: black;
@@ -202,10 +209,11 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
     table {
       width: 100%;
       border-collapse: collapse;
+      margin: 20px 0;
     }
     th, td {
       border: 1px solid #ddd;
-      padding: 8px;
+      padding: 10px;
       text-align: left;
     }
     th {
@@ -222,6 +230,10 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
 </head>
 <body>
     <nav class="navtop">
+        <div>
+            <img src="img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">
+            <h1>THUNDERBIKE</h1>
+        </div>
         <div>
             <div class="container">
                 <div class="button-container">
