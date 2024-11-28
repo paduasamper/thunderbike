@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-11-2024 a las 14:32:22
+-- Tiempo de generación: 28-11-2024 a las 14:17:05
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -49,21 +49,23 @@ CREATE TABLE `clientes` (
   `id` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
-  `telefono` varchar(15) DEFAULT NULL
+  `telefono` varchar(15) DEFAULT NULL,
+  `nit` varchar(30) NOT NULL,
+  `correo` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`id`, `nombre`, `direccion`, `telefono`) VALUES
-(35, 'Marcos Llorente', 'Calle 32 #87-65', '3215648956'),
-(36, 'Juan Pérez', 'Calle 123, Ciudad', '33211234569'),
-(38, 'mnbm', 'fgbg', '4333443'),
-(39, 'bvv', 'fgbg', '4333443'),
-(40, 'x c', 'fgbg', '4333443'),
-(41, 'bn vnb ', '133', 'fcfef'),
-(42, 'ghghgh', 'dc', 'fcfef');
+INSERT INTO `clientes` (`id`, `nombre`, `direccion`, `telefono`, `nit`, `correo`) VALUES
+(35, 'Marcos Llorente', 'Calle 32 #87-65', '3215648956', '', ''),
+(36, 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', '', ''),
+(38, 'mnbm', 'fgbg', '4333443', '', ''),
+(39, 'bvv', 'fgbg', '4333443', '', ''),
+(40, 'x c', 'fgbg', '4333443', '', ''),
+(41, 'bn vnb ', '133', 'fcfef', '', ''),
+(42, 'ghghgh', 'dc', 'fcfef', '234567821', 'ghg@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -91,16 +93,22 @@ CREATE TABLE `facturas` (
   `cliente_id` int(11) NOT NULL,
   `fecha_factura` date NOT NULL,
   `estado` varchar(20) DEFAULT 'pendiente',
-  `total` decimal(10,2) DEFAULT NULL
+  `total` decimal(10,2) DEFAULT NULL,
+  `productos` varchar(50) NOT NULL,
+  `cantidad` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `facturas`
 --
 
-INSERT INTO `facturas` (`id`, `cliente_id`, `fecha_factura`, `estado`, `total`) VALUES
-(14, 35, '2024-11-06', 'Pendiente', 20000.00),
-(16, 41, '2024-11-12', 'Cancelada', 240000.00);
+INSERT INTO `facturas` (`id`, `cliente_id`, `fecha_factura`, `estado`, `total`, `productos`, `cantidad`) VALUES
+(17, 39, '2024-11-08', 'Cancelada', 250000.00, 'guaya', ''),
+(19, 36, '2024-11-13', 'Pendiente', 400000.00, '[\"dssd\",\"sscfscfs\"]', ''),
+(20, 35, '2024-11-28', 'Pendiente', 250000.00, '[\"dczdc\"]', ''),
+(21, 36, '2024-11-30', 'Credito', 250000.00, '[\"sadds\"]', ''),
+(22, 41, '2024-11-09', 'Cancelada', 20000.00, '[\"fvdvdv\"]', ''),
+(23, 35, '2024-11-15', 'Credito', 20000.00, '[\"dczdc\",\"fvdvdvssssss\"]', '');
 
 -- --------------------------------------------------------
 
@@ -405,7 +413,7 @@ ALTER TABLE `detalle_venta`
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_proveedores`
