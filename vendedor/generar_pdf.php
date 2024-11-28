@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
     $factura_id = $_GET['id'];
 
     // Obtener datos de la factura desde la base de datos
-    $sql = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura
+    $sql = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.productos
             FROM facturas f
             JOIN clientes c ON f.cliente_id = c.id
             WHERE f.id = ?";
@@ -29,6 +29,9 @@ if (isset($_GET['id'])) {
     if (!$factura) {
         die("Factura no encontrada.");
     }
+
+    // Decodificar productos
+    $productos = json_decode($factura['productos'], true);
 
     // Calcular subtotal e IVA (19%)
     $total = (float) $factura['total'];
@@ -54,6 +57,26 @@ if (isset($_GET['id'])) {
     $pdf->Cell(0, 10, 'ID Factura: ' . $factura['id'], 0, 1);
     $pdf->Cell(0, 10, 'Cliente: ' . $factura['nombre_cliente'], 0, 1);
     $pdf->Cell(0, 10, 'Fecha: ' . $factura['fecha_factura'], 0, 1);
+    $pdf->Ln(10);
+
+    // Tabla de productos
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->Cell(190, 10, 'Productos', 1, 1, 'C');
+
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(140, 10, 'Descripcion', 1, 0, 'C');
+    $pdf->Cell(50, 10, 'Cantidad', 1, 1, 'C');
+
+    $pdf->SetFont('Arial', '', 10);
+    if ($productos) {
+        foreach ($productos as $producto) {
+            $pdf->Cell(140, 10, htmlspecialchars($producto), 1, 0, 'L');
+            $pdf->Cell(50, 10, '1', 1, 1, 'C'); // Aquí puedes agregar cantidades si es necesario
+        }
+    } else {
+        $pdf->Cell(190, 10, 'No se registraron productos.', 1, 1, 'C');
+    }
+
     $pdf->Ln(10);
 
     // Tabla con detalles financieros
@@ -83,4 +106,3 @@ if (isset($_GET['id'])) {
     die("ID de factura no proporcionado.");
 }
 ?>
-

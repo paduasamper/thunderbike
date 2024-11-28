@@ -67,6 +67,58 @@ $pdo = null; // Cerrar la conexión
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Factura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, textarea, button {
+            padding: 10px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .productos-list div {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+    <!-- Funcion para agregar producto -->
+        <script>
+        function agregarProducto() {
+            const productosList = document.getElementById('productos-list');
+            const productoItem = document.createElement('div');
+            productoItem.className = 'producto-item';
+            productoItem.innerHTML = `
+                <input type="text" name="productos[]" placeholder="Producto" required>
+                <button type="button" onclick="eliminarProducto(this)">Eliminar</button>
+            `;
+            productosList.appendChild(productoItem);
+        }
+
+        function eliminarProducto(btn) {
+            const productoItem = btn.parentElement;
+            productoItem.remove();
+        }
+    </script>
 </head>
 <body>
     <h2>Editar Factura</h2>
@@ -92,7 +144,21 @@ $pdo = null; // Cerrar la conexión
             <option value="Credito" <?= $factura['estado'] == 'Credito' ? 'selected' : '' ?>>Credito</option>
             <option value="Cancelada" <?= $factura['estado'] == 'Cancelada' ? 'selected' : '' ?>>Cancelada</option>
         </select><br>
-
+        <!-- agregar Producto y eliminar -->
+        <div class="form-group">
+                <label for="productos">Productos:</label>
+                <div id="productos-list" class="productos-list">
+                    <?php 
+                    $productos = json_decode($factura['productos'], true) ?: []; // Convertir a array o inicializar vacío
+                    foreach ($productos as $producto): ?>
+                        <div class="producto-item">
+                            <input type="text" name="productos[]" value="<?= htmlspecialchars($producto) ?>" required>
+                            <button type="button" onclick="eliminarProducto(this)">Eliminar</button>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <button type="button" onclick="agregarProducto()">Agregar Producto</button>
+            </div>
         <label for="productos">Productos:</label>
         <textarea name="productos" id="productos" required><?= htmlspecialchars($factura['productos']) ?></textarea><br>
 

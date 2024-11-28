@@ -10,49 +10,50 @@ try {
     // Establecer la conexión
     $pdo = new PDO($dsn, $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Obtener las facturas existentes
-    $sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos
-                     FROM facturas AS f 
-                     JOIN clientes AS c ON f.cliente_id = c.id';
-    $stmt_facturas = $pdo->query($sql_facturas);
-    $result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
-
-    // Obtener todos los clientes
-    $sql_clientes = "SELECT id, nombre FROM clientes";
-    $stmt_clientes = $pdo->query($sql_clientes);
-    $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
-
 } catch (PDOException $e) {
-    echo "Conexión fallida: " . htmlspecialchars($e->getMessage());
+    die("Conexión fallida: " . htmlspecialchars($e->getMessage()));
     $result_facturas = [];
     $clientes = [];
 }
 
+// Obtener las facturas existentes
+$sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos
+                 FROM facturas AS f 
+                 JOIN clientes AS c ON f.cliente_id = c.id';
+$stmt_facturas = $pdo->query($sql_facturas);
+$result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
+
+// Obtener todos los clientes
+$sql_clientes = "SELECT id, nombre FROM clientes";
+$stmt_clientes = $pdo->query($sql_clientes);
+$clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
+
 // Verificar si se ha enviado el formulario para agregar una nueva factura
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    echo "<pre>Datos enviados: "; print_r($_POST); echo "</pre>"; // Depuración de datos enviados
+
     if (isset($_POST['cliente_id'], $_POST['total'], $_POST['fecha_factura'], $_POST['estado'], $_POST['productos'])) {
         $cliente_id = $_POST['cliente_id'];
         $total = $_POST['total'];
         $fecha_factura = $_POST['fecha_factura'];
         $estado = $_POST['estado'];
-        $productos = $_POST['productos'];
+        $productos = json_encode(array_filter($_POST['productos'], 'trim')); // Filtrar productos vacíos y convertir a JSON
 
         // Validar datos antes de insertar
         if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos)) {
-            // Insertar la nueva factura en la base de datos
             $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado, productos) VALUES (?, ?, ?, ?, ?)";
             $stmt_insert = $pdo->prepare($sql_insert);
 
             try {
                 $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado, $productos]);
+                echo "Factura agregada exitosamente.<br>";
                 header("Location: facturacion.php"); // Redireccionar para evitar reenvíos
                 exit();
             } catch (PDOException $e) {
                 echo "Error al agregar la factura: " . htmlspecialchars($e->getMessage());
             }
         } else {
-            echo "Error: Todos los campos son obligatorios.";
+            echo "Error: Todos los campos son obligatorios y los productos no pueden estar vacíos.<br>";
         }
     }
 }
@@ -127,9 +128,26 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
             background: #0056b3;
         }
     </style>
+    <script>
+        function agregarProducto() {
+            const productosList = document.getElementById('productos-list');
+            const productoItem = document.createElement('div');
+            productoItem.className = 'producto-item';
+            productoItem.innerHTML = `
+                <input type="text" name="productos[]" placeholder="Producto" required>
+                <button type="button" onclick="eliminarProducto(this)">Eliminar</button>
+            `;
+            productosList.appendChild(productoItem);
+        }
+
+        function eliminarProducto(btn) {
+            const productoItem = btn.parentElement;
+            productoItem.remove();
+        }
+    </script>
 </head>
 <body>
-    <nav class="navtop">
+<nav class="navtop">
         <div>
             <a href="vendedor_dashboard.php" class="button">Inicio</a>
             <a href="perfil.php" class="button">Perfil</a>
@@ -139,7 +157,6 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
             <a href="facturacion.php" class="button">Facturación</a>
         </div>
     </nav>
-
     <div class="container">
         <h2>Agregar Nueva Factura</h2>
         <form action="facturacion.php" method="POST">
@@ -151,6 +168,14 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
                     </option>
                 <?php endforeach; ?>
             </select><br>
+
+            <label for="productos">Productos:</label>
+            <div id="productos-list" class="productos-list">
+                <div class="producto-item">
+                    <input type="text" name="productos[]" placeholder="Producto" required>
+                </div>
+            </div>
+            <button type="button" onclick="agregarProducto()">Agregar Producto</button><br>
 
             <label for="total">Total:</label>
             <input type="number" name="total" id="total" step="0.01" required><br>
@@ -165,59 +190,49 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
                 <option value="Cancelada">Cancelada</option>
             </select><br>
 
-            <label for="productos">Productos:</label>
-            <textarea name="productos" id="productos" required></textarea><br>
-
-            <button type="submit">Agregar Factura</button>
+            <button type="submit">Guardar Factura</button>
         </form>
-    </div>
 
-    <div class="container">
+        <div class="container">
         <h2>Facturas Realizadas</h2>
         <div class="scrollable-table">
-            <table>
-                <thead>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Productos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php if (!empty($result_facturas)): ?>
+                <?php foreach ($result_facturas as $row): ?>
                     <tr>
-                        <th>ID</th>
-                        <th>Cliente</th>
-                        <th>Total</th>
-                        <th>Fecha de Factura</th>
-                        <th>Estado</th>
-                        <th>Productos</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php if (!empty($result_facturas)): ?>
-                    <?php foreach ($result_facturas as $row): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row["id"]) ?></td>
-                            <td><?= htmlspecialchars($row["nombre_cliente"]) ?></td>
-                            <td><?= htmlspecialchars($row["total"]) ?></td>
-                            <td><?= htmlspecialchars($row["fecha_factura"]) ?></td>
-                            <td><?= htmlspecialchars($row["estado"]) ?></td>
-                            <td><?= htmlspecialchars($row["productos"]) ?></td>
-                            <td>
+                        <td><?= htmlspecialchars($row['id']) ?></td>
+                        <td><?= htmlspecialchars($row['nombre_cliente']) ?></td>
+                        <td><?= htmlspecialchars($row['total']) ?></td>
+                        <td><?= htmlspecialchars($row['fecha_factura']) ?></td>
+                        <td><?= htmlspecialchars($row['estado']) ?></td>
+                        <td><?= htmlspecialchars($row['productos']) ?></td>
+                        <td>
                                 <a href="../controladores/editar_factura.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Editar</a>
                                 <a href="../controladores/eliminar_factura.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta factura?');">Eliminar</a>
                                 <a href="generar_pdf.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Generar PDF</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
                 <?php else: ?>
                     <tr><td colspan="7">No se encontraron facturas.</td></tr>
                 <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
+</div>
 </body>
 </html>
-
-
-
-
-
-
 
 
