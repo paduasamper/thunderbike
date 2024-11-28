@@ -250,7 +250,6 @@ body {
     <div class="video-background">
         <video autoplay muted loop id="background-video">
             <source src="ruta-del-video.mp4" type="video/mp4">
-            Tu navegador no soporta videos HTML5.
         </video>
     </div>
     <nav class="navtop">

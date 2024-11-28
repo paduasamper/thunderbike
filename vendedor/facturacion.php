@@ -69,13 +69,6 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facturación</title>
     <style>
-        /* Estilos personalizados */
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
         .navtop {
             background: #333;
             padding: 10px 20px;
@@ -127,6 +120,172 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
         button:hover {
             background: #0056b3;
         }
+                /* Estilos globales */
+                body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Barra de navegación */
+        .navtop {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .navtop a {
+            color: white;
+            text-decoration: none;
+            margin: 5px 10px;
+        }
+
+        .navtop a:hover {
+            color: goldenrod;
+        }
+
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        /* Tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Botones */
+        button, form button {
+            padding: 8px 12px;
+            background-color: gold;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover, form button:hover {
+            background-color: wheat;
+        }
+
+        /* Modal */
+        #modal-editar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #modal-editar .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .navtop {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            th, td {
+                white-space: nowrap;
+            }
+
+            .container {
+                width: 95%;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            button, form button {
+                padding: 6px 10px;
+                font-size: 0.9em;
+            }
+        }
+        /* Estilo para el fondo de video */
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+#background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+}
+
+/* Contenido encima del video */
+.content {
+    position: relative;
+    z-index: 1;
+}
+
+/* Ajustes para que el contenido siga siendo legible */
+body {
+    background: rgba(0, 0, 0, 0.5); /* Capa de semitransparencia sobre el video */
+    color: black;
+}
     </style>
     <script>
         function agregarProducto() {
@@ -147,6 +306,11 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
     </script>
 </head>
 <body>
+<div class="video-background">
+        <video autoplay muted loop id="background-video">
+            <source src="ruta-del-video.mp4" type="video/mp4">
+        </video>
+    </div>
 <nav class="navtop">
         <div>
             <a href="vendedor_dashboard.php" class="button">Inicio</a>
