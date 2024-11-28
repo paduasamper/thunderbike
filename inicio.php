@@ -204,33 +204,6 @@ $role = $_SESSION['role'];
             position: relative;
         }
 
-        .tooltip {
-            display: none; 
-            position: absolute;
-            background-color: white;
-            border: 1px solid #B0C4DE;
-            padding: 2px 5px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-            top: 6%;
-            left: 50%;
-            transform: translateX(-61%);
-            white-space: nowrap;
-            max-width: 150px;
-            max-height: 50px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tooltip a {
-            color: black;
-            text-decoration: none;
-        }
-
-        .tooltip a:hover {
-            color: #007BFF;
-        }
 
         .navtop div a:hover {
             color: #eaebed;
@@ -394,6 +367,17 @@ $role = $_SESSION['role'];
         }
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menuContainer = document.querySelector('.menu-container');
+
+        menuToggle.addEventListener('click', function () {
+            menuContainer.classList.toggle('active'); // Alternar el menú desplegable
+        });
+    });
+</script>
+
 
 </body>
 </html>

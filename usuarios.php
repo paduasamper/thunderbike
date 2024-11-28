@@ -82,7 +82,7 @@ function cambiarRol($pdo, $id, $rol) {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: black;
         }
 
         h1 {
@@ -145,15 +145,15 @@ function cambiarRol($pdo, $id, $rol) {
         /* Botones */
         button, form button {
             padding: 8px 12px;
-            background-color: #4CAF50;
-            color: white;
+            background-color: gold;
+            color: black;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
         button:hover, form button:hover {
-            background-color: #45a049;
+            background-color: wheat;
         }
 
         /* Modal */
@@ -209,9 +209,50 @@ function cambiarRol($pdo, $id, $rol) {
                 font-size: 0.9em;
             }
         }
+        /* Estilo para el fondo de video */
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+#background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+}
+
+/* Contenido encima del video */
+.content {
+    position: relative;
+    z-index: 1;
+}
+
+/* Ajustes para que el contenido siga siendo legible */
+body {
+    background: rgba(0, 0, 0, 0.5); /* Capa de semitransparencia sobre el video */
+    color: black;
+}
+
     </style>
 </head>
 <body>
+    <div class="video-background">
+        <video autoplay muted loop id="background-video">
+            <source src="ruta-del-video.mp4" type="video/mp4">
+            Tu navegador no soporta videos HTML5.
+        </video>
+    </div>
     <nav class="navtop">
         <div>
             <img src="img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">

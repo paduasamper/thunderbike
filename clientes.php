@@ -151,6 +151,35 @@
             top: 20px; /* Posición superior de 20px */
             right: 20px; /* Posición derecha de 20px */
         }
+        .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Añade un margen superior */
+    clear: both; /* Asegura que no haya elementos flotantes interfiriendo */
+    position: relative;
+}
+
+
+.pagination a {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    margin: 0 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.pagination a.active {
+    background-color: goldenrod;
+    color: white;
+    border: 1px solid goldenrod;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
     </style>
 </head>
 <body>
@@ -197,7 +226,16 @@
             <!-- Conexión y consulta a la base de datos -->
             <?php include "controladores/conexion.php"; ?>
             <?php
-            $stmt = $pdo->query('SELECT * FROM clientes');
+            // Parámetros de paginación
+            $registrosPorPagina = 5; // Número de registros por página
+            $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1; // Página actual
+            $inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice inicial para la consulta
+
+            // Consulta para obtener los registros de la página actual
+$stmt = $pdo->prepare('SELECT * FROM clientes LIMIT :inicio, :registrosPorPagina');
+$stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
+$stmt->bindParam(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
+$stmt->execute();
             while ($row = $stmt->fetch()) {
                 echo '<tr>';
                 echo '<td>' . htmlspecialchars($row['id']) . '</td>';
@@ -211,8 +249,24 @@
                     </td>';
                 echo '</tr>';
             }
+            // Obtener el total de registros para calcular el número de páginas
+            $totalRegistros = $pdo->query('SELECT COUNT(*) FROM clientes')->fetchColumn();
+            $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             ?>
         </table>
+        <div class="pagination">
+    <?php if ($paginaActual > 1): ?>
+        <a href="?pagina=<?= $paginaActual - 1 ?>">&laquo; Anterior</a>
+    <?php endif; ?>
+
+    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+        <a href="?pagina=<?= $i ?>" class="<?= $i === $paginaActual ? 'active' : '' ?>"><?= $i ?></a>
+    <?php endfor; ?>
+
+    <?php if ($paginaActual < $totalPaginas): ?>
+        <a href="?pagina=<?= $paginaActual + 1 ?>">Siguiente &raquo;</a>
+    <?php endif; ?>
+</div>
 
         <!-- Formulario para agregar/editar clientes -->
         <div id="formContainer">
@@ -231,7 +285,6 @@
     <div class="home-button-container">
         <!-- Aquí puedes añadir contenido adicional -->
     </div>
-
     <script>
         // Función para mostrar el formulario de agregar cliente
         function showAddForm() {

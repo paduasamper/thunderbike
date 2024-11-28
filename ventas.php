@@ -310,6 +310,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
               }
               ?>
             </select>
+            
             <br>
             <label for="descripcion_venta">Descripción:</label>
             <textarea name="descripcion_venta" id="descripcion_venta" required></textarea>
