@@ -125,8 +125,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer de salida y enviar el con
         color: goldenrod;
     }
     .container {
-      max-width: 800px;
-      margin: auto;
+      max-width: 1500px;
       overflow: hidden;
       background-color: #fff;
       border-radius: 5px;
