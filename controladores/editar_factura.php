@@ -37,14 +37,15 @@ if (isset($_GET['id'])) {
         $fecha_factura = $_POST['fecha_factura'];
         $estado = $_POST['estado'];
         $productos = $_POST['productos'];
+        $cantidad = $_POST['cantidad'];
 
-        if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos)) {
+        if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos) && !empty($cantidad)) {
             // Actualizar la factura en la base de datos
-            $sql_update = "UPDATE facturas SET cliente_id = ?, total = ?, fecha_factura = ?, estado = ?, productos = ? WHERE id = ?";
+            $sql_update = "UPDATE facturas SET cliente_id = ?, total = ?, fecha_factura = ?, estado = ?, productos = ?, cantidad = ? WHERE id = ?";
             $stmt_update = $pdo->prepare($sql_update);
 
             try {
-                $stmt_update->execute([$cliente_id, $total, $fecha_factura, $estado, $productos, $factura_id]);
+                $stmt_update->execute([$cliente_id, $total, $fecha_factura, $estado, $productos, $cantidad, $factura_id]);
                 header("Location: ../vendedor/facturacion.php");
                 exit();
             } catch (PDOException $e) {
@@ -146,7 +147,6 @@ $pdo = null; // Cerrar la conexión
         </select><br>
         <!-- agregar Producto y eliminar -->
         <div class="form-group">
-                <label for="productos">Productos:</label>
                 <div id="productos-list" class="productos-list">
                     <?php 
                     $productos = json_decode($factura['productos'], true) ?: []; // Convertir a array o inicializar vacío
@@ -159,7 +159,11 @@ $pdo = null; // Cerrar la conexión
                 </div>
                 <button type="button" onclick="agregarProducto()">Agregar Producto</button>
             </div>
-        <label for="productos">Productos:</label>
+            
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" name="cantidad" id="cantidad" value="<?= htmlspecialchars($factura['cantidad']) ?>" required><br>
+        
+            <label for="productos">Productos:</label>
         <textarea name="productos" id="productos" required><?= htmlspecialchars($factura['productos']) ?></textarea><br>
 
         <button type="submit">Guardar Cambios</button>

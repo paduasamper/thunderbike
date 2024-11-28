@@ -17,7 +17,7 @@ try {
 }
 
 // Obtener las facturas existentes
-$sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos
+$sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos, cantidad
                  FROM facturas AS f 
                  JOIN clientes AS c ON f.cliente_id = c.id';
 $stmt_facturas = $pdo->query($sql_facturas);
@@ -38,14 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fecha_factura = $_POST['fecha_factura'];
         $estado = $_POST['estado'];
         $productos = json_encode(array_filter($_POST['productos'], 'trim')); // Filtrar productos vacíos y convertir a JSON
+        $cantidad = $_POST['cantidad'];
 
         // Validar datos antes de insertar
         if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos)) {
-            $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado, productos) VALUES (?, ?, ?, ?, ?)";
+            $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado, productos, cantidad) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt_insert = $pdo->prepare($sql_insert);
-
+        
             try {
-                $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado, $productos]);
+                $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado, $productos, $cantidad]);
                 echo "Factura agregada exitosamente.<br>";
                 header("Location: facturacion.php"); // Redireccionar para evitar reenvíos
                 exit();
@@ -341,6 +342,9 @@ body {
             </div>
             <button type="button" onclick="agregarProducto()">Agregar Producto</button><br>
 
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" name="cantidad" id="cantidad" step="0.01" required><br>
+
             <label for="total">Total:</label>
             <input type="number" name="total" id="total" step="0.01" required><br>
 
@@ -368,6 +372,7 @@ body {
                     <th>Total</th>
                     <th>Fecha</th>
                     <th>Estado</th>
+                    <th>Cantidad</th>
                     <th>Productos</th>
                     <th>Acciones</th>
                 </tr>
@@ -381,6 +386,7 @@ body {
                         <td><?= htmlspecialchars($row['total']) ?></td>
                         <td><?= htmlspecialchars($row['fecha_factura']) ?></td>
                         <td><?= htmlspecialchars($row['estado']) ?></td>
+                        <td><?= htmlspecialchars($row['cantidad']) ?></td>
                         <td><?= htmlspecialchars($row['productos']) ?></td>
                         <td>
                                 <a href="../controladores/editar_factura.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Editar</a>

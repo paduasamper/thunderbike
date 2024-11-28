@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
     $factura_id = $_GET['id'];
 
     // Obtener datos de la factura desde la base de datos
-    $sql = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.productos
+    $sql = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.productos, f.cantidad
             FROM facturas f
             JOIN clientes c ON f.cliente_id = c.id
             WHERE f.id = ?";
@@ -32,6 +32,7 @@ if (isset($_GET['id'])) {
 
     // Decodificar productos
     $productos = json_decode($factura['productos'], true);
+    $cantidades = explode(',', $factura['cantidad']); // Divide la lista de cantidades
 
     // Calcular subtotal e IVA (19%)
     $total = (float) $factura['total'];
@@ -68,10 +69,12 @@ if (isset($_GET['id'])) {
     $pdf->Cell(50, 10, 'Cantidad', 1, 1, 'C');
 
     $pdf->SetFont('Arial', '', 10);
-    if ($productos) {
-        foreach ($productos as $producto) {
-            $pdf->Cell(140, 10, htmlspecialchars($producto), 1, 0, 'L');
-            $pdf->Cell(50, 10, '1', 1, 1, 'C'); // Aquí puedes agregar cantidades si es necesario
+    if ($productos && $cantidades) {
+        foreach ($productos as $index => $producto) {
+            $descripcion = htmlspecialchars(trim($producto));
+            $cantidad = isset($cantidades[$index]) ? trim($cantidades[$index]) : '0';
+            $pdf->Cell(140, 10, $descripcion, 1, 0, 'L');
+            $pdf->Cell(50, 10, $cantidad, 1, 1, 'C');
         }
     } else {
         $pdf->Cell(190, 10, 'No se registraron productos.', 1, 1, 'C');
