@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-11-2024 a las 20:54:23
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 29-11-2024 a las 21:03:00
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -47,10 +47,10 @@ DELIMITER ;
 
 CREATE TABLE `clientes` (
   `id` int(11) NOT NULL,
+  `numero_identificacion` varchar(30) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL,
-  `nit` varchar(30) NOT NULL,
   `correo` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -58,14 +58,14 @@ CREATE TABLE `clientes` (
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`id`, `nombre`, `direccion`, `telefono`, `nit`, `correo`) VALUES
-(35, 'Marcos Llorente', 'Calle 32 #87-65', '321564895677', '', ''),
-(36, 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', '', ''),
-(38, 'mnbm', 'fgbg', '4333443', '', ''),
-(39, 'bvv', 'fgbg', '4333443', '', ''),
-(40, 'x c', 'fgbg', '4333443', '', ''),
-(41, 'bn vnb ', '133', 'fcfef', '', ''),
-(42, 'ghghgh', 'dc', 'fcfef', '234567821', 'ghg@gmail.com');
+INSERT INTO `clientes` (`id`, `numero_identificacion`, `nombre`, `direccion`, `telefono`, `correo`) VALUES
+(35, '1234567890', 'Marcos Llorente', 'Calle 32 #87-65', '3215648956', 'marcos.llorente@example.com'),
+(36, '9876543210', 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', 'juan.perez@example.com'),
+(38, '1122334455', 'mnbm', 'fgbg', '4333443', 'cliente3@example.com'),
+(39, '6677889900', 'bvv', 'fgbg', '4333443', 'cliente4@example.com'),
+(40, '5566778899', 'x c', 'fgbg', '4333443', 'cliente5@example.com'),
+(41, '4455667788', 'bn vnb ', '133', 'fcfef', 'cliente6@example.com'),
+(42, '3344556677', 'ghghgh', 'dc', 'fcfef', 'cliente7@example.com');
 
 -- --------------------------------------------------------
 
@@ -103,13 +103,12 @@ CREATE TABLE `facturas` (
 --
 
 INSERT INTO `facturas` (`id`, `cliente_id`, `fecha_factura`, `estado`, `total`, `productos`, `cantidad`) VALUES
-(17, 39, '2024-11-08', 'Cancelada', 250000.00, 'guaya', '8'),
+(17, 39, '2024-11-08', 'Cancelada', 250000.00, 'guaya', ''),
 (19, 36, '2024-11-13', 'Pendiente', 400000.00, '[\"dssd\",\"sscfscfs\"]', ''),
-(20, 35, '2024-11-28', 'Pendiente', 250000.00, '[\"dczdc\"]', '5'),
-(21, 36, '2024-11-30', 'Credito', 250000.00, '[\"sadds\"]', '7'),
-(22, 41, '2024-11-09', 'Cancelada', 20000.00, '[\"fvdvdv\"]', '4'),
-(23, 35, '2024-11-15', 'Credito', 20000.00, '[\"dczdc\",\"fvdvdvssssss\"]', ''),
-(25, 41, '2024-11-22', 'Pendiente', 777777.00, '[\"sadds\"]', '4');
+(20, 35, '2024-11-28', 'Pendiente', 250000.00, '[\"dczdc\"]', ''),
+(21, 36, '2024-11-30', 'Credito', 250000.00, '[\"sadds\"]', ''),
+(22, 41, '2024-11-09', 'Cancelada', 20000.00, '[\"fvdvdv\"]', ''),
+(23, 35, '2024-11-15', 'Credito', 20000.00, '[\"dczdc\",\"fvdvdvssssss\"]', '');
 
 -- --------------------------------------------------------
 
@@ -212,7 +211,7 @@ CREATE TABLE `proveedores` (
 --
 
 INSERT INTO `proveedores` (`id`, `nombre`, `direccion`, `telefono`) VALUES
-(1, 'Proveedor A', 'Calle Proveedor A, Ciudad', '11111111122'),
+(1, 'Proveedor A', 'Calle Proveedor A, Ciudad', '111111111'),
 (2, 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222');
 
 -- --------------------------------------------------------
@@ -310,7 +309,8 @@ INSERT INTO `ventas` (`id`, `cliente_id`, `fecha_venta`, `total`, `descripcion_v
 -- Indices de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `numero_identificacion` (`numero_identificacion`);
 
 --
 -- Indices de la tabla `detalle_venta`
@@ -414,7 +414,7 @@ ALTER TABLE `detalle_venta`
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_proveedores`

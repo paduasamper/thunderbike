@@ -216,15 +216,17 @@
             <button class="button" onclick="showAddForm()">Agregar Cliente</button> <!-- Botón para agregar cliente -->
         </div>
         <table id="clientes">
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Dirección</th>
-                <th>Teléfono</th>
-                <th>Acciones</th>
-            </tr>
-            <!-- Conexión y consulta a la base de datos -->
-            <?php include "controladores/conexion.php"; ?>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Dirección</th>
+        <th>Teléfono</th>
+        <th>Documento</th>
+        <th>Correo Electrónico</th>
+        <th>Acciones</th>
+    </tr>
+    <?php include "controladores/conexion.php"; ?>
+    
             <?php
             // Parámetros de paginación
             $registrosPorPagina = 5; // Número de registros por página
