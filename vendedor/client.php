@@ -237,8 +237,6 @@ $stmt->execute();
                 echo '<td>' . htmlspecialchars($row['direccion']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['telefono']) . '</td>';
                 echo '<td>
-                        <button onclick="showEditForm(' . htmlspecialchars(json_encode($row['id'])) . ', ' . htmlspecialchars(json_encode($row['nombre'])) . ', ' . htmlspecialchars(json_encode($row['direccion'])) . ', ' . htmlspecialchars(json_encode($row['telefono'])) . ')">Editar</button>
-                        <button onclick="deleteClient(' . htmlspecialchars(json_encode($row['id'])) . ')">Eliminar</button>
                         <button onclick="showPurchaseHistory(' . htmlspecialchars(json_encode($row['id'])) . ')">Historial de Compra</button>
                     </td>';
                 echo '</tr>';
