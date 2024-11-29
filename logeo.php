@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>INICIAR SESION</title>
+  <title>INICIAR SESIÓN</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="icon" type="image/png" href="img/thunderbikes.png">
@@ -88,7 +88,7 @@
 <div class="form-wrapper">
   <div class="header">
     <img src="img/thunderbikes.png" alt="thunderbike">
-    <h2 class="animate__animated animate__bounce" style="color: black;">INICIAR SESION</h2>
+    <h2 class="animate__animated animate__bounce" style="color: black;">INICIAR SESIÓN</h2>
   </div>
   <form method="post" action="logeo.php">
     <?php include('errores.php'); ?>

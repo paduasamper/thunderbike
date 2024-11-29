@@ -2,10 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Registro</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <link rel="icon" type="thundrbike/png" href="img/thunderbike.png">
-  <style>
+<title>Registro</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="icon" type="thundrbike/png" href="img/thunderbike.png">
+<style>
     body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -103,11 +103,11 @@
             <input type="email" name="email" value="<?php echo $email; ?>">
         </div>
         <div class="input-group">
-            <label>Contraceña</label>
+            <label>Contraseña</label>
             <input type="password" name="password_1">
         </div>
         <div class="input-group">
-            <label>Confirmar Contraceña</label>
+            <label>Confirmar Contraseña</label>
             <input type="password" name="password_2">
         </div>
         <div class="input-group">
