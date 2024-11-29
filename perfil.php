@@ -83,12 +83,12 @@
       <!-- Detalles -->
       <div class="details">
         <h3 class="section-title">Detalles</h3>
-        <p><span>Nombre:</span> 
-        <?php
+        <p><span>Nombre:</span> Javier Leon
+        <!-- <?php
         // Mostrar el nombre del usuario logueado
         session_start(); 
         echo isset($_SESSION['nombre_usuario']) ? $_SESSION['nombre_usuario'] : 'Usuario no identificado';
-        ?></p>
+        ?></p> -->
         <p><span>Edad:</span> 35 años</p>
         <p><span>Ubicación:</span> Thunderbike, España</p>
       </div>

@@ -15,6 +15,17 @@
             background-attachment: fixed;
             padding: 50px 0 0 0;
         }
+        #background-video {
+            position: fixed; /* Fija el video en la pantalla */
+            top: 50%;
+            left: 50%;
+            min-width: 100%; /* Abarca toda la pantalla horizontalmente */
+            min-height: 100%; /* Abarca toda la pantalla verticalmente */
+            width: auto; /* Ajusta el ancho automáticamente */
+            height: auto; /* Ajusta la altura automáticamente */
+            transform: translate(-50%, -50%); /* Centra el video */
+            z-index: -1; /* Coloca el video detrás de otros elementos */
+        }
 
         .navtop {
             background-color: rgba(0, 0, 0, 0.8);
@@ -174,8 +185,7 @@
 
     <!-- Video de fondo -->
     <video id="background-video" autoplay muted loop>
-        <source src="img/proveedores.mp4" type="video/mp4">
-        Tu navegador no admite la etiqueta de video.
+        <source src="img/clientes.mp4" type="video/mp4">
     </video>
 
     <div class="container">
