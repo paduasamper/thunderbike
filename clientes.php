@@ -218,10 +218,10 @@
         <table id="clientes">
     <tr>
         <th>ID</th>
+        <th>Documento</th>
         <th>Nombre</th>
         <th>Dirección</th>
         <th>Teléfono</th>
-        <th>Documento</th>
         <th>Correo Electrónico</th>
         <th>Acciones</th>
     </tr>
@@ -241,9 +241,11 @@ $stmt->execute();
             while ($row = $stmt->fetch()) {
                 echo '<tr>';
                 echo '<td>' . htmlspecialchars($row['id']) . '</td>';
+                echo '<td>' . htmlspecialchars($row['numero_identificacion']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['nombre']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['direccion']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['telefono']) . '</td>';
+                echo '<td>' . htmlspecialchars($row['correo']) . '</td>';
                 echo '<td>
                         <button onclick="showEditForm(' . htmlspecialchars(json_encode($row['id'])) . ', ' . htmlspecialchars(json_encode($row['nombre'])) . ', ' . htmlspecialchars(json_encode($row['direccion'])) . ', ' . htmlspecialchars(json_encode($row['telefono'])) . ')">Editar</button>
                         <button onclick="deleteClient(' . htmlspecialchars(json_encode($row['id'])) . ')">Eliminar</button>
@@ -275,9 +277,11 @@ $stmt->execute();
             <h2 id="formTitle">Agregar Cliente</h2>
             <form id="clientForm" method="post" onsubmit="return submitForm()">
                 <input type="hidden" id="clientId" name="clientId"> <!-- Campo oculto para el ID del cliente -->
+                <input type="text" id="clientDocumen" name="numero_identificacion" placeholder="Documento" required>
                 <input type="text" id="clientName" name="nombre" placeholder="Nombre" required>
                 <input type="text" id="clientAddress" name="direccion" placeholder="Dirección" required>
                 <input type="text" id="clientPhone" name="telefono" placeholder="Teléfono" required>
+                <input type="text" id="clientEmail" name="correo" placeholder="Correo Electrónico" required>
                 <button type="submit">Guardar</button>
                 <button type="button" onclick="cancelForm()">Cancelar</button>
             </form>

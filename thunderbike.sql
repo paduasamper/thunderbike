@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-11-2024 a las 21:03:00
+-- Tiempo de generación: 30-11-2024 a las 15:51:29
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
 
@@ -60,27 +60,7 @@ CREATE TABLE `clientes` (
 
 INSERT INTO `clientes` (`id`, `numero_identificacion`, `nombre`, `direccion`, `telefono`, `correo`) VALUES
 (35, '1234567890', 'Marcos Llorente', 'Calle 32 #87-65', '3215648956', 'marcos.llorente@example.com'),
-(36, '9876543210', 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', 'juan.perez@example.com'),
-(38, '1122334455', 'mnbm', 'fgbg', '4333443', 'cliente3@example.com'),
-(39, '6677889900', 'bvv', 'fgbg', '4333443', 'cliente4@example.com'),
-(40, '5566778899', 'x c', 'fgbg', '4333443', 'cliente5@example.com'),
-(41, '4455667788', 'bn vnb ', '133', 'fcfef', 'cliente6@example.com'),
-(42, '3344556677', 'ghghgh', 'dc', 'fcfef', 'cliente7@example.com');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `detalle_venta`
---
-
-CREATE TABLE `detalle_venta` (
-  `id` int(11) NOT NULL,
-  `venta_id` int(11) DEFAULT NULL,
-  `producto_id` int(11) DEFAULT NULL,
-  `cantidad` int(11) DEFAULT NULL,
-  `precio_unitario` decimal(10,2) DEFAULT NULL,
-  `total_producto` decimal(10,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(36, '9876543210', 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', 'juan.perez@example.com');
 
 -- --------------------------------------------------------
 
@@ -90,7 +70,7 @@ CREATE TABLE `detalle_venta` (
 
 CREATE TABLE `facturas` (
   `id` int(11) NOT NULL,
-  `cliente_id` int(11) NOT NULL,
+  `cliente_id` int(11) DEFAULT NULL,
   `fecha_factura` date NOT NULL,
   `estado` varchar(20) DEFAULT 'pendiente',
   `total` decimal(10,2) DEFAULT NULL,
@@ -103,12 +83,34 @@ CREATE TABLE `facturas` (
 --
 
 INSERT INTO `facturas` (`id`, `cliente_id`, `fecha_factura`, `estado`, `total`, `productos`, `cantidad`) VALUES
-(17, 39, '2024-11-08', 'Cancelada', 250000.00, 'guaya', ''),
+(17, NULL, '2024-11-08', 'Cancelada', 250000.00, 'guaya', ''),
 (19, 36, '2024-11-13', 'Pendiente', 400000.00, '[\"dssd\",\"sscfscfs\"]', ''),
 (20, 35, '2024-11-28', 'Pendiente', 250000.00, '[\"dczdc\"]', ''),
 (21, 36, '2024-11-30', 'Credito', 250000.00, '[\"sadds\"]', ''),
-(22, 41, '2024-11-09', 'Cancelada', 20000.00, '[\"fvdvdv\"]', ''),
+(22, NULL, '2024-11-09', 'Cancelada', 20000.00, '[\"fvdvdv\"]', ''),
 (23, 35, '2024-11-15', 'Credito', 20000.00, '[\"dczdc\",\"fvdvdvssssss\"]', '');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `historial_compras`
+--
+
+CREATE TABLE `historial_compras` (
+  `id` int(11) NOT NULL,
+  `cliente_id` int(11) NOT NULL,
+  `producto_id` int(11) DEFAULT NULL,
+  `fecha_compra` datetime NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `descripcion` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `historial_compras`
+--
+
+INSERT INTO `historial_compras` (`id`, `cliente_id`, `producto_id`, `fecha_compra`, `total`, `descripcion`) VALUES
+(1, 35, 41, '2024-11-15 00:00:00', 22222.00, 'fgfdyt');
 
 -- --------------------------------------------------------
 
@@ -298,8 +300,7 @@ CREATE TABLE `ventas` (
 --
 
 INSERT INTO `ventas` (`id`, `cliente_id`, `fecha_venta`, `total`, `descripcion_venta`, `producto_vendido_id`, `usuario_id`, `vendedor`) VALUES
-(26, 35, '2024-11-15', 22222.00, 'fgfdyt', 41, 10, ''),
-(36, 42, '2024-11-20', 55766776.00, 'vggvh', 33, 10, '');
+(26, 35, '2024-11-15', 22222.00, 'fgfdyt', 41, 10, '');
 
 --
 -- Índices para tablas volcadas
@@ -310,15 +311,8 @@ INSERT INTO `ventas` (`id`, `cliente_id`, `fecha_venta`, `total`, `descripcion_v
 --
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `numero_identificacion` (`numero_identificacion`);
-
---
--- Indices de la tabla `detalle_venta`
---
-ALTER TABLE `detalle_venta`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `venta_id` (`venta_id`),
-  ADD KEY `producto_id` (`producto_id`);
+  ADD UNIQUE KEY `numero_identificacion` (`numero_identificacion`),
+  ADD UNIQUE KEY `id` (`id`);
 
 --
 -- Indices de la tabla `facturas`
@@ -326,6 +320,12 @@ ALTER TABLE `detalle_venta`
 ALTER TABLE `facturas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cliente_id` (`cliente_id`);
+
+--
+-- Indices de la tabla `historial_compras`
+--
+ALTER TABLE `historial_compras`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `historial_proveedores`
@@ -405,16 +405,16 @@ ALTER TABLE `clientes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
--- AUTO_INCREMENT de la tabla `detalle_venta`
---
-ALTER TABLE `detalle_venta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT de la tabla `historial_compras`
+--
+ALTER TABLE `historial_compras`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_proveedores`
@@ -463,17 +463,10 @@ ALTER TABLE `ventas`
 --
 
 --
--- Filtros para la tabla `detalle_venta`
---
-ALTER TABLE `detalle_venta`
-  ADD CONSTRAINT `detalle_venta_ibfk_1` FOREIGN KEY (`venta_id`) REFERENCES `ventas` (`id`),
-  ADD CONSTRAINT `detalle_venta_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
-
---
 -- Filtros para la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  ADD CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`);
+  ADD CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`) ON DELETE SET NULL;
 
 --
 -- Filtros para la tabla `historial_proveedores`

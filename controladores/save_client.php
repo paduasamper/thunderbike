@@ -5,9 +5,11 @@ $action = $_GET['action'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $clientId = $_POST['clientId'] ?? '';
+    $numero_identificacion = $_POST['mumero_identificacion'] ?? '';
     $nombre = $_POST['nombre'] ?? '';
     $direccion = $_POST['direccion'] ?? '';
     $telefono = $_POST['telefono'] ?? '';
+    $correo = $_POST['correo'] ?? '';
 
     if ($action === 'add') {
         // Agregar un nuevo cliente
@@ -17,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'edit') {
         // Editar un cliente existente
         $stmt = $pdo->prepare('UPDATE clientes SET nombre = ?, direccion = ?, telefono = ? WHERE id = ?');
-        $result = $stmt->execute([$nombre, $direccion, $telefono, $clientId]);
+        $result = $stmt->execute([$numero_identificacion,$nombre, $direccion, $telefono, $clientId]);
         echo $result ? 'Cliente actualizado exitosamente' : 'Error al actualizar el cliente';
     } elseif ($action === 'delete') {
         // Eliminar un cliente

@@ -17,6 +17,29 @@ if ($clientId > 0) {
         $stmtPurchases = $pdo->prepare('SELECT * FROM ventas WHERE cliente_id = ?');
         $stmtPurchases->execute([$clientId]);
         $purchases = $stmtPurchases->fetchAll();
+
+        // Insertar en historial_compras
+        foreach ($purchases as $purchase) {
+            // Verifica si la compra ya existe en el historial
+            $stmtCheck = $pdo->prepare('SELECT * FROM historial_compras WHERE cliente_id = ? AND producto_id = ? AND fecha_compra = ?');
+            $stmtCheck->execute([$clientId, $purchase['producto_vendido_id'], $purchase['fecha_venta']]);
+            $existing = $stmtCheck->fetch();
+
+            if (!$existing) {
+                // Inserta la compra en historial_compras
+                $stmtInsert = $pdo->prepare('
+                    INSERT INTO historial_compras (cliente_id, producto_id, fecha_compra, total, descripcion)
+                    VALUES (?, ?, ?, ?, ?)
+                ');
+                $stmtInsert->execute([
+                    $clientId, 
+                    $purchase['producto_vendido_id'], 
+                    $purchase['fecha_venta'], 
+                    $purchase['total'], 
+                    $purchase['descripcion_venta']
+                ]);
+            }
+        }
     } else {
         $error = "Cliente no encontrado.";
     }
