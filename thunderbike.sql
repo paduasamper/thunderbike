@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-12-2024 a las 15:29:19
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 02-12-2024 a las 17:35:44
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -207,6 +207,7 @@ CREATE TABLE `productos_proveedores` (
 
 CREATE TABLE `proveedores` (
   `id` int(11) NOT NULL,
+  `nit` varchar(50) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL
@@ -216,9 +217,9 @@ CREATE TABLE `proveedores` (
 -- Volcado de datos para la tabla `proveedores`
 --
 
-INSERT INTO `proveedores` (`id`, `nombre`, `direccion`, `telefono`) VALUES
-(1, 'Proveedor A', 'Calle Proveedor A, Ciudad', '111111111'),
-(2, 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222');
+INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`) VALUES
+(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '111111111'),
+(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222');
 
 -- --------------------------------------------------------
 

@@ -244,8 +244,8 @@ $role = $_SESSION['role'];
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="insumos.php" id="insumosBtn" class="button">Insumos</a>
                     <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
-                    <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
                     <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
+                    <a href="facturacion.php" id="reparacionesBtn" class="button">Facturacion</a>
                 <a href="logout.php" id="cerrarSesionBtn" class="button special">Cerrar Sesión</a>
             </div>
         </div>

@@ -38,14 +38,15 @@ if (isset($_GET['id'])) {
         $estado = $_POST['estado'];
         $productos = $_POST['productos'];
         $cantidad = $_POST['cantidad'];
+        $vendedor = $_POST['vendedor'];
 
-        if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos) && !empty($cantidad)) {
+        if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos) && !empty($cantidad)  && !empty($vendedor)) {
             // Actualizar la factura en la base de datos
-            $sql_update = "UPDATE facturas SET cliente_id = ?, total = ?, fecha_factura = ?, estado = ?, productos = ?, cantidad = ? WHERE id = ?";
+            $sql_update = "UPDATE facturas SET cliente_id = ?, total = ?, fecha_factura = ?, estado = ?, productos = ?, cantidad =?, vendedor = ? WHERE id = ?";
             $stmt_update = $pdo->prepare($sql_update);
 
             try {
-                $stmt_update->execute([$cliente_id, $total, $fecha_factura, $estado, $productos, $cantidad, $factura_id]);
+                $stmt_update->execute([$cliente_id, $total, $fecha_factura, $estado, $productos, $cantidad, $vendedor, $factura_id]);
                 header("Location: ../vendedor/facturacion.php");
                 exit();
             } catch (PDOException $e) {
@@ -145,6 +146,8 @@ $pdo = null; // Cerrar la conexión
             <option value="Credito" <?= $factura['estado'] == 'Credito' ? 'selected' : '' ?>>Credito</option>
             <option value="Cancelada" <?= $factura['estado'] == 'Cancelada' ? 'selected' : '' ?>>Cancelada</option>
         </select><br>
+        <label for="vendedor">vendedor:</label>
+        <input type="text" name="vendedor" id="vendedor" value="<?= htmlspecialchars($factura['vendedor']) ?>" required><br>
         <!-- agregar Producto y eliminar -->
         <div class="form-group">
                 <div id="productos-list" class="productos-list">

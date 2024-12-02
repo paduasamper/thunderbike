@@ -163,6 +163,7 @@
 <body>
     <nav class="navtop">
         <div>
+<<<<<<< HEAD
             <img src="img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">
             <h1>THUNDERBIKE</h1>
         </div>
@@ -175,6 +176,21 @@
             <a href="proveedores.php">Proveedores</a>
             <a href="ventas.php">Ventas</a>
             <a href="reparaciones.php">Reparaciones</a>
+=======
+            <div class="container">
+                <div class="button-container">
+                    <!-- Botones de navegación -->
+                    <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
+                    <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
+                    <a href="usuarios.php" id="usuariosBtn" class="button">Usuarios</a>
+                    <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
+                    <a href="insumos.php" id="InsumosBtn" class="button">Insumos</a>
+                    <a href="proveedores.php" id="proveedoresBtn" class="button active">Proveedores</a>
+                    <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
+                    <a href="facturacion.php" id="reparacionesBtn" class="button">Facturacion</a>
+                </div>
+            </div>
+>>>>>>> 52a065477a4620f3234aa463f9a420b7e066abbf
         </div>
     </nav>
 

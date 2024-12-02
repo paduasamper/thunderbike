@@ -191,7 +191,6 @@
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
                     <a href="client.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="productos.php" id="ProductosBtn" class="button">Productos</a>
-                    <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
                     <a href="facturacion.php" id="FactuaracionBtn" class="button">Facturacion</a>
                 </div>
             </div>

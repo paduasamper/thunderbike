@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
     $factura_id = $_GET['id'];
 
     // Obtener datos de la factura desde la base de datos
-    $sql = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.productos, f.cantidad
+    $sql = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.productos, f.cantidad, f.vendedor
             FROM facturas f
             JOIN clientes c ON f.cliente_id = c.id
             WHERE f.id = ?";
@@ -59,6 +59,7 @@ if (isset($_GET['id'])) {
     $pdf->Cell(0, 10, 'Cliente: ' . $factura['nombre_cliente'], 0, 1);
     $pdf->Cell(0, 10, 'Fecha: ' . $factura['fecha_factura'], 0, 1);
     $pdf->Ln(10);
+    $pdf->Cell(0, 10, 'Vendedor: ' . $factura['vendedor'], 0, 1);
 
     // Tabla de productos
     $pdf->SetFont('Arial', 'B', 12);

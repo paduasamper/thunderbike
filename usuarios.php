@@ -264,8 +264,8 @@ body {
             <a href="clientes.php">Clientes</a>
             <a href="insumos.php">Insumos</a>
             <a href="proveedores.php">Proveedores</a>
-            <a href="ventas.php">Ventas</a>
             <a href="reparaciones.php">Reparaciones</a>
+            <a href="facturacion.php">Facturacion</a>
         </div>
     </nav>
 
