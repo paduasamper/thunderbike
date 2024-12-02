@@ -1,46 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proveedores</title>
-    <link rel="icon" type="thundrbikes.png" href="img/thunderbikes.png">
+    <title>Módulo de Proveedores</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
+        /* Estilos globales */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-image: url('https://wallpaperaccess.com/full/5651708.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            padding: 50px 0 0 0;
-        }
-        #background-video {
-            position: fixed; /* Fija el video en la pantalla */
-            top: 50%;
-            left: 50%;
-            min-width: 100%; /* Abarca toda la pantalla horizontalmente */
-            min-height: 100%; /* Abarca toda la pantalla verticalmente */
-            width: auto; /* Ajusta el ancho automáticamente */
-            height: auto; /* Ajusta la altura automáticamente */
-            transform: translate(-50%, -50%); /* Centra el video */
-            z-index: -1; /* Coloca el video detrás de otros elementos */
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
         }
 
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Barra de navegación */
         .navtop {
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 10px 0;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 999;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .navtop a {
-            color: black;
+            color: white;
             text-decoration: none;
-            margin: 0 15px;
+            margin: 5px 10px;
         }
 
         .navtop a:hover {
@@ -48,25 +42,29 @@
         }
 
         .container {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 30px;
-            margin: auto;
-            width: 60%;
-            max-width: 750px;
-            border-radius: 5px;
-            position: relative;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1200px;
+            overflow: auto;
         }
 
         table {
-            border-collapse: collapse;
             width: 100%;
-            margin: 100px 0;
+            border-collapse: collapse;
+            margin: 20px 0;
+            overflow-x: auto;
+            display: block;
         }
 
         th, td {
+            padding: 10px;
             border: 1px solid #ddd;
-            padding: 6px;
             text-align: left;
+            white-space: nowrap;
         }
 
         th {
@@ -74,148 +72,150 @@
         }
 
         tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        .button-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-
-        .button-container .button {
-            margin-left: auto;
-        }
-
-        .button:hover {
-            color: goldenrod;
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        #formContainer {
             background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
+        }
+
+        button, form button {
+            padding: 8px 12px;
+            background-color: gold;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover, form button:hover {
+            background-color: wheat;
+        }
+
+        button[data-status="on"] {
+            background-color: green;
+        }
+
+        button[data-status="off"] {
+            background-color: red;
+        }
+
+        /* Estilos para el formulario */
+        #formContainer {
+            display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            display: none;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            width: 400px;
+            max-width: 100%;
         }
 
         #formTitle {
-            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #333;
+            text-align: center;
         }
 
-        .home-button-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+        label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
         }
 
-        /* Estilos para el modal del historial */
-        #historyModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        input[type="text"] {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        #historyModal .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            width: 80%;
-            max-width: 800px;
-        }
-
-        #historyModal .modal-content table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        #historyModal .modal-content th, #historyModal .modal-content td {
+            padding: 10px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            border-radius: 5px;
+            font-size: 14px;
         }
 
-        #historyModal .modal-content th {
-            background-color: #f2f2f2;
+        input[type="text"]:focus {
+            border-color: #5d8f36;
+            outline: none;
         }
 
-        #historyModal .modal-content button {
-            float: right;
-            background-color: red;
+        button[type="submit"],
+        button[type="button"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            background-color: #28a745;
             color: white;
             border: none;
-            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
-        #historyModal .modal-content button:hover {
-            background-color: darkred;
+        button[type="submit"]:hover,
+        button[type="button"]:hover {
+            background-color: #218838;
         }
+
     </style>
 </head>
 <body>
     <nav class="navtop">
         <div>
-            <div class="container">
-                <div class="button-container">
-                    <!-- Botones de navegación -->
-                    <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
-                    <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-                    <a href="usuarios.php" id="usuariosBtn" class="button">Usuarios</a>
-                    <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="insumos.php" id="InsumosBtn" class="button">Insumos</a>
-                    <a href="proveedores.php" id="proveedoresBtn" class="button active">Proveedores</a>
-                    <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
-                    <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
-                </div>
-            </div>
+            <img src="img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">
+            <h1>THUNDERBIKE</h1>
+        </div>
+        <div>
+            <a href="inicio.php">Inicio</a>
+            <a href="perfil.php">Perfil</a>
+            <a href="usuarios.php">Usuarios</a>
+            <a href="clientes.php">Clientes</a>
+            <a href="insumos.php">Insumos</a>
+            <a href="proveedores.php">Proveedores</a>
+            <a href="ventas.php">Ventas</a>
+            <a href="reparaciones.php">Reparaciones</a>
         </div>
     </nav>
-
-    <!-- Video de fondo -->
-    <video id="background-video" autoplay muted loop>
-        <source src="img/clientes.mp4" type="video/mp4">
-    </video>
 
     <div class="container">
         <h1>Listado de Proveedores</h1>
         <div class="button-container">
-            <button class="button" onclick="showAddForm()">Agregar Proveedor</button> <!-- Botón para agregar proveedor -->
+            <button class="button" onclick="showAddForm()">Agregar Proveedor</button>
         </div>
+        <?php
+        include "controladores/conexion.php";
+        try {
+            $stmt = $pdo->query('SELECT id, nombre, direccion, telefono, nit FROM proveedores');
+        } catch (PDOException $e) {
+            die('Error en la consulta SQL: ' . $e->getMessage());
+        }
+        ?>
         <table id="proveedores">
             <tr>
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Dirección</th>
                 <th>Teléfono</th>
+                <th>NIT</th>
                 <th>Acciones</th>
             </tr>
-            <?php include "controladores/conexion.php"; ?>
             <?php
-            $stmt = $pdo->query('SELECT * FROM proveedores');
-            while ($row = $stmt->fetch()) {
-                echo '<tr>';
-                echo '<td>' . htmlspecialchars($row['id']) . '</td>';
-                echo '<td>' . htmlspecialchars($row['nombre']) . '</td>';
-                echo '<td>' . htmlspecialchars($row['direccion']) . '</td>';
-                echo '<td>' . htmlspecialchars($row['telefono']) . '</td>';
-                echo '<td>
-                        <button onclick="showEditForm(' . htmlspecialchars(json_encode($row['id'])) . ', ' . htmlspecialchars(json_encode($row['nombre'])) . ', ' . htmlspecialchars(json_encode($row['direccion'])) . ', ' . htmlspecialchars(json_encode($row['telefono'])) . ')">Editar</button>
-                        <button onclick="deleteProveedor(' . htmlspecialchars(json_encode($row['id'])) . ')">Eliminar</button>
-                        <button onclick="showHistory(' . htmlspecialchars(json_encode($row['id'])) . ')">Historial</button>
+            if (isset($stmt)) {
+                while ($row = $stmt->fetch()) {
+                    echo '<tr>';
+                    echo '<td>' . htmlspecialchars($row['id']) . '</td>';
+                    echo '<td>' . htmlspecialchars($row['nombre']) . '</td>';
+                    echo '<td>' . htmlspecialchars($row['direccion']) . '</td>';
+                    echo '<td>' . htmlspecialchars($row['telefono']) . '</td>';
+                    echo '<td>' . htmlspecialchars($row['nit']) . '</td>';
+                    echo '<td>
+                    <button onclick="editProvider(' . htmlspecialchars($row['id']) . ')">Editar</button>
                     </td>';
-                echo '</tr>';
+                    echo '</tr>';
+                }
+            } else {
+                echo '<tr><td colspan="6">No se encontraron proveedores.</td></tr>';
             }
             ?>
         </table>
@@ -224,37 +224,24 @@
         <div id="formContainer">
             <h2 id="formTitle">Agregar Proveedor</h2>
             <form id="proveedorForm" method="post" onsubmit="return submitForm()">
-                <input type="hidden" id="proveedorId" name="proveedorId"> <!-- Campo oculto para el ID del proveedor -->
-                <input type="text" id="proveedorName" name="nombre" placeholder="Nombre" required>
+                <input type="hidden" id="proveedorId" name="proveedorId">
+                <label for="proveedorName">Nombre:</label>
+                <input type="text" id="proveedorName" name="nombre" placeholder="Nombre" required readonly>
+
+                <label for="proveedorAddress">Dirección:</label>
                 <input type="text" id="proveedorAddress" name="direccion" placeholder="Dirección" required>
+
+                <label for="proveedorPhone">Teléfono:</label>
                 <input type="text" id="proveedorPhone" name="telefono" placeholder="Teléfono" required>
+
+                <label for="proveedorNit">NIT:</label>
+                <input type="text" id="proveedorNit" name="nit" placeholder="NIT" required readonly>
+
                 <button type="submit">Guardar</button>
                 <button type="button" onclick="cancelForm()">Cancelar</button>
             </form>
         </div>
 
-        <!-- Modal para el historial de reparaciones -->
-        <div id="historyModal">
-            <div class="modal-content">
-                <h2>Historial de Reparaciones</h2>
-                <button onclick="closeHistoryModal()">Cerrar</button>
-                <table id="historyTable">
-                    <thead>
-                        <tr>
-                            <th>Proveedor</th>
-                            <th>Producto</th>
-                            <th>Descripción de la Reparación</th>
-                            <th>Fecha de Reparación</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="home-button-container">
-        <!-- Aquí puedes añadir contenido adicional -->
     </div>
 
     <script>
@@ -265,16 +252,30 @@
             document.getElementById('proveedorName').value = '';
             document.getElementById('proveedorAddress').value = '';
             document.getElementById('proveedorPhone').value = '';
+            document.getElementById('proveedorNit').value = '';
             document.getElementById('formContainer').style.display = 'block';
         }
 
-        function showEditForm(id, name, address, phone) {
+        function editProvider(id) {
+            const row = document.querySelector(`tr td:first-child:contains('${id}')`).parentNode;
+
+            const nombre = row.children[1].innerText;
+            const direccion = row.children[2].innerText;
+            const telefono = row.children[3].innerText;
+            const nit = row.children[4].innerText;
+
+            document.getElementById('proveedorId').value = id;
+            document.getElementById('proveedorName').value = nombre;
+            document.getElementById('proveedorAddress').value = direccion;
+            document.getElementById('proveedorPhone').value = telefono;
+            document.getElementById('proveedorNit').value = nit;
+
+            document.getElementById('proveedorName').readOnly = true;
+            document.getElementById('proveedorNit').readOnly = true;
+
             document.getElementById('formTitle').innerText = 'Editar Proveedor';
             document.getElementById('proveedorForm').action = 'controladores/save_proveedor.php?action=edit';
-            document.getElementById('proveedorId').value = id;
-            document.getElementById('proveedorName').value = name;
-            document.getElementById('proveedorAddress').value = address;
-            document.getElementById('proveedorPhone').value = phone;
+
             document.getElementById('formContainer').style.display = 'block';
         }
 
@@ -283,44 +284,8 @@
         }
 
         function submitForm() {
-            // Lógica para enviar el formulario
+            // Lógica de envío de formulario
             return true;
-        }
-
-        function deleteProveedor(id) {
-            if (confirm('¿Estás seguro de que deseas eliminar este proveedor?')) {
-                window.location.href = 'controladores/delete_proveedor.php?id=' + id;
-            }
-        }
-
-        function showHistory(id) {
-            document.getElementById('historyModal').style.display = 'flex';
-
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'controladores/historial_proveedor.php?id=' + id, true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText);
-                    const tbody = document.getElementById('historyTable').getElementsByTagName('tbody')[0];
-                    tbody.innerHTML = '';
-
-                    data.forEach(row => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${row.proveedor}</td>
-                            <td>${row.producto}</td>
-                            <td>${row.descripcion}</td>
-                            <td>${row.fecha_reparacion}</td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                }
-            };
-            xhr.send();
-        }
-
-        function closeHistoryModal() {
-            document.getElementById('historyModal').style.display = 'none';
         }
     </script>
 </body>
