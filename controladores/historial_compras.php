@@ -104,10 +104,8 @@ if ($clientId > 0) {
     <div class="container">
         <?php if ($error): ?>
             <p><?php echo htmlspecialchars($error); ?></p>
-            <a href="../clientes.php" class="button">Volver a Clientes</a>
         <?php else: ?>
             <h1>Historial de Compras de <?php echo htmlspecialchars($client['nombre']); ?></h1>
-            <a href="../clientes.php" class="button">Volver a Clientes</a>
             <?php if ($purchases): ?>
                 <table>
                     <tr>
