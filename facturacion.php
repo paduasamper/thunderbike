@@ -18,8 +18,8 @@ try {
 
 // Obtener las facturas existentes
 $sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos, f.cantidad, f.vendedor
-                 FROM facturas AS f 
-                 JOIN clientes AS c ON f.cliente_id = c.id';
+                FROM facturas AS f 
+                JOIN clientes AS c ON f.cliente_id = c.id';
 $stmt_facturas = $pdo->query($sql_facturas);
 $result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
 

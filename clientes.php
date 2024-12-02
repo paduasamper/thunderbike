@@ -242,33 +242,6 @@ button[data-status="off"] {
     </style>
 </head>
 <body>
-<<<<<<< HEAD
-<nav class="navtop">
-    <div>
-        <div class="container">
-            <div class="button-container" style="display: flex; justify-content: space-between; align-items: center;">
-                <!-- Imagen alineada completamente a la izquierda, tamaño ajustado y centrada verticalmente -->
-                <img src="img/thunderbikes.png" alt="thunderbikes" style="width: 50px; height: 50px; margin-left: 0;">
-                <!-- Botones de navegación alineados y centrados frente a la imagen -->
-                <div class="nav-buttons" style="margin-left: 20px; display: flex; align-items: center;">
-                    <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
-                    <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-                    <a href="usuarios.php" id="usuariosBtn" class="button">Usuarios</a>
-                    <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="insumos.php" id="InsumosBtn" class="button">Insumos</a>
-                    <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
-                    <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
-                    <a href="facturacion.php" id="reparacionesBtn" class="button">Facturacion</a>
-                </div>
-            </div>
-        </div>
-=======
-    <div class="video-background">
-        <video autoplay muted loop id="background-video">
-            <source src="ruta-del-video.mp4" type="video/mp4">
-        </video>
->>>>>>> 49b1166dda4d02fef8c74ec8ca329a1a2adc946b
-    </div>
     <nav class="navtop">
         <div>
             <img src="img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">
