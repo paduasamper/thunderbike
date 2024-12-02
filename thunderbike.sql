@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-11-2024 a las 15:51:29
+-- Tiempo de generación: 02-12-2024 a las 04:38:09
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
 
@@ -51,16 +51,19 @@ CREATE TABLE `clientes` (
   `nombre` varchar(100) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL,
-  `correo` varchar(30) NOT NULL
+  `correo` varchar(30) NOT NULL,
+  `estado` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`id`, `numero_identificacion`, `nombre`, `direccion`, `telefono`, `correo`) VALUES
-(35, '1234567890', 'Marcos Llorente', 'Calle 32 #87-65', '3215648956', 'marcos.llorente@example.com'),
-(36, '9876543210', 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', 'juan.perez@example.com');
+INSERT INTO `clientes` (`id`, `numero_identificacion`, `nombre`, `direccion`, `telefono`, `correo`, `estado`) VALUES
+(35, '1234567890', 'Marcos Llorente', 'Calle 32 #87-65', '3215648956', 'marcos.llorente@example.com', 1),
+(36, '9876543210', 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', 'juan.perez@example.com', 1),
+(43, '1242545451', 'leon javier', 'Calle 87 #67-90', '33211234569', 'jashew@gmail.com', 1),
+(46, '', 'Juan hgfdtr', 'Avenida Proveedor B, Pueblo', '3215648956', '', 1);
 
 -- --------------------------------------------------------
 
@@ -402,7 +405,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `facturas`

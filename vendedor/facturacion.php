@@ -17,7 +17,7 @@ try {
 }
 
 // Obtener las facturas existentes
-$sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos, cantidad
+$sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos, f.cantidad, f.vendedor
                  FROM facturas AS f 
                  JOIN clientes AS c ON f.cliente_id = c.id';
 $stmt_facturas = $pdo->query($sql_facturas);
@@ -32,32 +32,41 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo "<pre>Datos enviados: "; print_r($_POST); echo "</pre>"; // Depuración de datos enviados
 
-    if (isset($_POST['cliente_id'], $_POST['total'], $_POST['fecha_factura'], $_POST['estado'], $_POST['productos'])) {
-        $cliente_id = $_POST['cliente_id'];
-        $total = $_POST['total'];
-        $fecha_factura = $_POST['fecha_factura'];
-        $estado = $_POST['estado'];
-        $productos = json_encode(array_filter($_POST['productos'], 'trim')); // Filtrar productos vacíos y convertir a JSON
-        $cantidad = $_POST['cantidad'];
-
-        // Validar datos antes de insertar
-        if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos)) {
-            $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado, productos, cantidad) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt_insert = $pdo->prepare($sql_insert);
-        
-            try {
-                $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado, $productos, $cantidad]);
-                echo "Factura agregada exitosamente.<br>";
-                header("Location: facturacion.php"); // Redireccionar para evitar reenvíos
-                exit();
-            } catch (PDOException $e) {
-                echo "Error al agregar la factura: " . htmlspecialchars($e->getMessage());
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['cliente_id'], $_POST['total'], $_POST['fecha_factura'], $_POST['estado'], $_POST['productos'])) {
+            $cliente_id = $_POST['cliente_id'];
+            $total = $_POST['total'];
+            $fecha_factura = $_POST['fecha_factura'];
+            $estado = $_POST['estado'];
+            $productos = json_encode(array_filter($_POST['productos'], 'trim')); // Filtrar productos vacíos y convertir a JSON
+            $cantidad = $_POST['cantidad'];
+            $vendedor = $_POST['vendedor'];
+    
+            // Validar que la fecha no sea superior al año actual
+            $currentYear = date('Y'); // Obtiene el año actual
+            $inputYear = date('Y', strtotime($fecha_factura)); // Extrae el año de la fecha ingresada
+    
+            if ($inputYear > $currentYear) {
+                echo "Error: La fecha no puede ser superior al año actual.<br>";
+            } else {
+                // Validar datos antes de insertar
+                if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos)) {
+                    $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado, productos, cantidad, vendedor) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    $stmt_insert = $pdo->prepare($sql_insert);
+                
+                    try {
+                        $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado, $productos, $cantidad, $vendedor]);
+                        echo "Factura agregada exitosamente.<br>";
+                        header("Location: facturacion.php"); // Redireccionar para evitar reenvíos
+                        exit();
+                    } catch (PDOException $e) {
+                        echo "Error al agregar la factura: " . htmlspecialchars($e->getMessage());
+                    }
+                }
             }
-        } else {
-            echo "Error: Todos los campos son obligatorios y los productos no pueden estar vacíos.<br>";
-        }
+        }       
     }
-}
+}    
 
 $pdo = null; // Cerrar la conexión
 ob_end_flush(); // Liberar el almacenamiento en búfer
@@ -68,6 +77,7 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap-4.6.2-dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Facturación</title>
     <style>
         .navtop {
@@ -305,6 +315,7 @@ body {
             productoItem.remove();
         }
     </script>
+    <script src="bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <div class="video-background">
@@ -318,7 +329,6 @@ body {
             <a href="perfil.php" class="button">Perfil</a>
             <a href="client.php" class="button">Clientes</a>
             <a href="productos.php" class="button">Productos</a>
-            <a href="ventas.php" class="button">Ventas</a>
             <a href="facturacion.php" class="button">Facturación</a>
         </div>
     </nav>
@@ -358,6 +368,9 @@ body {
                 <option value="Cancelada">Cancelada</option>
             </select><br>
 
+            <label for="vendedor">Vendedor:</label>
+            <input type="text" name="vendedor" id="vendedor" step="0.01" required><br>
+
             <button type="submit">Guardar Factura</button>
         </form>
 
@@ -374,6 +387,7 @@ body {
                     <th>Estado</th>
                     <th>Cantidad</th>
                     <th>Productos</th>
+                    <th>Vendedor</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -388,6 +402,7 @@ body {
                         <td><?= htmlspecialchars($row['estado']) ?></td>
                         <td><?= htmlspecialchars($row['cantidad']) ?></td>
                         <td><?= htmlspecialchars($row['productos']) ?></td>
+                        <td><?= htmlspecialchars($row['vendedor']) ?></td>
                         <td>
                                 <a href="../controladores/editar_factura.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Editar</a>
                                 <a href="../controladores/eliminar_factura.php?id=<?= htmlspecialchars($row["id"]) ?>" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta factura?');">Eliminar</a>

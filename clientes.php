@@ -197,8 +197,8 @@
                     <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="insumos.php" id="InsumosBtn" class="button">Insumos</a>
                     <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
-                    <a href="ventas.php" id="ventasBtn" class="button">Ventas</a>
                     <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
+                    <a href="facturacion.php" id="reparacionesBtn" class="button">Facturacion</a>
                 </div>
             </div>
         </div>
