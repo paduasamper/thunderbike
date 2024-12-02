@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-12-2024 a las 17:35:44
+-- Tiempo de generación: 02-12-2024 a las 19:57:16
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
 
@@ -60,7 +60,7 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`id`, `numero_identificacion`, `nombre`, `direccion`, `telefono`, `correo`, `estado`) VALUES
-(35, '1234567890', 'Marcos Llorente', 'Calle 32 #87-65', '3215648956', 'marcos.llorente@example.com', 1),
+(35, '1234567890', 'Marcos Llorente', 'Calle 32 #87-65', '3215648956', 'marcos.llorente@example.com', 0),
 (36, '9876543210', 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', 'juan.perez@example.com', 1),
 (43, '1242545451', 'leon javier', 'Calle 87 #67-90', '33211234569', 'jashew@gmail.com', 1),
 (46, '', 'Juan hgfdtr', 'Avenida Proveedor B, Pueblo', '3215648956', '', 1);
@@ -191,17 +191,6 @@ INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `imagen`, `can
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `productos_proveedores`
---
-
-CREATE TABLE `productos_proveedores` (
-  `producto_id` int(11) NOT NULL,
-  `proveedor_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `proveedores`
 --
 
@@ -210,16 +199,18 @@ CREATE TABLE `proveedores` (
   `nit` varchar(50) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
-  `telefono` varchar(15) DEFAULT NULL
+  `telefono` varchar(15) DEFAULT NULL,
+  `activo` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `proveedores`
 --
 
-INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`) VALUES
-(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '111111111'),
-(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222');
+INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`, `activo`) VALUES
+(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '1142575755', 1),
+(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222', 1),
+(3, '25124282278-5', 'Juan ', 'Calle 87 #67-90', '3215648956', 1);
 
 -- --------------------------------------------------------
 
@@ -245,17 +236,6 @@ CREATE TABLE `reparaciones` (
 INSERT INTO `reparaciones` (`id`, `cliente_id`, `producto_id`, `descripcion`, `costo`, `fecha_reparacion`, `usuario_id`, `mecanico_id`) VALUES
 (25, 35, 41, 'GHJJHBs', 344444.00, '2024-11-22', 15, NULL),
 (26, 35, 42, 'JGJVGHVGHVH', 6.00, '2024-11-22', 15, NULL);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `reparaciones_proveedores`
---
-
-CREATE TABLE `reparaciones_proveedores` (
-  `reparacion_id` int(11) NOT NULL,
-  `proveedor_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -355,13 +335,6 @@ ALTER TABLE `productos`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `productos_proveedores`
---
-ALTER TABLE `productos_proveedores`
-  ADD PRIMARY KEY (`producto_id`,`proveedor_id`),
-  ADD KEY `proveedor_id` (`proveedor_id`);
-
---
 -- Indices de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
@@ -375,13 +348,6 @@ ALTER TABLE `reparaciones`
   ADD KEY `cliente_id` (`cliente_id`),
   ADD KEY `producto_id` (`producto_id`),
   ADD KEY `reparaciones_ibfk_3` (`usuario_id`);
-
---
--- Indices de la tabla `reparaciones_proveedores`
---
-ALTER TABLE `reparaciones_proveedores`
-  ADD PRIMARY KEY (`reparacion_id`,`proveedor_id`),
-  ADD KEY `proveedor_id` (`proveedor_id`);
 
 --
 -- Indices de la tabla `usuarios`
@@ -443,7 +409,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `reparaciones`
@@ -488,26 +454,12 @@ ALTER TABLE `insumos`
   ADD CONSTRAINT `insumos_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `productos_proveedores`
---
-ALTER TABLE `productos_proveedores`
-  ADD CONSTRAINT `productos_proveedores_ibfk_1` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`),
-  ADD CONSTRAINT `productos_proveedores_ibfk_2` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`);
-
---
 -- Filtros para la tabla `reparaciones`
 --
 ALTER TABLE `reparaciones`
   ADD CONSTRAINT `reparaciones_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reparaciones_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`),
   ADD CONSTRAINT `reparaciones_ibfk_3` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
-
---
--- Filtros para la tabla `reparaciones_proveedores`
---
-ALTER TABLE `reparaciones_proveedores`
-  ADD CONSTRAINT `reparaciones_proveedores_ibfk_1` FOREIGN KEY (`reparacion_id`) REFERENCES `reparaciones` (`id`),
-  ADD CONSTRAINT `reparaciones_proveedores_ibfk_2` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`);
 
 --
 -- Filtros para la tabla `ventas`

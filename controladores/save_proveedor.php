@@ -1,26 +1,38 @@
 <?php
-include 'conexion.php';
-
-$action = $_GET['action'] ?? '';
+include "conexion.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $proveedorId = $_POST['proveedorId'] ?? '';
-    $nombre = $_POST['nombre'] ?? '';
-    $direccion = $_POST['direccion'] ?? '';
-    $telefono = $_POST['telefono'] ?? '';
+    $action = $_GET['action'] ?? null;
+    $id = $_POST['proveedorId'] ?? null;
+    $nombre = $_POST['nombre'];
+    $direccion = $_POST['direccion'];
+    $telefono = $_POST['telefono'];
+    $nit = $_POST['nit'];
 
-    if ($action === 'add') {
-        // Agregar un nuevo proveedor
-        $stmt = $pdo->prepare('INSERT INTO proveedores (nombre, direccion, telefono, nit) VALUES (?, ?, ?)');
-        $result = $stmt->execute([$nombre, $direccion, $telefono]);
-        echo $result ? 'Proveedor agregado exitosamente' : 'Error al agregar el proveedor';
-    } elseif ($action === 'edit') {
-        // Editar un proveedor existente
-        $stmt = $pdo->prepare('UPDATE proveedores SET nombre = ?, direccion = ?, telefono = ? WHERE id = ?');
-        $result = $stmt->execute([$nombre, $direccion, $telefono, $proveedorId]);
-        echo $result ? 'Proveedor actualizado exitosamente' : 'Error al actualizar el proveedor';
-    } 
+    try {
+        if ($action === 'add') {
+            $sql = "INSERT INTO proveedores (nombre, direccion, telefono, nit) VALUES (:nombre, :direccion, :telefono, :nit)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':nombre' => $nombre,
+                ':direccion' => $direccion,
+                ':telefono' => $telefono,
+                ':nit' => $nit,
+            ]);
+        } elseif ($action === 'edit' && $id) {
+            $sql = "UPDATE proveedores SET nombre = :nombre, direccion = :direccion, telefono = :telefono WHERE id = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':nombre' => $nombre,
+                ':direccion' => $direccion,
+                ':telefono' => $telefono,
+                ':id' => $id,
+            ]);
+        }
+        header('Location: ../proveedores.php');
+    } catch (PDOException $e) {
+        die('Error: ' . $e->getMessage());
+    }
+} else {
+    die('Método no permitido.');
 }
-?>
-
-

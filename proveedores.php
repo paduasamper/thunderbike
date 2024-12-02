@@ -59,6 +59,14 @@
             overflow-x: auto;
             display: block;
         }
+        .table-container {
+    max-width: 90%; /* Limita el ancho del contenedor al 90% del viewport */
+    overflow-x: auto; /* Habilita el desplazamiento horizontal si es necesario */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Agrega un sombreado elegante */
+    background-color: #fff; /* Fondo blanco para contraste */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 20px;
+}
 
         th, td {
             padding: 10px;
@@ -232,8 +240,8 @@ if (isset($stmt)) {
                 <input type="text" id="proveedorAddress" name="direccion" placeholder="Dirección" required>
 
                 <label for="proveedorPhone">Teléfono:</label>
-                <input type="text" id="proveedorPhone" name="telefono" placeholder="Teléfono" required>
-
+                <input type="text" id="proveedorPhone" name="telefono" placeholder="Teléfono" required pattern="\d+" title="El número de teléfono debe contener solo dígitos">
+                
                 <label for="proveedorNit">NIT:</label>
                 <input type="text" id="proveedorNit" name="nit" placeholder="NIT" required readonly>
 
@@ -245,39 +253,62 @@ if (isset($stmt)) {
     </div>
 
     <script>
-        function showAddForm() {
-            document.getElementById('formTitle').innerText = 'Agregar Proveedor';
-            document.getElementById('proveedorForm').action = 'controladores/save_proveedor.php?action=add';
-            document.getElementById('proveedorId').value = '';
-            document.getElementById('proveedorName').value = '';
-            document.getElementById('proveedorAddress').value = '';
-            document.getElementById('proveedorPhone').value = '';
-            document.getElementById('proveedorNit').value = '';
-            document.getElementById('formContainer').style.display = 'block';
-        }
+function showAddForm() {
+    document.getElementById('formTitle').innerText = 'Agregar Proveedor';
+    document.getElementById('proveedorForm').action = 'controladores/save_proveedor.php?action=add';
+    
+    // Limpiar los campos y habilitarlos para edición
+    document.getElementById('proveedorId').value = '';
+    document.getElementById('proveedorName').value = '';
+    document.getElementById('proveedorName').readOnly = false; // Habilitar campo para agregar
+    document.getElementById('proveedorAddress').value = '';
+    document.getElementById('proveedorPhone').value = '';
+    document.getElementById('proveedorNit').value = '';
+    document.getElementById('proveedorNit').readOnly = false; // Habilitar campo para agregar
 
+    // Mostrar el formulario
+    document.getElementById('formContainer').style.display = 'block';
+}
         function editProvider(id) {
-            const row = document.querySelector(`tr td:first-child:contains('${id}')`).parentNode;
+    const rows = document.querySelectorAll('#proveedores tr');
+    let selectedRow = null;
 
-            const nombre = row.children[1].innerText;
-            const direccion = row.children[2].innerText;
-            const telefono = row.children[3].innerText;
-            const nit = row.children[4].innerText;
-
-            document.getElementById('proveedorId').value = id;
-            document.getElementById('proveedorName').value = nombre;
-            document.getElementById('proveedorAddress').value = direccion;
-            document.getElementById('proveedorPhone').value = telefono;
-            document.getElementById('proveedorNit').value = nit;
-
-            document.getElementById('proveedorName').readOnly = true;
-            document.getElementById('proveedorNit').readOnly = true;
-
-            document.getElementById('formTitle').innerText = 'Editar Proveedor';
-            document.getElementById('proveedorForm').action = 'controladores/save_proveedor.php?action=edit';
-
-            document.getElementById('formContainer').style.display = 'block';
+    rows.forEach((row) => {
+        const rowId = row.children[0]?.innerText; // Obtener el valor de la primera columna (ID)
+        if (rowId == id) {
+            selectedRow = row;
         }
+    });
+
+    if (!selectedRow) {
+        alert('Proveedor no encontrado.');
+        return;
+    }
+
+    // Extraer información de la fila seleccionada
+    const nombre = selectedRow.children[1]?.innerText;
+    const direccion = selectedRow.children[2]?.innerText;
+    const telefono = selectedRow.children[3]?.innerText;
+    const nit = selectedRow.children[4]?.innerText;
+
+    // Llenar el formulario con la información del proveedor
+    document.getElementById('proveedorId').value = id;
+    document.getElementById('proveedorName').value = nombre;
+    document.getElementById('proveedorAddress').value = direccion;
+    document.getElementById('proveedorPhone').value = telefono;
+    document.getElementById('proveedorNit').value = nit;
+
+    // Bloquear edición en ciertos campos
+    document.getElementById('proveedorName').readOnly = true;
+    document.getElementById('proveedorNit').readOnly = true;
+
+    // Cambiar título del formulario y acción
+    document.getElementById('formTitle').innerText = 'Editar Proveedor';
+    document.getElementById('proveedorForm').action = 'controladores/save_proveedor.php?action=edit';
+
+    // Mostrar el formulario
+    document.getElementById('formContainer').style.display = 'block';
+}
 
         function cancelForm() {
             document.getElementById('formContainer').style.display = 'none';
