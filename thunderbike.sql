@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-12-2024 a las 04:38:09
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.1.25
+-- Tiempo de generación: 02-12-2024 a las 15:15:09
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -78,20 +78,21 @@ CREATE TABLE `facturas` (
   `estado` varchar(20) DEFAULT 'pendiente',
   `total` decimal(10,2) DEFAULT NULL,
   `productos` varchar(50) NOT NULL,
-  `cantidad` varchar(50) NOT NULL
+  `cantidad` varchar(50) NOT NULL,
+  `vendedor` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `facturas`
 --
 
-INSERT INTO `facturas` (`id`, `cliente_id`, `fecha_factura`, `estado`, `total`, `productos`, `cantidad`) VALUES
-(17, NULL, '2024-11-08', 'Cancelada', 250000.00, 'guaya', ''),
-(19, 36, '2024-11-13', 'Pendiente', 400000.00, '[\"dssd\",\"sscfscfs\"]', ''),
-(20, 35, '2024-11-28', 'Pendiente', 250000.00, '[\"dczdc\"]', ''),
-(21, 36, '2024-11-30', 'Credito', 250000.00, '[\"sadds\"]', ''),
-(22, NULL, '2024-11-09', 'Cancelada', 20000.00, '[\"fvdvdv\"]', ''),
-(23, 35, '2024-11-15', 'Credito', 20000.00, '[\"dczdc\",\"fvdvdvssssss\"]', '');
+INSERT INTO `facturas` (`id`, `cliente_id`, `fecha_factura`, `estado`, `total`, `productos`, `cantidad`, `vendedor`) VALUES
+(17, NULL, '2024-11-08', 'Cancelada', 250000.00, 'guaya', '', ''),
+(21, 36, '2024-11-30', 'Pendiente', 250000.00, '[\"sadds\"]', '8', 'anderson acosta'),
+(22, NULL, '2024-11-09', 'Cancelada', 20000.00, '[\"fvdvdv\"]', '', ''),
+(23, 35, '2024-11-15', 'Credito', 20000.00, '[\"dczdc\",\"fvdvdvssssss\"]', '', ''),
+(24, 36, '2024-12-25', 'Pendiente', 32233.00, '[\"sadds\"]', '3', 'anderson acosta'),
+(28, 35, '2024-10-23', 'Credito', 400000.00, '[\"dczdc\"]', '10', 'anderson acosta');
 
 -- --------------------------------------------------------
 
@@ -411,7 +412,7 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_compras`
