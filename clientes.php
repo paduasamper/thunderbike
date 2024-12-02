@@ -391,20 +391,27 @@ button[data-status="off"] {
             <?php endif; ?>
         </div>
     </div>
-            <!-- Formulario para agregar/editar clientes -->
-            <div id="formContainer">
-            <h2 id="formTitle">Agregar Cliente</h2>
-            <form id="clientForm" method="post" onsubmit="return submitForm()">
-                <input type="hidden" id="clientId" name="clientId"> <!-- Campo oculto para el ID del cliente -->
-                <input type="text" id="clientDocumen" name="numero_identificacion" placeholder="Documento" readonly>
-                <input type="text" id="clientName" name="nombre" placeholder="Nombre" readonly>
-                <input type="text" id="clientAddress" name="direccion" placeholder="Dirección" required>
-                <input type="text" id="clientPhone" name="telefono" placeholder="Teléfono" required>
-                <input type="text" id="clientEmail" name="correo" placeholder="Correo Electrónico" required>
-                <button type="submit">Guardar</button>
-                <button type="button" onclick="cancelForm()">Cancelar</button>
-            </form>
-        </div>
+<!-- El formulario para agregar/editar clientes -->
+<div id="formContainer">
+    <h2 id="formTitle">Agregar Cliente</h2>
+    <form id="clientForm" method="post" action="controladores/save_client.php">
+
+        <input type="hidden" id="clientId" name="clientId"> <!-- Campo oculto para el ID del cliente -->
+        
+        <!-- Hacer que el campo Documento sea editable -->
+        <input type="text" id="clientDocumen" name="numero_identificacion" placeholder="Documento" required>
+
+        <!-- Hacer que el campo Nombre sea editable -->
+        <input type="text" id="clientName" name="nombre" placeholder="Nombre" required>
+
+        <input type="text" id="clientAddress" name="direccion" placeholder="Dirección" required>
+        <input type="text" id="clientPhone" name="telefono" placeholder="Teléfono" required>
+        <input type="text" id="clientEmail" name="correo" placeholder="Correo Electrónico" required>
+
+        <button type="submit">Guardar</button>
+        <button type="button" onclick="cancelForm()">Cancelar</button>
+    </form>
+</div>
     </div>
     <div id="modalHistorial" style="display: none;">
     <div class="modal-content">
@@ -418,18 +425,22 @@ button[data-status="off"] {
 
 
     <script>
-    // Mostrar formulario de agregar cliente
-    function showAddForm() {
-        document.getElementById('formTitle').innerText = 'Agregar Cliente';
-        document.getElementById('clientForm').action = 'controladores/save_client.php?action=add';
-        document.getElementById('clientId').value = '';
-        document.getElementById('clientDocumen').value = '';
-        document.getElementById('clientName').value = '';
-        document.getElementById('clientAddress').value = '';
-        document.getElementById('clientPhone').value = '';
-        document.getElementById('clientEmail').value = '';
-        document.getElementById('formContainer').style.display = 'block';
-    }
+function showAddForm() {
+    // Cambiar título del formulario
+    document.getElementById('formTitle').innerText = 'Agregar Cliente';
+
+    // Limpiar los campos del formulario
+    document.getElementById('clientForm').reset();
+
+    // Hacer los campos de documento y nombre editables
+    document.getElementById('clientDocumen').readOnly = false;
+    document.getElementById('clientName').readOnly = false;
+
+    // Mostrar el formulario
+    document.getElementById('formContainer').style.display = 'block';
+}
+
+
     // Mostrar formulario de editar cliente
     function showEditForm(id, name, address, phone, email) {
     // Cambiar título del formulario

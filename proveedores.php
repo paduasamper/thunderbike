@@ -195,7 +195,7 @@
         <?php
         include "controladores/conexion.php";
         try {
-            $stmt = $pdo->query('SELECT id, nombre, direccion, telefono, nit FROM proveedores');
+            $stmt = $pdo->query('SELECT id, nombre, direccion, telefono, nit, status FROM proveedores');
         } catch (PDOException $e) {
             die('Error en la consulta SQL: ' . $e->getMessage());
         }
@@ -212,6 +212,9 @@
             <?php
 if (isset($stmt)) {
     while ($row = $stmt->fetch()) {
+        $status = htmlspecialchars($row['status']);
+        $buttonText = $status === 'on' ? 'ON' : 'OFF';
+        $buttonColor = $status === 'on' ? 'green' : 'red';
         echo '<tr>';
         echo '<td>' . htmlspecialchars($row['id']) . '</td>';
         echo '<td>' . htmlspecialchars($row['nombre']) . '</td>';
@@ -219,9 +222,11 @@ if (isset($stmt)) {
         echo '<td>' . htmlspecialchars($row['telefono']) . '</td>';
         echo '<td>' . htmlspecialchars($row['nit']) . '</td>';
         echo '<td>
-        <button onclick="editProvider(' . htmlspecialchars($row['id']) . ')">Editar</button>
-        <button class="status-btn" data-id="' . htmlspecialchars($row['id']) . '" data-status="off" onclick="toggleStatus(this)">OFF</button>
-        </td>';
+            <button onclick="editProvider(' . htmlspecialchars($row['id']) . ')">Editar</button>
+            <button class="status-btn" data-id="' . htmlspecialchars($row['id']) . '" data-status="' . $status . '" 
+                    style="background-color: ' . $buttonColor . ';" 
+                    onclick="toggleStatus(this)">' . $buttonText . '</button>
+            </td>';
         echo '</tr>';
     }
 }
@@ -339,11 +344,13 @@ function showAddForm() {
         .then((response) => response.json())
         .then((data) => {
             if (!data.success) {
-                alert('Error al actualizar el estado.');
+                alert(data.message || 'Error al actualizar el estado.');
                 // Restaurar el estado anterior
                 button.setAttribute('data-status', currentStatus);
                 button.textContent = currentStatus.toUpperCase();
                 button.style.backgroundColor = currentStatus === 'on' ? 'green' : 'red';
+            } else {
+                console.log(data.message);
             }
         })
         .catch((error) => {

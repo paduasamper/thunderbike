@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-12-2024 a las 19:57:16
+-- Tiempo de generación: 02-12-2024 a las 20:13:23
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
 
@@ -200,17 +200,18 @@ CREATE TABLE `proveedores` (
   `nombre` varchar(100) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL,
-  `activo` tinyint(1) DEFAULT 0
+  `activo` tinyint(1) DEFAULT 0,
+  `estado` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `proveedores`
 --
 
-INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`, `activo`) VALUES
-(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '1142575755', 1),
-(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222', 1),
-(3, '25124282278-5', 'Juan ', 'Calle 87 #67-90', '3215648956', 1);
+INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`, `activo`, `estado`) VALUES
+(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '1142575755', 1, 1),
+(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222', 1, 1),
+(3, '25124282278-5', 'Juan ', 'Calle 87 #67-90', '3215648956', 1, 1);
 
 -- --------------------------------------------------------
 
