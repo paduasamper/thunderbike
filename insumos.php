@@ -12,7 +12,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Número de insumos por página
-    $insumosPorPagina = 5;
+    $insumosPorPagina = 10;
     
     // Obtener el número total de registros
     $sqlTotal = "SELECT COUNT(*) FROM insumos";
@@ -37,204 +37,190 @@ try {
     // Calcular el offset para la consulta
     $offset = ($paginaActual - 1) * $insumosPorPagina;
 
-    // Consulta para obtener los registros con paginación
-    $sql = "SELECT * FROM insumos LIMIT $insumosPorPagina OFFSET $offset";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
+    // Procesar filtros
+    $filtros = [];
+    $parametros = [];
+    if (!empty($_GET['buscar'])) {
+        $filtros[] = "(nombre LIKE :buscar OR categoria LIKE :buscar)";
+        $parametros['buscar'] = '%' . $_GET['buscar'] . '%';
+    }
+    if (!empty($_GET['categoria'])) {
+        $filtros[] = "categoria = :categoria";
+        $parametros['categoria'] = $_GET['categoria'];
+    }
+    if (!empty($_GET['stock'])) {
+        $filtros[] = "cantidad <= stock_minimo";
+    }
 
-    // Obtener los resultados como un array asociativo
-    $insumos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Construir consulta con filtros
+    $whereClause = !empty($filtros) ? 'WHERE ' . implode(' AND ', $filtros) : '';
+    $orderBy = isset($_GET['orden']) ? $_GET['orden'] : 'nombre';
+    $direccion = isset($_GET['dir']) ? $_GET['dir'] : 'ASC';
+
+    // Consulta para obtener los registros con paginación
+    $sql = "SELECT * FROM insumos $whereClause 
+            ORDER BY $orderBy $direccion 
+            LIMIT $insumosPorPagina OFFSET $offset";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($parametros);
+    $insumos = $stmt->fetchAll();
+
+    // Obtener total para paginación
+    $sqlTotal = "SELECT COUNT(*) FROM insumos $whereClause";
+    $stmtTotal = $pdo->prepare($sqlTotal);
+    $stmtTotal->execute($parametros);
+    $total = $stmtTotal->fetchColumn();
+    $totalPaginas = ceil($total / $insumosPorPagina);
+
+    // Obtener categorías para filtro
+    $stmtCategorias = $pdo->query("SELECT DISTINCT categoria FROM insumos");
+    $categorias = $stmtCategorias->fetchAll(PDO::FETCH_COLUMN);
+
+    // Verificar stock bajo
+    $stmtStockBajo = $pdo->query("SELECT COUNT(*) FROM insumos WHERE cantidad <= stock_minimo");
+    $stockBajo = $stmtStockBajo->fetchColumn();
 } catch (PDOException $e) {
     echo 'Error de conexión: ' . $e->getMessage();
 } catch (Exception $e) {
     echo 'Error: ' . $e->getMessage();
 }
-
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Insumos</title>
-    <style>
-        /* Estilo global */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        /* Barra de navegación */
-        .navtop {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .navtop img {
-            width: 40px;
-            height: 40px;
-        }
-        .navtop a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        .navtop a:hover {
-            color: #FFD700;
-        }
-
-        /* Contenedor principal */
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
-        }
-
-        /* Tabla */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .insumo-imagen {
-            width: 80px;
-            height: auto;
-        }
-
-        /* Estilo de paginación */
-        .pagination {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .pagination a {
-            padding: 10px 15px;
-            margin: 0 5px;
-            text-decoration: none;
-            border: 1px solid #ddd;
-            color: #333;
-        }
-        .pagination a:hover {
-            background-color: #ddd;
-        }
-        .pagination .active {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        /* Reglas de diseño responsivo */
-        @media (max-width: 768px) {
-            .navtop {
-                font-size: 14px;
-            }
-            table {
-                display: block;
-                overflow-x: auto; /* Hacer tabla desplazable */
-            }
-            .insumo-imagen {
-                width: 60px; /* Reducir tamaño de imagen */
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 18px;
-            }
-            .navtop a {
-                display: block; /* Cambiar enlaces a bloques */
-                margin: 5px 0;
-            }
-            table {
-                font-size: 12px; /* Reducir tamaño del texto en tablas */
-            }
-        }
-    </style>
+    <title>Gestión de Insumos - ThunderBike</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Barra de navegación -->
-    <nav class="navtop">
-    <div>
-        <img src="img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">
-        <h1>THUNDERBIKE</h1>
-    </div>
-        <div>
-            <a href="inicio.php">Inicio</a>
-            <a href="perfil.php">Perfil</a>
-            <a href="usuarios.php">Usuarios</a>
-            <a href="clientes.php">Clientes</a>
-            <a href="insumos.php">Insumos</a>
-            <a href="proveedores.php">Proveedores</a>
-            <a href="reparaciones.php">Reparaciones</a>
-            <a href="facturacion.php">Facturacion</a>
+    <?php include 'includes/navbar.php'; ?>
+    
+    <div class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Gestión de Insumos</h1>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoInsumoModal">
+                <i class="fas fa-plus"></i> Nuevo Insumo
+            </button>
         </div>
-    </nav>
 
-    <!-- Contenido principal -->
-    <div class="container">
-        <h1>Lista de Insumos</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Cantidad</th>
-                    <th>Descripción</th>
-                    <th>Producto ID</th>
-                    <th>Imagen</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (count($insumos) > 0): ?>
-                    <?php foreach ($insumos as $insumo): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($insumo['id']); ?></td>
-                            <td><?php echo htmlspecialchars($insumo['nombre']); ?></td>
-                            <td><?php echo htmlspecialchars($insumo['cantidad']); ?></td>
-                            <td><?php echo htmlspecialchars($insumo['descripcion']); ?></td>
-                            <td><?php echo htmlspecialchars($insumo['producto_id']); ?></td>
-                            <td>
-                                <?php if (!empty($insumo['imagen'])): ?>
-                                    <img src="uploads/<?php echo htmlspecialchars($insumo['imagen']); ?>" alt="Imagen del insumo" class="insumo-imagen">
-                                <?php else: ?>
-                                    Sin imagen
-                                <?php endif; ?>
-                            </td>
-                        </tr>
+        <?php if ($stockBajo > 0): ?>
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            Hay <?= $stockBajo ?> insumos con stock bajo
+        </div>
+        <?php endif; ?>
+
+<!-- Filtros en el formulario -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="buscar" class="form-control" placeholder="Buscar..." value="<?= htmlspecialchars($_GET['buscar'] ?? '') ?>">
+            </div>
+            <div class="col-md-3">
+                <select name="categoria" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    <?php foreach ($categorias as $cat): ?>
+                        <option value="<?= htmlspecialchars($cat['id']) ?>" 
+                            <?= isset($_GET['categoria']) && $_GET['categoria'] == $cat['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($cat['nombre']) ?>
+                        </option>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="6">No hay insumos disponibles.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-
-        <!-- Paginación -->
-        <div class="pagination">
-            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                <a href="insumos.php?pagina=<?php echo $i; ?>" class="<?php echo ($i == $paginaActual) ? 'active' : ''; ?>"><?php echo $i; ?></a>
-            <?php endfor; ?>
-        </div>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-check">
+                    <input type="checkbox" name="stock" class="form-check-input" id="stockBajo" <?= isset($_GET['stock']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="stockBajo">Stock bajo</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Filtrar
+                </button>
+                <a href="insumos.php" class="btn btn-secondary">
+                    <i class="fas fa-undo"></i> Reiniciar
+                </a>
+            </div>
+        </form>
     </div>
+</div>
+
+<!-- Mostrar insumos en la tabla -->
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th><a href="?orden=id">ID</a></th>
+                <th><a href="?orden=nombre">Nombre</a></th>
+                <th><a href="?orden=cantidad">Cantidad</a></th>
+                <th>Stock Mínimo</th>
+                <th><a href="?orden=categoria">Categoría</a></th>
+                <th>Imagen</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($insumos as $insumo): ?>
+            <tr <?= $insumo['cantidad'] <= $insumo['stock_minimo'] ? 'class="table-warning"' : '' ?>>
+                <td><?= $insumo['id'] ?></td>
+                <td><?= htmlspecialchars($insumo['nombre']) ?></td>
+                <td><?= $insumo['cantidad'] ?></td>
+                <td><?= $insumo['stock_minimo'] ?></td>
+                <td><?= htmlspecialchars($insumo['categoria_nombre']) ?></td> <!-- Mostrar nombre de categoría -->
+                <td>
+                    <?php if (!empty($insumo['imagen'])): ?>
+                        <img src="uploads/<?= htmlspecialchars($insumo['imagen']) ?>" class="img-thumbnail" style="width: 50px;">
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-warning" onclick="editarInsumo(<?= $insumo['id'] ?>)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminarInsumo(<?= $insumo['id'] ?>)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn btn-sm btn-info" onclick="verHistorial(<?= $insumo['id'] ?>)">
+                            <i class="fas fa-history"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+        <!-- Paginación -->
+        <?php if ($totalPaginas > 1): ?>
+        <nav aria-label="Paginación">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?= $paginaActual <= 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?pagina=<?= $paginaActual - 1 ?>">Anterior</a>
+                </li>
+                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                <li class="page-item <?= $i === $paginaActual ? 'active' : '' ?>">
+                    <a class="page-link" href="?pagina=<?= $i ?>"><?= $i ?></a>
+                </li>
+                <?php endfor; ?>
+                <li class="page-item <?= $paginaActual >= $totalPaginas ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?pagina=<?= $paginaActual + 1 ?>">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+        <?php endif; ?>
+    </div>
+
+    <!-- Modales para CRUD -->
+    <?php include 'c:\xampp\htdocs\thunderbike-main\includes\modales\insumo_crear.php'; ?>
+    <?php include 'c:\xampp\htdocs\thunderbike-main\includes\modales\insumo_historial.php'; ?>
+    <?php include 'c:\xampp\htdocs\thunderbike-main\includes\modales\insumo_editar.php'; ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/insumos.js"></script>
 </body>
 </html>
