@@ -10,63 +10,60 @@
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        overflow: hidden; /* Evitar barras de desplazamiento */
-        background-color: transparent; /* Hacer el fondo transparente */
-        display: flex; /* Utilizar flexbox */
-        justify-content: center; /* Centrar horizontalmente */
-        align-items: center; /* Centrar verticalmente */
-        height: 100vh; /* Tamaño de la ventana visible */
+        background-color: transparent;
+        display: flex;
+        flex-direction: column; /* Permite que el contenido fluya en una sola columna */
+        justify-content: flex-start; /* Alinea los elementos al inicio */
+        align-items: center;
+        min-height: 100vh; /* Altura mínima para contenido completo */
+        overflow-y: auto; /* Habilita el scroll vertical si el contenido es más alto que la pantalla */
     }
 
-    /* Estilos para el video de fondo */
     #background-video {
-        position: fixed; /* Fijar el video en la pantalla */
-        top: 50%;
-        left: 50%;
-        min-width: 100%; /* Abarcar toda la pantalla */
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-width: 100%;
         min-height: 100%;
         width: auto;
         height: auto;
-        transform: translate(-50%, -50%); /* Centrar el video */
-        z-index: -1; /* Colocar el video detrás de otros elementos */
+        z-index: -1; /* Detrás de todo el contenido */
     }
 
     form {
-        background-color: rgba(255, 255, 255, 0.9); /* Fondo semi-transparente */
+        background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semitransparente */
         padding: 30px;
         border-radius: 10px;
-        width: 320px;
-        margin: 0 auto; /* Centrar horizontalmente */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        width: 100%;
+        max-width: 400px;
+        margin: 50px auto; /* Espacio superior e inferior */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra para resaltar */
     }
 
     form h2 {
-        color: gold; /* Letras doradas */
-        margin-bottom: 20px; /* Espacio inferior */
-        text-align: center; /* Centrado */
-        position: relative; /* Para posicionar correctamente la imagen */
-        font-size: 24px; /* Tamaño de fuente */
+        color: gold;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 24px;
     }
 
-    form h2 img {
-        position: absolute; /* Posición absoluta con respecto al título */
-        top: -40px; /* Ajuste de posición vertical */
-        left: calc(50% - 20px); /* Ajuste de posición horizontal */
-        width: 80px; /* Ancho de la imagen */
-        height: auto; /* Alto de la imagen automático */
+    form img {
+        display: block;
+        margin: 0 auto 20px; /* Centra la imagen */
+        max-width: 150px; /* Controla el tamaño */
+        border-radius: 50%; /* Hazla circular si es necesario */
     }
 
     form input[type="text"],
     form input[type="email"],
     form input[type="password"],
     form select {
-        width: calc(100% - 20px); /* Ancho del 100% menos el padding */
+        width: calc(100% - 20px); /* Ajusta con respecto al padding */
         padding: 10px;
         margin: 10px 0;
         border: none;
         border-radius: 5px;
-        box-sizing: border-box;
-        border: 1px solid #ccc; /* Borde gris */
+        border: 1px solid #ccc;
     }
 
     form .btn {
@@ -79,13 +76,25 @@
         color: #fff;
         cursor: pointer;
     }
-  </style>
+
+    .message {
+        text-align: center;
+        font-size: 16px;
+        color: green;
+    }
+
+    .errors {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+</style>
+
 </head>
 <body>
     <!-- Código del video -->
     <video id="background-video" autoplay muted loop>
         <source src="img/truco.mp4" type="video/mp4">
-        Tu navegador no admite la etiqueta de video.
     </video>
 
     <form method="post" action="registro.php">

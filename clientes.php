@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Módulo de Usuarios</title>
+    <title>Clientes</title>
     <link rel="stylesheet" href="styles.css"> <!-- Puedes mantener tus estilos aquí -->
     <style>
     /* Estilos globales */

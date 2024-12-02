@@ -103,7 +103,6 @@ h1 {
     </div>
 <video id="background-video" autoplay muted loop>
   <source src="img/bicicletas.mp4" type="video/mp4">
-  Your browser does not support the video tag.
 </video>
   <header>
   <img src="img/thunderbikes.png" alt="thunderbike" style="width: 100px; height: 100px;">

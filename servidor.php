@@ -43,6 +43,13 @@ if (isset($_POST['reg_user'])) {
     }
   }
 
+      // Validar los campos
+      if (empty($username)) { array_push($errors, "El nombre de usuario es obligatorio"); }
+      if (empty($email)) { array_push($errors, "El correo es obligatorio"); }
+      else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          array_push($errors, "El formato del correo es inválido");
+      }
+
   // Finalmente, registre al usuario si no hay errores en el formulario.
   if (count($errors) == 0) {
     $password = md5($password_1);// Cifrar la contraseña antes de guardarla en la base de datos
@@ -53,10 +60,14 @@ if (isset($_POST['reg_user'])) {
     $_SESSION['username'] = $username;
     $_SESSION['role'] = $role; // Guardar el rol en la sesión
     $_SESSION['success'] = "Ahora está registrado y conectado";
-    header('location: index.php');
+    header('location: logeo.php?success=true');
   }
 }
 
+// Mostrar alerta si se redirige con éxito
+if (isset($_GET['success']) && $_GET['success'] == 'true') {
+  echo "<script>alert('Registro añadido con éxito. Ahora inicia sesión.');</script>";
+}
 // INICIAR SESIÓN USUARIO
 if (isset($_POST['login_user'])) {
   $username = mysqli_real_escape_string($db, $_POST['username']);

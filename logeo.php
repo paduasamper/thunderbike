@@ -7,83 +7,94 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="icon" type="image/png" href="img/thunderbikes.png">
   <style>
-    /* Estilos para el video de fondo */
-    #background-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1;
-    }
+  /* Aplicar tipografía global y centrado */
+  body {
+    font-family: "Roboto", sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
 
+  /* Estilos para el video de fondo */
+  #background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+
+  .form-wrapper {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    box-sizing: border-box;
+    text-align: center; /* Centrar el texto dentro del formulario */
+  }
+
+  .header img {
+    width: 100%;
+    max-width: 190px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .input-group {
+    margin-bottom: 15px;
+  }
+
+  .input-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .input-group input, 
+  .input-group select {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center; /* Centrar el texto dentro de los inputs */
+  }
+
+  .btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffc600;
+    border: none;
+    cursor: pointer;
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    color: #ffc600;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 0;
+  }
+
+  @media (min-width: 600px) {
     .form-wrapper {
-      background-color: rgba(255, 255, 255, 0.8);
-      padding: 20px;
-      border-radius: 10px;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
+      width: 80%;
       max-width: 400px;
-      box-sizing: border-box;
     }
+  }
+</style>
 
-    .header img {
-      width: 100%;
-      max-width: 190px;
-      height: auto;
-      margin: 0 auto;
-      display: block;
-    }
-
-    .input-group {
-      margin-bottom: 15px;
-    }
-
-    .input-group label {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .input-group input, .input-group select {
-      width: 100%;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 10px;
-      background-color: #ffc600;
-      border: none;
-      cursor: pointer;
-    }
-
-    footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      color: #ffc600;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 10px 0;
-    }
-
-    @media (min-width: 600px) {
-      .form-wrapper {
-        width: 80%;
-        max-width: 400px;
-      }
-    }
-  </style>
 </head>
 <body>
 <!-- Código del video -->
 <video id="background-video" autoplay muted loop>
   <source src="img/lujo.mp4" type="video/mp4">
-  Tu navegador no admite la etiqueta de video.
 </video>
 <div class="form-wrapper">
   <div class="header">

@@ -1,337 +1,486 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8"> <!-- Define el juego de caracteres del documento como UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para dispositivos móviles -->
-    <title>Clientes</title> <!-- Título de la página -->
-    <link rel="icon" type="image/png" href="..\img/thunderbikes.png"> <!-- Icono de la página -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Puedes mantener tus estilos aquí -->
     <style>
-        body {
-            font-family: Arial, sans-serif; /* Establece la fuente del cuerpo del documento */
-            margin: 0; /* Elimina el margen predeterminado del navegador */
-            padding: 0; /* Elimina el relleno predeterminado del navegador */
-            overflow: hidden; /* Oculta las barras de desplazamiento */
-            background-size: cover; /* Asegura que la imagen de fondo cubra toda la pantalla */
-            background-repeat: no-repeat; /* Evita que la imagen de fondo se repita */
-            background-attachment: fixed; /* Fija la imagen de fondo */
-            display: flex; /* Usa flexbox para centrar el contenido */
-            justify-content: center; /* Centra el contenido horizontalmente */
-            align-items: center; /* Centra el contenido verticalmente */
-            height: 100vh; /* Altura del 100% de la ventana gráfica */
+    /* Estilos globales */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: black;
+        overflow: hidden; /* Deshabilitar el desplazamiento global */
+    }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
         }
 
-        #background-video {
-            position: fixed; /* Fija el video en la pantalla */
-            top: 50%;
-            left: 50%;
-            min-width: 100%; /* Abarca toda la pantalla horizontalmente */
-            min-height: 100%; /* Abarca toda la pantalla verticalmente */
-            width: auto; /* Ajusta el ancho automáticamente */
-            height: auto; /* Ajusta la altura automáticamente */
-            transform: translate(-50%, -50%); /* Centra el video */
-            z-index: -1; /* Coloca el video detrás de otros elementos */
-        }
-
-        /* Estilos para el encabezado */
+        /* Barra de navegación */
         .navtop {
-            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente negro */
-            padding: 10px; /* Relleno de 10px */
-            text-align: center; /* Alinea el texto al centro */
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .navtop a {
-            color: black; /* Color del enlace */
-            text-decoration: none; /* Sin subrayado en los enlaces */
-            margin: 0 10px; /* Margen de 10px a cada lado */
+            color: white;
+            text-decoration: none;
+            margin: 5px 10px;
         }
 
         .navtop a:hover {
-            color: goldenrod; /* Color del enlace al pasar el ratón */
-        }
-
-        .navtop {
-            background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente más oscuro */
-            padding: 30px 0; /* Relleno de 10px arriba y abajo */
-            width: 100%; /* Ancho del 100% */
-            position: fixed; /* Fija la posición en la parte superior */
-            top: 0; /* Posición en la parte superior */
-            left: 0; /* Posición en la parte izquierda */
-            z-index: 999; /* Coloca el encabezado por encima de otros elementos */
+            color: goldenrod;
         }
 
         .container {
-            background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
-            padding: 35px; /* Relleno de 20px */
-            margin: relative; /* Centra horizontalmente */
-            width: 70%; /* Ancho del 60% */
-            max-width: 750px; /* Ancho máximo de 750px */
-            border-radius: 5px; /* Bordes redondeados */
-            position: relative; /* Posición relativa */
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 1200px;
+        overflow: auto; /* Permitir desplazamiento dentro del contenedor */
+    }
+            /* Contenedor del formulario */
+    #formContainer {
+        display: none; /* Oculto por defecto */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+    }
+/* Ajuste de la tabla para desplazamiento horizontal */
+table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        overflow-x: auto; /* Habilitar desplazamiento horizontal */
+        display: block; /* Necesario para aplicar scroll en tablas largas */
+    }
+
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+        white-space: nowrap; /* Evitar saltos de línea */
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+        /* Botones */
+        button, form button {
+            padding: 8px 12px;
+            background-color: gold;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        table {
-            border-collapse: collapse; /* Colapsa los bordes de la tabla */
-            width: 100%; /* Ancho del 100% */
-            margin-bottom: 20px; /* Margen inferior de 20px */
+        button:hover, form button:hover {
+            background-color: wheat;
         }
 
-        th, td {
-            border: 1px solid #ddd; /* Bordes de las celdas */
-            padding: 8px; /* Relleno de 8px */
-            text-align: left; /* Alinea el texto a la izquierda */
+        /* Modal */
+        #modal-editar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
         }
 
-        th {
-            background-color: #f2f2f2; /* Fondo de las celdas de los encabezados */
+        #modal-editar .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
         }
 
-        tr:nth-child(even) {
-            background-color: #f2f2f2; /* Fondo de las filas pares */
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .navtop {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            table {
+        display: block;
+        overflow-x: auto; /* Habilitar barra de desplazamiento horizontal */
+    }
+
+    th, td {
+        white-space: nowrap; /* Mantener el contenido sin saltos */
+    }
+
+            .container {
+                width: 95%;
+                padding: 10px;
+            }
         }
 
-        .button-container {
-            position: absolute; /* Posición absoluta */
-            top: 20px; /* Posición superior de 20px */
-            right: 20px; /* Posición derecha de 20px */
-        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
 
-        .button:hover {
-            color: goldenrod; /* Color al pasar el ratón */
+            button, form button {
+                padding: 6px 10px;
+                font-size: 0.9em;
+            }
         }
+        /* Estilo para el fondo de video */
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
 
-        .button.active {
-            background-color: #45a049; /* Fondo del botón activo */
-        }
+/* Estilo ajustado para el video de fondo */
+#background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover; /* Ajusta el video sin distorsión */
+    z-index: -1;
+}
 
+/* Contenido encima del video */
+.content {
+    position: relative;
+    z-index: 1;
+}
+
+/* Ajustes para que el contenido siga siendo legible */
+body {
+    background: rgba(0, 0, 0, 0.5); /* Capa de semitransparencia sobre el video */
+    color: black;
+}
+#modalHistorial {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+    }
+
+    #modalHistorial .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    #purchaseHistoryContent {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 15px;
+    }
+    button {
+    padding: 8px 12px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+button[data-status="on"] {
+    background-color: green;
+}
+
+button[data-status="off"] {
+    background-color: red;
+}
+        /* Estilos para el formulario */
         #formContainer {
-            background-color: #f9f9f9; /* Fondo del formulario */
-            padding: 20px; /* Relleno de 20px */
-            border-radius: 10px; /* Bordes redondeados */
-            position: fixed; /* Posición fija */
-            top: 50%; /* Posición superior del 50% */
-            left: 50%; /* Posición izquierda del 50% */
-            transform: translate(-50%, -50%); /* Centra el formulario */
-            display: none; /* Oculta el formulario por defecto */
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            width: 400px;
+            max-width: 100%;
         }
 
         #formTitle {
-            margin-top: 0; /* Sin margen superior */
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #333;
+            text-align: center;
         }
 
-        #clientForm input {
-            width: calc(100% - 22px); /* Ancho del 100% menos 22px */
-            padding: 10px; /* Relleno de 10px */
-            margin-top: 10px; /* Margen superior de 10px */
-            border: 1px solid #ccc; /* Borde gris claro */
-            border-radius: 5px; /* Bordes redondeados */
-            box-sizing: border-box; /* Incluye el relleno y el borde en el ancho total */
+        label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
         }
 
-        #clientForm button {
-            background-color: #4CAF50; /* Fondo verde */
-            border: none; /* Sin borde */
-            color: white; /* Texto blanco */
-            padding: 10px 20px; /* Relleno de 10px arriba y abajo, 20px a los lados */
-            text-align: center; /* Alinea el texto al centro */
-            text-decoration: none; /* Sin subrayado */
-            display: inline-block; /* Elemento en línea */
-            font-size: 16px; /* Tamaño de fuente de 16px */
-            margin-top: 10px; /* Margen superior de 10px */
-            border-radius: 5px; /* Bordes redondeados */
-            cursor: pointer; /* Cursor de mano */
-            transition: background-color 0.3s ease; /* Transición suave del fondo */
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
         }
 
-        #clientForm button:hover {
-            background-color: #45a049; /* Fondo al pasar el ratón */
+        input[type="text"]:focus {
+            border-color: #5d8f36;
+            outline: none;
         }
 
-        .home-button-container {
-            position: absolute; /* Posición absoluta */
-            top: 20px; /* Posición superior de 20px */
-            right: 20px; /* Posición derecha de 20px */
+        button[type="submit"],
+        button[type="button"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px; /* Añade un margen superior */
-    clear: both; /* Asegura que no haya elementos flotantes interfiriendo */
-    position: relative;
-}
 
-.pagination a {
-    color: black;
-    padding: 8px 16px;
-    text-decoration: none;
-    border: 1px solid #ddd;
-    margin: 0 5px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
+        button[type="submit"]:hover,
+        button[type="button"]:hover {
+            background-color: #218838;
+        }
 
-.pagination a.active {
-    background-color: goldenrod;
-    color: white;
-    border: 1px solid goldenrod;
-}
 
-.pagination a:hover:not(.active) {
-    background-color: #ddd;
-}
     </style>
 </head>
 <body>
-<nav class="navtop">
-    <div>
-        <div class="container">
-            <div class="button-container" style="display: flex; justify-content: space-between; align-items: center;">
-                <img src="..\img/thunderbikes.png" alt="thunderbikes" style="width: 50px; height: 50px; margin-left: 0;">
-                <div class="nav-buttons" style="margin-left: 20px; display: flex; align-items: center;">
+    <nav class="navtop">
+        <div>
+            <img src="../img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">
+            <h1>THUNDERBIKE</h1>
+        </div>
+        <div class="nav-buttons" style="margin-left: 20px; display: flex; align-items: center;">
                     <a href="vendedor_dashboard.php" id="Vendedor_dashboardBtn" class="button">Inicio</a>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
                     <a href="client.php" id="clientesBtn" class="button">Clientes</a>
                     <a href="productos.php" id="ProductosBtn" class="button">Productos</a>
                     <a href="facturacion.php" id="FactuaracionBtn" class="button">Facturacion</a>
                 </div>
-            </div>
-        </div>
-    </div>
-</nav>
+    </nav>
 
-
-    <!-- Video de fondo -->
     <video id="background-video" autoplay muted loop>
-        <source src="..\img/clientes.mp4" type="video/mp4">
+        <source src="../img/clientes.mp4" type="video/mp4">
     </video>
+
     <div class="container">
         <h1>Listado de Clientes</h1>
         <div class="button-container">
-            <button class="button" onclick="showAddForm()">Agregar Cliente</button> <!-- Botón para agregar cliente -->
+            <button class="button" onclick="showAddForm()">Agregar Cliente</button>
         </div>
         <table id="clientes">
             <tr>
                 <th>ID</th>
+                <th>Documento</th>
                 <th>Nombre</th>
                 <th>Dirección</th>
                 <th>Teléfono</th>
+                <th>Correo Electrónico</th>
                 <th>Acciones</th>
             </tr>
-            <!-- Conexión y consulta a la base de datos -->
-            <?php include "../controladores/conexion.php"; ?>
-            <?php
-            // Parámetros de paginación
-            $registrosPorPagina = 5; // Número de registros por página
-            $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1; // Página actual
-            $inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice inicial para la consulta
+            <?php 
+            include "../controladores/conexion.php";
+            $registrosPorPagina = 5;
+            $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+            $inicio = ($paginaActual - 1) * $registrosPorPagina;
 
-            // Consulta para obtener los registros de la página actual
-$stmt = $pdo->prepare('SELECT * FROM clientes LIMIT :inicio, :registrosPorPagina');
-$stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
-$stmt->bindParam(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
-$stmt->execute();
+            $stmt = $pdo->prepare('SELECT * FROM clientes LIMIT :inicio, :registrosPorPagina');
+            $stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
+            $stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
+            $stmt->execute();
+
             while ($row = $stmt->fetch()) {
+                $estado = $row['estado'] ? 'On' : 'Off';
+                $color = $row['estado'] ? 'green' : 'red';
                 echo '<tr>';
                 echo '<td>' . htmlspecialchars($row['id']) . '</td>';
+                echo '<td>' . htmlspecialchars($row['numero_identificacion']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['nombre']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['direccion']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['telefono']) . '</td>';
+                echo '<td>' . htmlspecialchars($row['correo']) . '</td>';
                 echo '<td>
+                        <button style="background-color: ' . $color . ';" 
+                                onclick="toggleClientStatus(' . $row['id'] . ', ' . ($row['estado'] ? '0' : '1') . ', this)">
+                            ' . $estado . '
+                        </button>
+                        <button onclick="showEditForm(' . htmlspecialchars(json_encode($row['id'])) . ', ' . htmlspecialchars(($row['numero_identificacion'])) . ', ' . htmlspecialchars(json_encode($row['nombre'])) . ', ' . htmlspecialchars(json_encode($row['direccion'])) . ', ' . htmlspecialchars(json_encode($row['telefono'])) . ',' . htmlspecialchars(json_encode($row['correo'])) . ')">Editar</button>
                         <button onclick="showPurchaseHistory(' . htmlspecialchars(json_encode($row['id'])) . ')">Historial de Compra</button>
-                    </td>';
+                        </td>';
                 echo '</tr>';
             }
-                        // Obtener el total de registros para calcular el número de páginas
-                        $totalRegistros = $pdo->query('SELECT COUNT(*) FROM clientes')->fetchColumn();
-                        $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
+
+            $totalRegistros = $pdo->query('SELECT COUNT(*) FROM clientes')->fetchColumn();
+            $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             ?>
         </table>
+
         <div class="pagination">
-    <?php if ($paginaActual > 1): ?>
-        <a href="?pagina=<?= $paginaActual - 1 ?>">&laquo; Anterior</a>
-    <?php endif; ?>
+            <?php if ($paginaActual > 1): ?>
+                <a href="?pagina=<?= $paginaActual - 1 ?>">&laquo; Anterior</a>
+            <?php endif; ?>
 
-    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-        <a href="?pagina=<?= $i ?>" class="<?= $i === $paginaActual ? 'active' : '' ?>"><?= $i ?></a>
-    <?php endfor; ?>
+            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                <a href="?pagina=<?= $i ?>" class="<?= $i === $paginaActual ? 'active' : '' ?>"><?= $i ?></a>
+            <?php endfor; ?>
 
-    <?php if ($paginaActual < $totalPaginas): ?>
-        <a href="?pagina=<?= $paginaActual + 1 ?>">Siguiente &raquo;</a>
-    <?php endif; ?>
-</div>
-        <!-- Formulario para agregar/editar clientes -->
-        <div id="formContainer">
+            <?php if ($paginaActual < $totalPaginas): ?>
+                <a href="?pagina=<?= $paginaActual + 1 ?>">Siguiente &raquo;</a>
+            <?php endif; ?>
+        </div>
+    </div>
+            <!-- Formulario para agregar/editar clientes -->
+            <div id="formContainer">
             <h2 id="formTitle">Agregar Cliente</h2>
             <form id="clientForm" method="post" onsubmit="return submitForm()">
                 <input type="hidden" id="clientId" name="clientId"> <!-- Campo oculto para el ID del cliente -->
-                <input type="text" id="clientName" name="nombre" placeholder="Nombre" required>
+                <input type="text" id="clientDocumen" name="numero_identificacion" placeholder="Documento" readonly>
+                <input type="text" id="clientName" name="nombre" placeholder="Nombre" readonly>
                 <input type="text" id="clientAddress" name="direccion" placeholder="Dirección" required>
                 <input type="text" id="clientPhone" name="telefono" placeholder="Teléfono" required>
+                <input type="text" id="clientEmail" name="correo" placeholder="Correo Electrónico" required>
                 <button type="submit">Guardar</button>
                 <button type="button" onclick="cancelForm()">Cancelar</button>
             </form>
         </div>
     </div>
-
-    <div class="home-button-container">
-        <!-- Aquí puedes añadir contenido adicional -->
+    <div id="modalHistorial" style="display: none;">
+    <div class="modal-content">
+        <h2>Historial de Compras</h2>
+        <div id="purchaseHistoryContent">
+            <!-- Aquí se cargará dinámicamente el contenido -->
+        </div>
+        <button onclick="closeHistoryModal()">Cerrar</button>
     </div>
+</div>
+
 
     <script>
-        // Función para mostrar el formulario de agregar cliente
-        function showAddForm() {
-            document.getElementById('formTitle').innerText = 'Agregar Cliente';
-            document.getElementById('clientForm').action = '../controladores/save_client.php?action=add';
-            document.getElementById('clientId').value = '';
-            document.getElementById('clientName').value = '';
-            document.getElementById('clientAddress').value = '';
-            document.getElementById('clientPhone').value = '';
-            document.getElementById('formContainer').style.display = 'block';
-        }
+    // Mostrar formulario de agregar cliente
+    function showAddForm() {
+        document.getElementById('formTitle').innerText = 'Agregar Cliente';
+        document.getElementById('clientForm').action = '../controladores/save_client.php?action=add';
+        document.getElementById('clientId').value = '';
+        document.getElementById('clientDocumen').value = '';
+        document.getElementById('clientName').value = '';
+        document.getElementById('clientAddress').value = '';
+        document.getElementById('clientPhone').value = '';
+        document.getElementById('clientEmail').value = '';
+        document.getElementById('formContainer').style.display = 'block';
+    }
+    // Mostrar formulario de editar cliente
+    function showEditForm(id, name, address, phone, email) {
+    // Cambiar título del formulario
+    document.getElementById('formTitle').innerText = 'Editar Cliente';
 
-        // Función para mostrar el formulario de editar cliente
-        function showEditForm(id, name, address, phone) {
-            document.getElementById('formTitle').innerText = 'Editar Cliente';
-            document.getElementById('clientForm').action = '../controladores/save_client.php?action=edit';
-            document.getElementById('clientId').value = id;
-            document.getElementById('clientName').value = name;
-            document.getElementById('clientAddress').value = address;
-            document.getElementById('clientPhone').value = phone;
-            document.getElementById('formContainer').style.display = 'block';
-        }
+    // Cambiar la acción del formulario
+    document.getElementById('clientForm').action = '../controladores/save_client.php?action=edit';
 
-    // Función para eliminar cliente de forma asíncrona
-    function deleteClient(id) {
-        if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
-            fetch('..\controladores/save_client.php?action=delete', {
-                method: 'POST',
-                body: new URLSearchParams({ clientId: id })
-            })
+    // Configurar los valores en los campos del formulario
+    document.getElementById('clientId').value = id;
+    document.getElementById('clientDocumen').value = id; // Documento como no editable
+    document.getElementById('clientName').value = name;  // Nombre como no editable
+    document.getElementById('clientAddress').value = address;
+    document.getElementById('clientPhone').value = phone;
+    document.getElementById('clientEmail').value = email;
+
+    // Hacer que los campos de documento y nombre sean solo lectura
+    document.getElementById('clientDocumen').readOnly = true;
+    document.getElementById('clientName').readOnly = true;
+
+    // Mostrar el formulario
+    document.getElementById('formContainer').style.display = 'block';
+}
+    // Función para mostrar el modal con el historial de compras
+    function showPurchaseHistory(clientId) {
+        // Mostrar el modal
+        const modal = document.getElementById('modalHistorial');
+        modal.style.display = 'flex';
+
+        // Cargar dinámicamente el historial de compras
+        const historyContent = document.getElementById('purchaseHistoryContent');
+        historyContent.innerHTML = 'Cargando...';
+
+        fetch(`../controladores/historial_compras.php?client_id=${clientId}`)
             .then(response => response.text())
             .then(data => {
-                alert('Cliente eliminado exitosamente.');
-                // Recargar la página para que el cliente desaparezca
-                location.reload();
+                historyContent.innerHTML = data;
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Ocurrió un error al eliminar el cliente.');
+                console.error('Error al cargar el historial:', error);
+                historyContent.innerHTML = 'No se pudo cargar el historial.';
             });
-        }
     }
 
-        // Función para mostrar el historial de compras del cliente
-        function showPurchaseHistory(id) {
-            alert('Mostrar historial de compra del cliente con ID: ' + id);
-            window.location.href = '../controladores/historial_com.php?client_id=' + id;
-        }
-
-        // Función para cancelar y ocultar el formulario
-        function cancelForm() {
-            document.getElementById('formContainer').style.display = 'none';
-        }
-
-        // Función para enviar el formulario mediante fetch
-        function submitForm() {
+    // Función para cerrar el modal del historial de compras
+    function closeHistoryModal() {
+        document.getElementById('modalHistorial').style.display = 'none';
+    }
+    // Cancelar formulario
+    function cancelForm() {
+        document.getElementById('formContainer').style.display = 'none';
+    }
+                // Función para enviar el formulario mediante fetch
+                function submitForm() {
             const form = document.getElementById('clientForm');
             const formData = new FormData(form);
             const action = form.getAttribute('action');
@@ -352,14 +501,60 @@ $stmt->execute();
             return false; // Evita el envío tradicional del formulario
         }
 
-        // Añade la clase 'active' al botón de navegación actual
-        const buttons = document.querySelectorAll('.button');
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                buttons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-            });
-        });
+        function toggleClientStatus(id, newState, button) {
+    fetch('update_client_status.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${id}&estado=${newState}`
+    })
+    .then(response => {
+        if (response.ok) {
+            const newStatus = newState === 1 ? 'On' : 'Off';
+            const newColor = newState === 1 ? 'green' : 'red';
+            button.textContent = newStatus;
+            button.style.backgroundColor = newColor;
+            button.setAttribute('onclick', `toggleClientStatus(${id}, ${newState === 1 ? 0 : 1}, this)`);
+        } else {
+            alert('Error al actualizar el estado del cliente');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al cambiar el estado.');
+    });
+}
+function submitForm() {
+    const form = document.getElementById('clientForm');
+    const formData = new FormData(form);
+    
+    const clientDoc = document.getElementById('clientDocumen').value;
+    const clientName = document.getElementById('clientName').value;
+    
+    // Verificar si los campos de nombre o documento son modificados
+    if (formData.get('numero_identificacion') !== clientDoc || formData.get('nombre') !== clientName) {
+        alert("No es posible realizar el cambio del nombre o documento del cliente.");
+        return false;  // Evita que el formulario se envíe
+    }
+
+    const action = form.getAttribute('action');
+    fetch(action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert(data);
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al procesar la solicitud.');
+    });
+
+    return false; // Evita el envío tradicional del formulario
+}
+
+
     </script>
 </body>
 </html>

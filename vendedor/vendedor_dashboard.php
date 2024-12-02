@@ -25,211 +25,219 @@ if ($role != 'vendedor') {
     <title>Panel de Vendedor</title>
     <link rel="icon" type="image/png" href="img/thunderbikes.png">
     <style>
-        /* Normalización de márgenes y padding */
-        * {
-            margin: 0;
-            padding: 0;
-        }
+    /* Normalización de márgenes y padding */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box; /* Para que el padding y el border no afecten al tamaño total */
+    }
 
-        body {
-            font-size: 120%;
-            background: #f5f5f5;
-        }
+    /* Fuente personalizada y responsiva */
+    body {
+        font-size: 16px;
+        background: #f5f5f5;
+        font-family: 'Arial', sans-serif; /* Cambia a la tipografía deseada */
+        line-height: 1.6;
+    }
 
-        .header {
-            width: 60%;
-            margin: 40px auto 0;
-            color: white;
-            background: #5F9EA0;
-            text-align: center;
-            border: 1px solid #B0C4DE;
-            border-bottom: none;
-            border-radius: 10px 10px 0 0;
-            padding: 20px;
-        }
+    /* Cambiar la tipografía y hacerla responsiva */
+    .header {
+        width: 60%;
+        margin: 40px auto 0;
+        color: white;
+        background: #5F9EA0;
+        text-align: center;
+        border: 1px solid #B0C4DE;
+        border-bottom: none;
+        border-radius: 10px 10px 0 0;
+        padding: 20px;
+        font-family: 'Roboto', sans-serif; /* Cambiar a la tipografía deseada */
+        font-size: 2rem; /* Responsivo */
+    }
 
-        form, .content {
-            width: 70%;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #B0C4DE;
-            background: white;
-            border-radius: 10px 0 10px 10px;
-        }
+    form, .content {
+        width: 70%;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #B0C4DE;
+        background: white;
+        border-radius: 10px 0 10px 10px;
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2rem; /* Responsivo */
+    }
 
-        .input-group {
-            margin: 10px 0;
-        }
+    .input-group {
+        margin: 10px 0;
+    }
 
-        .input-group label {
-            display: block;
-            text-align: left;
-            margin: 3px;
-        }
+    .input-group label {
+        display: block;
+        text-align: left;
+        margin: 3px;
+        font-size: 1rem;
+    }
 
-        .input-group input {
-            height: 30px;
-            width: 93%;
-            padding: 5px 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid gray;
-        }
+    .input-group input {
+        height: 30px;
+        width: 100%; /* Asegura que los campos de entrada ocupen el ancho completo */
+        padding: 5px 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid gray;
+    }
 
-        .btn {
-            padding: 10px;
-            font-size: 15px;
-            color: rgb(12, 12, 12);
-            background: #ffc600;
-            border: none;
-            border-radius: 5px;
-        }
+    .btn {
+        padding: 10px;
+        font-size: 1rem;
+        color: rgb(12, 12, 12);
+        background: #ffc600;
+        border: none;
+        border-radius: 5px;
+    }
 
-        .error {
-            width: 92%; 
-            margin: 0 auto; 
-            padding: 10px; 
-            border: 1px solid #a94442; 
-            color: #a94442; 
-            background: #f2dede; 
-            border-radius: 5px; 
-            text-align: left;
-        }
+    .error {
+        width: 92%; 
+        margin: 0 auto; 
+        padding: 10px; 
+        border: 1px solid #a94442; 
+        color: #a94442; 
+        background: #f2dede; 
+        border-radius: 5px; 
+        text-align: left;
+    }
 
-        .success {
-            color: #3c763d; 
-            background: #dff0d8; 
-            border: 1px solid #3c763d;
-            margin-bottom: 20px;
-        }
+    .success {
+        color: #3c763d; 
+        background: #dff0d8; 
+        border: 1px solid #3c763d;
+        margin-bottom: 20px;
+    }
 
-        .navtop {
-            background-color: #2f3947;
-            height: 60px;
-            width: 100%;
-            border: 0;
-        }
+    .navtop {
+        background-color: #2f3947;
+        height: 60px;
+        width: 100%;
+        border: 0;
+    }
 
+    .navtop div {
+        display: flex;
+        margin: 0 auto;
+        width: 100%;
+        height: 100%;
+        max-width: 1200px; /* Limitar el ancho en pantallas grandes */
+    }
+
+    .navtop div h1, .navtop div a {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .navtop div h1 {
+        flex: 1;
+        font-size: 1.5rem; /* Responsivo */
+        color: #eaebed;
+        font-weight: normal;
+    }
+
+    .navtop div a {
+        padding: 0 20px;
+        text-decoration: none;
+        color: #E5A65E;
+        font-weight: bold;
+        position: relative;
+        font-size: 1rem; /* Responsivo */
+    }
+
+    .navtop div a:hover {
+        color: #eaebed;
+    }
+
+    .button-selected {
+        background-color: gold;
+    }
+
+    .button:hover {
+        background-color: lightblue;
+    }
+
+    #cerrarSesionBtn:hover {
+        color: red;
+    }
+
+    #background-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        object-fit: cover;
+    }
+
+    /* Añadir media queries para pantallas pequeñas */
+    @media (max-width: 768px) {
         .navtop div {
-            display: flex;
-            margin: 0 auto;
-            width: 1000px;
-            height: 100%;
-        }
-
-        .navtop div h1, .navtop div a {
-            display: inline-flex;
+            flex-direction: column;
             align-items: center;
+            width: 100%;
         }
 
         .navtop div h1 {
-            flex: 1;
-            font-size: 24px;
-            color: #eaebed;
-            font-weight: normal;
+            text-align: center;
+            font-size: 1.3rem; /* Ajustar el tamaño de fuente para pantallas pequeñas */
         }
-        /* Añadir media queries para pantallas pequeñas */
-@media (max-width: 768px) {
-    .navtop div {
-        flex-direction: column;
-        align-items: center;
-    }
-    .navtop div h1 {
-        text-align: center;
-    }
-    .button-container {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-    .button {
-        width: 100%; /* Los botones ocupan todo el ancho en pantallas pequeñas */
-        text-align: center;
-        padding: 10px;
-        margin-bottom: 5px;
-    }
-    .header {
-        width: 100%;
-    }
-    form, .content {
-        width: 100%;
-        padding: 10px;
-    }
-}
 
-/* Ajustes adicionales para pantallas aún más pequeñas */
-@media (max-width: 480px) {
-    body {
-        font-size: 100%; /* Reduce el tamaño de fuente en pantallas pequeñas */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .button {
+            width: 100%; /* Los botones ocupan todo el ancho en pantallas pequeñas */
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+
+        .header {
+            width: 100%;
+            font-size: 1.8rem; /* Responsivo */
+        }
+
+        form, .content {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem; /* Responsivo */
+        }
+
+        .input-group input {
+            width: 100%; /* Asegura que los inputs ocupen todo el ancho */
+        }
     }
 
-    .header, form, .content {
-        padding: 10px;
-    }
-}
+    /* Ajustes adicionales para pantallas aún más pequeñas */
+    @media (max-width: 480px) {
+        body {
+            font-size: 14px; /* Reduce el tamaño de fuente en pantallas muy pequeñas */
+        }
+
+        .header, form, .content {
+            padding: 10px;
+            font-size: 1rem; /* Responsivo */
+        }
+
+        .navtop div h1 {
+            font-size: 1.2rem; /* Responsivo */
+        }
 
         .navtop div a {
-            padding: 0 20px;
-            text-decoration: none;
-            color: #E5A65E;
-            font-weight: bold;
-            position: relative;
+            font-size: 0.9rem; /* Reducir tamaño de fuente */
         }
+    }
+</style>
 
-        .tooltip {
-            display: none; 
-            position: absolute;
-            background-color: white;
-            border: 1px solid #B0C4DE;
-            padding: 2px 5px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-            top: 6%;
-            left: 50%;
-            transform: translateX(-61%);
-            white-space: nowrap;
-            max-width: 150px;
-            max-height: 50px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tooltip a {
-            color: black;
-            text-decoration: none;
-        }
-
-        .tooltip a:hover {
-            color: #007BFF;
-        }
-
-        .navtop div a:hover {
-            color: #eaebed;
-        }
-
-        .button-selected {
-            background-color: gold;
-        }
-
-        .button:hover {
-            background-color: lightblue;
-        }
-
-        #cerrarSesionBtn:hover {
-            color: red;
-        }
-
-        #background-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            object-fit: cover;
-        }
-    </style>
 </head>
 <body>
     <nav class="navtop">
