@@ -1,20 +1,27 @@
 <?php
 include "conexion.php";
 
-$data = json_decode(file_get_contents("php://input"), true);
+header('Content-Type: application/json');
 
-if (isset($data['id'], $data['status'])) {
-    $id = intval($data['id']);
-    $status = in_array($data['status'], ['on', 'off']) ? $data['status'] : 'off';
+$data = json_decode(file_get_contents('php://input'), true);
 
-    $stmt = $pdo->prepare("UPDATE proveedores SET status = :status WHERE id = :id");
-    $stmt->execute([':status' => $status, ':id' => $id]);
+if (!isset($data['id']) || !isset($data['status'])) {
+    echo json_encode(['success' => false, 'message' => 'Datos incompletos.']);
+    exit;
+}
 
-    if ($stmt->rowCount()) {
-        echo json_encode(['success' => true, 'message' => 'Estado actualizado correctamente.']);
+$id = $data['id'];
+$status = $data['status'];
+
+try {
+    $stmt = $pdo->prepare('UPDATE proveedores SET status = :status WHERE id = :id');
+    $stmt->execute(['status' => $status, 'id' => $id]);
+
+    if ($stmt->rowCount() > 0) {
+        echo json_encode(['success' => true, 'message' => 'Estado actualizado con éxito.']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'No se pudo actualizar el estado.']);
+        echo json_encode(['success' => false, 'message' => 'No se encontró el proveedor o no se pudo actualizar.']);
     }
-} else {
-    echo json_encode(['success' => false, 'message' => 'Datos inválidos.']);
+} catch (PDOException $e) {
+    echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
 }

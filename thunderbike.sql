@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-12-2024 a las 20:13:23
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.1.25
+-- Tiempo de generación: 03-12-2024 a las 14:53:09
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -92,7 +92,8 @@ INSERT INTO `facturas` (`id`, `cliente_id`, `fecha_factura`, `estado`, `total`, 
 (22, NULL, '2024-11-09', 'Cancelada', 20000.00, '[\"fvdvdv\"]', '', ''),
 (23, 35, '2024-11-15', 'Credito', 20000.00, '[\"dczdc\",\"fvdvdvssssss\"]', '', ''),
 (24, 36, '2024-12-25', 'Pendiente', 32233.00, '[\"sadds\"]', '3', 'anderson acosta'),
-(28, 35, '2024-10-23', 'Credito', 400000.00, '[\"dczdc\"]', '10', 'anderson acosta');
+(28, 35, '2024-10-23', 'Credito', 400000.00, '[\"dczdc\"]', '10', 'anderson acosta'),
+(30, 43, '2024-12-02', 'Cancelada', 5.00, '[\"cascos ciclismo\"]', '1', 'anderson acosta');
 
 -- --------------------------------------------------------
 
@@ -201,17 +202,18 @@ CREATE TABLE `proveedores` (
   `direccion` varchar(255) DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL,
   `activo` tinyint(1) DEFAULT 0,
-  `estado` tinyint(1) DEFAULT 1
+  `estado` tinyint(1) DEFAULT 1,
+  `status` enum('on','off') DEFAULT 'on'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `proveedores`
 --
 
-INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`, `activo`, `estado`) VALUES
-(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '1142575755', 1, 1),
-(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222', 1, 1),
-(3, '25124282278-5', 'Juan ', 'Calle 87 #67-90', '3215648956', 1, 1);
+INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`, `activo`, `estado`, `status`) VALUES
+(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '31315516', 1, 1, 'off'),
+(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222', 1, 1, 'off'),
+(3, '25124282278-5', 'Juan ', 'Calle 87 #67-90', '3215648956', 1, 1, 'off');
 
 -- --------------------------------------------------------
 
@@ -380,7 +382,7 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_compras`
