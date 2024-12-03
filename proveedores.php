@@ -154,7 +154,7 @@
             padding: 10px;
             margin-top: 10px;
             font-size: 16px;
-            background-color: #28a745;
+            background-color: gold;
             color: white;
             border: none;
             border-radius: 5px;
@@ -163,7 +163,7 @@
 
         button[type="submit"]:hover,
         button[type="button"]:hover {
-            background-color: #218838;
+            background-color: goldenrod;
         }
 
     </style>

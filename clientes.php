@@ -66,12 +66,14 @@
     }
 /* Ajuste de la tabla para desplazamiento horizontal */
 table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        overflow-x: auto; /* Habilitar desplazamiento horizontal */
-        display: block; /* Necesario para aplicar scroll en tablas largas */
-    }
+    width: 96.4%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    overflow-x: auto; /* Habilitar desplazamiento horizontal */
+    display: block; /* Necesario para aplicar scroll en tablas largas */
+    border-radius: 12px; /* Esquinas redondeadas */
+    border: 1px solid #ddd; /* Opcional, para un borde más definido */
+}
 
 
     th, td {
@@ -288,7 +290,7 @@ button[data-status="off"] {
             padding: 10px;
             margin-top: 10px;
             font-size: 16px;
-            background-color: #28a745;
+            background-color: gold;
             color: white;
             border: none;
             border-radius: 5px;
@@ -297,7 +299,7 @@ button[data-status="off"] {
 
         button[type="submit"]:hover,
         button[type="button"]:hover {
-            background-color: #218838;
+            background-color: goldenrod;
         }
 
         #searchInput {
@@ -308,6 +310,46 @@ button[data-status="off"] {
             border-radius: 5px;
             font-size: 14px;
         }
+        /* Contenedor de la paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 10px; /* Espacio entre los botones */
+}
+
+/* Botones de la paginación */
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Botón activo */
+.pagination a.active {
+    background-color: goldenrod;
+    color: black;
+    font-weight: bold;
+}
+
+/* Efectos al pasar el cursor */
+.pagination a:hover {
+    background-color: wheat;
+    transform: scale(1.05);
+}
+
+/* Deshabilitar los botones extremos si no son válidos */
+.pagination a.disabled {
+    background-color: #888;
+    cursor: not-allowed;
+    pointer-events: none;
+}
     </style>
 </head>
 <body>
