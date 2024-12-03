@@ -282,6 +282,7 @@ if (isset($stmt)) {
         </div>
 
     </div>
+    
 
     <script>
 function showAddForm() {
