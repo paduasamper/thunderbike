@@ -165,6 +165,19 @@
         button[type="button"]:hover {
             background-color: goldenrod;
         }
+        /* Estilos para el buscador */
+        .search-container {
+            margin: 20px 0;
+            text-align: right;
+        }
+
+        .search-container input {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 200px;
+        }
 
     </style>
 </head>
@@ -191,6 +204,9 @@
         <h1>Listado de Proveedores</h1>
         <div class="button-container">
             <button class="button" onclick="showAddForm()">Agregar Proveedor</button>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar por Empresa, NIT o Nombre">
         </div>
         <?php
         include "controladores/conexion.php";
@@ -376,6 +392,34 @@ function showAddForm() {
             console.error(error);
         });
 }
+function filterTable() {
+            let input = document.getElementById('searchInput');
+            let filter = input.value.toUpperCase();
+            let table = document.getElementById('proveedores');
+            let tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                let tdCompany = tr[i].getElementsByTagName('td')[6];
+                let tdNIT = tr[i].getElementsByTagName('td')[4];
+                let tdName = tr[i].getElementsByTagName('td')[1];
+                
+                if (tdCompany || tdNIT || tdName) {
+                    let txtValueCompany = tdCompany.textContent || tdCompany.innerText;
+                    let txtValueNIT = tdNIT.textContent || tdNIT.innerText;
+                    let txtValueName = tdName.textContent || tdName.innerText;
+
+                    if (
+                        txtValueCompany.toUpperCase().indexOf(filter) > -1 || 
+                        txtValueNIT.toUpperCase().indexOf(filter) > -1 || 
+                        txtValueName.toUpperCase().indexOf(filter) > -1
+                    ) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
 
     </script>
 </body>
