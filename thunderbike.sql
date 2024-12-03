@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-12-2024 a las 14:53:09
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 03-12-2024 a las 22:03:01
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -60,10 +60,14 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`id`, `numero_identificacion`, `nombre`, `direccion`, `telefono`, `correo`, `estado`) VALUES
-(35, '1234567890', 'Marcos Llorente', 'Calle 32 #87-65', '3215648956', 'marcos.llorente@example.com', 0),
+(35, '1234567890', 'Marcos Llorente', 'Calle 32 #87-6', '3215648956', 'marcos.llorente@example.com', 0),
 (36, '9876543210', 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', 'juan.perez@example.com', 1),
 (43, '1242545451', 'leon javier', 'Calle 87 #67-90', '33211234569', 'jashew@gmail.com', 1),
-(46, '', 'Juan hgfdtr', 'Avenida Proveedor B, Pueblo', '3215648956', '', 1);
+(46, '', 'Juan hgfdtr', 'Avenida Proveedor B, Pueblo', '3215648956', '', 1),
+(47, '10005939292', 'Juan ', 'Calle 32 #87-', '3215648956', 'anderson@gmail.com', 1),
+(51, '2145545154', 'leon jili', 'calle 89', '321452326', 'jili@gmail.com', 1),
+(53, '658264585', 'kare', 'avenida 1', '624265', 'kre@gmail.com', 1),
+(54, '52867921', 'jimena', 'kll 56', '124674', 'jimena@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -201,19 +205,20 @@ CREATE TABLE `proveedores` (
   `nombre` varchar(100) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL,
-  `activo` tinyint(1) DEFAULT 0,
-  `estado` tinyint(1) DEFAULT 1,
-  `status` enum('on','off') DEFAULT 'on'
+  `status` enum('on','off') DEFAULT 'on',
+  `correo` varchar(255) NOT NULL,
+  `empresa` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `proveedores`
 --
 
-INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`, `activo`, `estado`, `status`) VALUES
-(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '31315516', 1, 1, 'off'),
-(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222', 1, 1, 'off'),
-(3, '25124282278-5', 'Juan ', 'Calle 87 #67-90', '3215648956', 1, 1, 'off');
+INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`, `status`, `correo`, `empresa`) VALUES
+(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '31315516', 'off', '', ''),
+(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222', 'off', '', ''),
+(3, '25124282278-5', 'Juan ', 'Calle 87 #67-90', '3215648956', 'off', '', ''),
+(4, '123456789-0', 'Proveedor C', 'Calle 45 #12-3', '3101234567', 'on', 'proveedorC@example.com', 'Compañía C');
 
 -- --------------------------------------------------------
 
@@ -376,7 +381,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT de la tabla `facturas`
@@ -412,7 +417,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `reparaciones`
