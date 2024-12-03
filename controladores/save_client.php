@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Redirigir o mostrar un mensaje
-    header("Location: clientes.php");
+    header('Location: ../clientes.php?status=success');
+exit();
 }
 ?>

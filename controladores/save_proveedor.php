@@ -8,6 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $direccion = $_POST['direccion'];
     $telefono = $_POST['telefono'];
     $nit = $_POST['nit'];
+    $correo = $_POST['correo'];
+    $empresa = $_POST['empresa'];
 
     try {
         if ($action === 'add') {
@@ -18,6 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':direccion' => $direccion,
                 ':telefono' => $telefono,
                 ':nit' => $nit,
+                ':correo' => $correo,
+                ':empresa' => $empresa,
             ]);
         } elseif ($action === 'edit' && $id) {
             $sql = "UPDATE proveedores SET nombre = :nombre, direccion = :direccion, telefono = :telefono WHERE id = :id";

@@ -394,23 +394,16 @@ button[data-status="off"] {
 <!-- El formulario para agregar/editar clientes -->
 <div id="formContainer">
     <h2 id="formTitle">Agregar Cliente</h2>
-    <form id="clientForm" method="post" action="controladores/save_client.php">
-
-        <input type="hidden" id="clientId" name="clientId"> <!-- Campo oculto para el ID del cliente -->
-        
-        <!-- Hacer que el campo Documento sea editable -->
-        <input type="text" id="clientDocumen" name="numero_identificacion" placeholder="Documento" required>
-
-        <!-- Hacer que el campo Nombre sea editable -->
-        <input type="text" id="clientName" name="nombre" placeholder="Nombre" required>
-
-        <input type="text" id="clientAddress" name="direccion" placeholder="Dirección" required>
-        <input type="text" id="clientPhone" name="telefono" placeholder="Teléfono" required>
-        <input type="text" id="clientEmail" name="correo" placeholder="Correo Electrónico" required>
-
-        <button type="submit">Guardar</button>
-        <button type="button" onclick="cancelForm()">Cancelar</button>
-    </form>
+    <form id="clientForm" method="post" action="controladores/save_client.php?action=add">
+    <input type="hidden" id="clientId" name="clientId"> <!-- Campo oculto para el ID del cliente -->
+    <input type="text" id="clientDocumen" name="numero_identificacion" placeholder="Documento" required>
+    <input type="text" id="clientName" name="nombre" placeholder="Nombre" required>
+    <input type="text" id="clientAddress" name="direccion" placeholder="Dirección" required>
+    <input type="text" id="clientPhone" name="telefono" placeholder="Teléfono" required>
+    <input type="text" id="clientEmail" name="correo" placeholder="Correo Electrónico" required>
+    <button type="submit">Guardar</button>
+    <button type="button" onclick="cancelForm()">Cancelar</button>
+</form>
 </div>
     </div>
     <div id="modalHistorial" style="display: none;">
@@ -426,38 +419,42 @@ button[data-status="off"] {
 
     <script>
 function showAddForm() {
-    // Cambiar título del formulario
+    // Cambiar el título del formulario
     document.getElementById('formTitle').innerText = 'Agregar Cliente';
 
     // Limpiar los campos del formulario
     document.getElementById('clientForm').reset();
 
-    // Hacer los campos de documento y nombre editables
+    // Establecer la acción para agregar un cliente
+    document.getElementById('clientForm').action = 'controladores/save_client.php?action=add';
+
+    // Asegurarse de que los campos sean editables
     document.getElementById('clientDocumen').readOnly = false;
     document.getElementById('clientName').readOnly = false;
+
+    // Ocultar el campo de ID, ya que no es necesario para agregar
+    document.getElementById('clientId').value = '';
 
     // Mostrar el formulario
     document.getElementById('formContainer').style.display = 'block';
 }
-
-
     // Mostrar formulario de editar cliente
-    function showEditForm(id, name, address, phone, email) {
-    // Cambiar título del formulario
+    function showEditForm(id, documento, name, address, phone, email) {
+    // Cambiar el título del formulario
     document.getElementById('formTitle').innerText = 'Editar Cliente';
 
     // Cambiar la acción del formulario
     document.getElementById('clientForm').action = 'controladores/save_client.php?action=edit';
 
-    // Configurar los valores en los campos del formulario
+    // Rellenar los campos con los datos del cliente
     document.getElementById('clientId').value = id;
-    document.getElementById('clientDocumen').value = id; // Documento como no editable
-    document.getElementById('clientName').value = name;  // Nombre como no editable
+    document.getElementById('clientDocumen').value = documento;
+    document.getElementById('clientName').value = name;
     document.getElementById('clientAddress').value = address;
     document.getElementById('clientPhone').value = phone;
     document.getElementById('clientEmail').value = email;
 
-    // Hacer que los campos de documento y nombre sean solo lectura
+    // Hacer que los campos Documento y Nombre sean solo lectura
     document.getElementById('clientDocumen').readOnly = true;
     document.getElementById('clientName').readOnly = true;
 
@@ -570,5 +567,28 @@ function submitForm() {
 
 
     </script>
+    <script>
+    function showSuccessAlert() {
+        const alert = document.getElementById('successAlert');
+        alert.style.display = 'block';
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 3000); // Ocultar después de 3 segundos
+    }
+</script>
+<script>
+    // Verifica si hay un parámetro de éxito en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('status') === 'success') {
+        showSuccessAlert();
+    }
+</script>
+
+
+    <!-- Alerta dinámica -->
+<div id="successAlert" style="display: none; position: fixed; top: 20px; right: 20px; background: green; color: white; padding: 15px; border-radius: 5px; z-index: 1000;">
+    Cliente agregado exitosamente
+</div>
+
 </body>
 </html>

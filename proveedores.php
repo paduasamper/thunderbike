@@ -195,7 +195,7 @@
         <?php
         include "controladores/conexion.php";
         try {
-            $stmt = $pdo->query('SELECT id, nombre, direccion, telefono, nit, status FROM proveedores');
+            $stmt = $pdo->query('SELECT id, nombre, direccion, telefono, nit, correo, empresa, status FROM proveedores');
         } catch (PDOException $e) {
             die('Error en la consulta SQL: ' . $e->getMessage());
         }
@@ -207,6 +207,8 @@
                 <th>Dirección</th>
                 <th>Teléfono</th>
                 <th>NIT</th>
+                <th>Correo</th>
+                <th>Empresa</th>
                 <th>Acciones</th>
             </tr>
             <?php
@@ -221,6 +223,8 @@ if (isset($stmt)) {
         echo '<td>' . htmlspecialchars($row['direccion']) . '</td>';
         echo '<td>' . htmlspecialchars($row['telefono']) . '</td>';
         echo '<td>' . htmlspecialchars($row['nit']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['correo']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['empresa']) . '</td>';
         echo '<td>
             <button onclick="editProvider(' . htmlspecialchars($row['id']) . ')">Editar</button>
             <button class="status-btn" data-id="' . htmlspecialchars($row['id']) . '" data-status="' . $status . '" 
@@ -249,6 +253,12 @@ if (isset($stmt)) {
                 
                 <label for="proveedorNit">NIT:</label>
                 <input type="text" id="proveedorNit" name="nit" placeholder="NIT" required readonly>
+                
+                <label for="proveedorNit">Correo:</label>
+                <input type="text" id="proveedorEmail" name="nit" placeholder="Correo" required>
+
+                <label for="proveedorNit">Empresa:</label>
+                <input type="text" id="proveedorEmpresa" name="nit" placeholder="Empresa" required readonly>
 
                 <button type="submit">Guardar</button>
                 <button type="button" onclick="cancelForm()">Cancelar</button>
@@ -270,6 +280,9 @@ function showAddForm() {
     document.getElementById('proveedorPhone').value = '';
     document.getElementById('proveedorNit').value = '';
     document.getElementById('proveedorNit').readOnly = false; // Habilitar campo para agregar
+    document.getElementById('proveedorEmail').value = '';
+    document.getElementById('proveedorEmpresa').value = '';
+    document.getElementById('proveedorEmpresa').readOnly = false; // Habilitar campo para agregar
 
     // Mostrar el formulario
     document.getElementById('formContainer').style.display = 'block';
@@ -295,6 +308,8 @@ function showAddForm() {
     const direccion = selectedRow.children[2]?.innerText;
     const telefono = selectedRow.children[3]?.innerText;
     const nit = selectedRow.children[4]?.innerText;
+    const correo = selectedRow.children[5]?.innerText;
+    const empresa = selectedRow.children[6]?.innerText;
 
     // Llenar el formulario con la información del proveedor
     document.getElementById('proveedorId').value = id;
@@ -302,10 +317,13 @@ function showAddForm() {
     document.getElementById('proveedorAddress').value = direccion;
     document.getElementById('proveedorPhone').value = telefono;
     document.getElementById('proveedorNit').value = nit;
+    document.getElementById('proveedorEmail').value = correo;
+    document.getElementById('proveedorEmpresa').value = empresa;
 
     // Bloquear edición en ciertos campos
     document.getElementById('proveedorName').readOnly = true;
     document.getElementById('proveedorNit').readOnly = true;
+    document.getElementById('proveedorEmpresa').readOnly = true;
 
     // Cambiar título del formulario y acción
     document.getElementById('formTitle').innerText = 'Editar Proveedor';
