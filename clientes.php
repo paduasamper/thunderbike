@@ -300,7 +300,14 @@ button[data-status="off"] {
             background-color: #218838;
         }
 
-
+        #searchInput {
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -330,6 +337,7 @@ button[data-status="off"] {
         <div class="button-container">
             <button class="button" onclick="showAddForm()">Agregar Cliente</button>
         </div>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre o documento" onkeyup="filterTable()">
         <table id="clientes">
             <tr>
                 <th>ID</th>
@@ -418,6 +426,24 @@ button[data-status="off"] {
 
 
     <script>
+        function filterTable() {
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById("clientes");
+    const rows = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < rows.length; i++) { // Empieza desde 1 para omitir la fila del encabezado
+        const documento = rows[i].getElementsByTagName("td")[1]?.textContent.toLowerCase();
+        const nombre = rows[i].getElementsByTagName("td")[2]?.textContent.toLowerCase();
+
+        if (documento?.includes(filter) || nombre?.includes(filter)) {
+            rows[i].style.display = ""; // Mostrar la fila
+        } else {
+            rows[i].style.display = "none"; // Ocultar la fila
+        }
+    }
+}
+
 function showAddForm() {
     // Cambiar el título del formulario
     document.getElementById('formTitle').innerText = 'Agregar Cliente';
