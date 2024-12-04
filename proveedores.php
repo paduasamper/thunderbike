@@ -53,18 +53,20 @@
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            overflow-x: auto;
-            display: block;
-        }
-        .table-container {
+    width: 89.8%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    overflow-x: auto;
+    display: block;
+    border-radius: 12px; /* Bordes más redondeados */
+    border: 1px solid #ddd; /* Añadir un borde si lo deseas */
+}
+.table-container {
     max-width: 90%; /* Limita el ancho del contenedor al 90% del viewport */
     overflow-x: auto; /* Habilita el desplazamiento horizontal si es necesario */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Agrega un sombreado elegante */
     background-color: #fff; /* Fondo blanco para contraste */
-    border-radius: 8px; /* Bordes redondeados */
+    border-radius: 12px; /* Bordes redondeados */
     padding: 20px;
 }
 
