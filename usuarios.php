@@ -13,7 +13,21 @@ try {
         $accion = $_POST['accion'] ?? null;
         $id = $_POST['id'] ?? null;
 
-        if ($accion === 'editar') {
+        if ($accion === 'cambiar_estado') {
+            $estado = $_POST['activo'] ?? null;
+
+            // Validamos que los datos necesarios estén presentes
+            if ($id === null || $estado === null) {
+                throw new Exception("ID o estado faltante.");
+            }
+
+            // Cambiar el estado del usuario
+            cambiarEstadoUsuario($pdo, $id, $estado);
+
+            // Redireccionar después de cambiar el estado
+            header("Location: usuarios.php");
+            exit;
+        } elseif ($accion === 'editar') {
             $nombre = $_POST['nombre'] ?? null;
             $documento = $_POST['documento'] ?? null;
             $telefono = $_POST['telefono'] ?? null;
@@ -41,6 +55,7 @@ try {
             agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $correo, $rol);
         }
 
+        // Redireccionar después de cualquier acción
         header("Location: usuarios.php");
         exit;
     }
@@ -50,15 +65,46 @@ try {
     die("Error: " . $e->getMessage());
 }
 
+// Función para listar usuarios con filtro de búsqueda
 function listarUsuarios($pdo) {
     try {
-        $stmt = $pdo->query("SELECT id, nombre, documento, telefono, direccion, correo, rol, fecha_creacion FROM usuarios");
+        $nombre = $_GET['nombre'] ?? '';
+        $documento = $_GET['documento'] ?? '';
+
+        $sql = "SELECT id, nombre, documento, telefono, direccion, correo, rol, fecha_creacion, activo FROM usuarios WHERE 1=1";
+        
+        // Agregar condiciones de búsqueda si los campos no están vacíos
+        if ($nombre) {
+            $sql .= " AND nombre LIKE :nombre";
+        }
+        if ($documento) {
+            $sql .= " AND documento LIKE :documento";
+        }
+
+        $stmt = $pdo->prepare($sql);
+
+        // Vincular los parámetros de búsqueda
+        if ($nombre) {
+            $stmt->bindValue(':nombre', "%$nombre%", PDO::PARAM_STR);
+        }
+        if ($documento) {
+            $stmt->bindValue(':documento', "%$documento%", PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
         die("Error al listar usuarios: " . $e->getMessage());
     }
 }
 
+// Función para cambiar el estado del usuario
+function cambiarEstadoUsuario($pdo, $id, $estado) {
+    $stmt = $pdo->prepare("UPDATE usuarios SET activo = :activo WHERE id = :id");
+    $stmt->execute(['activo' => $estado, 'id' => $id]);
+}
+
+// Función para editar un usuario
 function editarUsuario($pdo, $id, $nombre, $documento, $telefono, $direccion, $correo, $rol) {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE correo = :correo AND id != :id");
     $stmt->execute(['correo' => $correo, 'id' => $id]);
@@ -78,6 +124,7 @@ function editarUsuario($pdo, $id, $nombre, $documento, $telefono, $direccion, $c
     ]);
 }
 
+// Función para agregar un usuario
 function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $correo, $rol) {
     $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, documento, telefono, direccion, correo, rol, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, NOW())");
     $stmt->execute([$nombre, $documento, $telefono, $direccion, $correo, $rol]);
@@ -308,7 +355,7 @@ function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $corre
             padding: 10px;
             margin-top: 10px;
             font-size: 16px;
-            background-color: #28a745;
+            background-color: gold;
             color: white;
             border: none;
             border-radius: 5px;
@@ -317,7 +364,7 @@ function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $corre
 
         button[type="submit"]:hover,
         button[type="button"]:hover {
-            background-color: #218838;
+            background-color: goldenrod;
         }
         /* Modal Agregar Usuario */
 #modal-agregar {
@@ -350,7 +397,23 @@ function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $corre
     width: 400px;
     max-width: 100%;
 }
+button[type="submit"] {
+    padding: 10px 20px; /* Ajustar el relleno para un tamaño adecuado */
+    min-width: 80px; /* Establecer un ancho mínimo para los botones */
+    text-align: center; /* Asegurar que el texto esté centrado */
+    font-size: 16px; /* Tamaño de letra */
+    background-color: gold;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
+button[type="submit"][style] {
+    min-width: 80px; /* Ajuste similar para los botones con estilo inline */
+    padding: 10px 20px;
+    font-size: 16px;
+}
 </style>
 
 </head>
@@ -381,6 +444,11 @@ function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $corre
         <h1>Gestión de Usuarios</h1>
         <!-- Botón Agregar Usuario -->
         <button onclick="abrirModalAgregar()">Agregar Usuario</button>
+        <form method="get" action="usuarios.php">
+            <input type="text" name="nombre" placeholder="Buscar por nombre" value="<?= $_GET['nombre'] ?? '' ?>" />
+            <input type="text" name="documento" placeholder="Buscar por documento" value="<?= $_GET['documento'] ?? '' ?>" />
+            <button type="submit">Buscar</button>
+        </form>
         <table>
             <thead>
                 <tr>
@@ -408,6 +476,14 @@ function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $corre
                         <td><?= $usuario['fecha_creacion'] ?></td>
                         <td>
                             <button onclick="abrirModal('<?= $usuario['id'] ?>', '<?= $usuario['nombre'] ?>', '<?= $usuario['correo'] ?>')">Editar</button>
+                            <form method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="<?= $usuario['id'] ?>">
+                            <input type="hidden" name="accion" value="cambiar_estado">
+                            <input type="hidden" name="activo" value="<?= $usuario['activo'] ? 0 : 1 ?>">
+                            <button type="submit" style="background-color: <?= $usuario['activo'] ? 'green' : 'red'; ?>; color: white; min-width: 80px; padding: 10px 20px; font-size: 16px;">
+                                <?= $usuario['activo'] ? 'ON' : 'OFF' ?>
+                            </button>
+                        </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -431,10 +507,11 @@ function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $corre
                 <label for="agregar-correo">Correo:</label>
                 <input type="email" name="correo" id="agregar-correo" required>
                 <label for="agregar-rol">Rol:</label>
-                <select name="rol" id="agregar-rol" required>
-                    <option value="admin">Admin</option>
-                    <option value="usuario">Usuario</option>
-                </select>
+                <select name="rol" id="editar-rol" required>
+                <option value="administrador">Administrador</option>
+                <option value="mecanico">Mecánico</option>
+                <option value="vendedor">Vendedor</option>
+            </select>
                 <button type="submit" name="accion" value="agregar">Agregar</button>
                 <button type="button" onclick="cerrarModal()">Cancelar</button>
             </form>
@@ -445,24 +522,22 @@ function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $corre
     <div class="modal-content">
         <h2>Editar Usuario</h2>
         <form method="post">
-            <input type="hidden" name="id" id="editar-id">
+            <input type="hidden" name="id" id="editar-id" value="<?= isset($usuario['id']) ? $usuario['id'] : '' ?>">
             
-            <!-- Campo nombre con readonly -->
             <label for="editar-nombre">Nombre:</label>
-            <input type="text" name="nombre" id="editar-nombre" readonly required>
+            <input type="text" name="nombre" id="editar-nombre" value="<?= isset($usuario['nombre']) ? $usuario['nombre'] : '' ?>" readonly required>
             
-            <!-- Campo documento con readonly -->
             <label for="editar-documento">Documento:</label>
-            <input type="text" name="documento" id="editar-documento" readonly required>
+            <input type="text" name="documento" id="editar-documento" value="<?= isset($usuario['documento']) ? $usuario['documento'] : '' ?>" readonly required>
             
-            <label for="agregar-telefono">Teléfono:</label>
-            <input type="text" name="telefono" id="agregar-telefono" pattern="\d*" required>
+            <label for="editar-telefono">Teléfono:</label>
+            <input type="text" name="telefono" id="editar-telefono" value="<?= isset($usuario['telefono']) ? $usuario['telefono'] : '' ?>" pattern="\d*" required>
             
             <label for="editar-direccion">Dirección:</label>
-            <input type="text" name="direccion" id="editar-direccion" required>
+            <input type="text" name="direccion" id="editar-direccion" value="<?= isset($usuario['direccion']) ? $usuario['direccion'] : '' ?>" required>
             
             <label for="editar-correo">Correo:</label>
-            <input type="email" name="correo" id="editar-correo" required>
+            <input type="email" name="correo" id="editar-correo" value="<?= isset($usuario['correo']) ? $usuario['correo'] : '' ?>" required>
             
             <label for="editar-rol">Rol:</label>
             <select name="rol" id="editar-rol" required>
@@ -490,13 +565,6 @@ function abrirModal(id, nombre, correo) {
     document.getElementById('modal-editar').style.display = 'flex';
 }
 
-function abrirModal(id, nombre, correo) {
-    document.getElementById('editar-id').value = id;
-    document.getElementById('editar-nombre').value = nombre;
-    document.getElementById('editar-correo').value = correo;
-    document.getElementById('modal-editar').style.display = 'flex';
-}
-
 // Función para cerrar ambos modales
 // Función para cerrar el modal
 function cerrarModal() {
@@ -504,6 +572,7 @@ function cerrarModal() {
     document.getElementById('modal-agregar').style.display = 'none';
     document.getElementById('modal-editar').style.display = 'none';
 }
+
 
     </script>
 </body>
