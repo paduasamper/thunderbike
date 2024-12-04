@@ -1,417 +1,235 @@
 <?php
-// Datos de conexión (ajusta según tu configuración)
-$host = 'localhost';
+// Datos de conexión a la base de datos
+$host = '127.0.0.1';
 $dbname = 'thunderbike';
-$username = 'root';
-$password = '';
+$username = 'root';  // Ajusta el usuario según tu configuración
+$password = '';      // Ajusta la contraseña según tu configuración
 
 try {
-    // Crear la conexión con PDO
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    // Configurar PDO para lanzar excepciones en caso de error
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Consultas para obtener los totales
-    $ventasStmt = $pdo->query("SELECT COUNT(*) as totalVentas FROM ventas");
-    $productosStmt = $pdo->query("SELECT COUNT(*) as totalProductos FROM productos");
-    $reparacionesStmt = $pdo->query("SELECT COUNT(*) as totalReparaciones FROM reparaciones");
-    $clientesStmt = $pdo->query("SELECT COUNT(*) as totalClientes FROM clientes");
+    // Obtener ventas del mes actual
+    $sqlVentasMesActual = "SELECT SUM(total) AS total_ventas_mes_actual FROM ventas WHERE MONTH(fecha) = MONTH(CURRENT_DATE) AND YEAR(fecha) = YEAR(CURRENT_DATE)";
+    $stmtVentasMesActual = $pdo->prepare($sqlVentasMesActual);
+    $stmtVentasMesActual->execute();
+    $ventasMesActual = $stmtVentasMesActual->fetch(PDO::FETCH_ASSOC);
 
-    // Obtener los resultados
-    $totalVentas = $ventasStmt->fetch(PDO::FETCH_ASSOC)['totalVentas'];
-    $totalProductos = $productosStmt->fetch(PDO::FETCH_ASSOC)['totalProductos'];
-    $totalReparaciones = $reparacionesStmt->fetch(PDO::FETCH_ASSOC)['totalReparaciones'];
-    $totalClientes = $clientesStmt->fetch(PDO::FETCH_ASSOC)['totalClientes'];
+    // Comparativo con mes anterior
+    $sqlVentasMesAnterior = "SELECT SUM(total) AS total_ventas_mes_anterior FROM ventas WHERE MONTH(fecha) = MONTH(CURRENT_DATE) - 1 AND YEAR(fecha) = YEAR(CURRENT_DATE)";
+    $stmtVentasMesAnterior = $pdo->prepare($sqlVentasMesAnterior);
+    $stmtVentasMesAnterior->execute();
+    $ventasMesAnterior = $stmtVentasMesAnterior->fetch(PDO::FETCH_ASSOC);
+
+    // Top vendedores
+    $sqlTopVendedores = "SELECT u.nombre, SUM(v.total) AS total_ventas FROM ventas v JOIN usuarios u ON v.vendedor_id = u.id GROUP BY v.vendedor_id ORDER BY total_ventas DESC LIMIT 5";
+    $stmtTopVendedores = $pdo->prepare($sqlTopVendedores);
+    $stmtTopVendedores->execute();
+    $topVendedores = $stmtTopVendedores->fetchAll(PDO::FETCH_ASSOC);
+
+    // Top reparaciones
+    $sqlTopMecanicos = "SELECT u.nombre, COUNT(r.id) AS total_reparaciones FROM reparaciones r JOIN usuarios u ON r.mecanico_id = u.id GROUP BY r.mecanico_id ORDER BY total_reparaciones DESC LIMIT 5";
+    $stmtTopMecanicos = $pdo->prepare($sqlTopMecanicos);
+    $stmtTopMecanicos->execute();
+    $topMecanicos = $stmtTopMecanicos->fetchAll(PDO::FETCH_ASSOC);
+
+    // Relación insumos y productos
+    $sqlRelacionInsumosProductos = "SELECT p.nombre AS producto, i.nombre AS insumo, SUM(r.cantidad_insumo) AS total_insumo, SUM(v.cantidad) AS total_producto FROM reparaciones r JOIN insumos i ON r.insumo_id = i.id JOIN productos p ON r.producto_id = p.id LEFT JOIN ventas v ON v.producto_id = p.id GROUP BY p.id, i.id";
+    $stmtRelacionInsumosProductos = $pdo->prepare($sqlRelacionInsumosProductos);
+    $stmtRelacionInsumosProductos->execute();
+    $relacionInsumosProductos = $stmtRelacionInsumosProductos->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    // En caso de error, mostrar un mensaje
-    echo "Error en la conexión: " . $e->getMessage();
-}
-?>
-
-<?php
-session_start();
-
-// Configurar headers para evitar cache
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-
-if (!isset($_SESSION['username'])) {
-    header('location: logeo.php');
-    exit();
+    echo 'Error de conexión: ' . $e->getMessage();
+} catch (Exception $e) {
+    echo 'Error: ' . $e->getMessage();
 }
 
-$role = $_SESSION['role'];
+// Si no se recuperan datos, asignamos un valor predeterminado
+$ventasMesActual = $ventasMesActual ?? ['total_ventas_mes_actual' => 0];
+$ventasMesAnterior = $ventasMesAnterior ?? ['total_ventas_mes_anterior' => 0];
+$topVendedores = $topVendedores ?? [];
+$topMecanicos = $topMecanicos ?? [];
+$relacionInsumosProductos = $relacionInsumosProductos ?? [];
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>THUNDERBIKE</title>
-    <link rel="icon" type="image/png" href="img/thunderbikes.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ThunderBike</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-    /* Normalización de márgenes y padding */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box; /* Para que el padding y el border no afecten al tamaño total */
-    }
-
-    /* Fuente personalizada y responsiva */
-    body {
-        font-size: 16px;
-        background: #f5f5f5;
-        font-family: 'Arial', sans-serif; /* Cambia a la tipografía deseada */
-        line-height: 1.6;
-    }
-
-    /* Cambiar la tipografía y hacerla responsiva */
-    .header {
-        width: 60%;
-        margin: 40px auto 0;
-        color: white;
-        background: #5F9EA0;
-        text-align: center;
-        border: 1px solid #B0C4DE;
-        border-bottom: none;
-        border-radius: 10px 10px 0 0;
-        padding: 20px;
-        font-family: 'Roboto', sans-serif; /* Cambiar a la tipografía deseada */
-        font-size: 2rem; /* Responsivo */
-    }
-
-    form, .content {
-        width: 70%;
-        margin: 0 auto;
-        padding: 20px;
-        border: 1px solid #B0C4DE;
-        background: white;
-        border-radius: 10px 0 10px 10px;
-        font-family: 'Roboto', sans-serif;
-        font-size: 1.2rem; /* Responsivo */
-    }
-
-    .input-group {
-        margin: 10px 0;
-    }
-
-    .input-group label {
-        display: block;
-        text-align: left;
-        margin: 3px;
-        font-size: 1rem;
-    }
-
-    .input-group input {
-        height: 30px;
-        width: 100%; /* Asegura que los campos de entrada ocupen el ancho completo */
-        padding: 5px 10px;
-        font-size: 1rem;
-        border-radius: 5px;
-        border: 1px solid gray;
-    }
-
-    .btn {
-        padding: 10px;
-        font-size: 1rem;
-        color: rgb(12, 12, 12);
-        background: #ffc600;
-        border: none;
-        border-radius: 5px;
-    }
-
-    .error {
-        width: 92%; 
-        margin: 0 auto; 
-        padding: 10px; 
-        border: 1px solid #a94442; 
-        color: #a94442; 
-        background: #f2dede; 
-        border-radius: 5px; 
-        text-align: left;
-    }
-
-    .success {
-        color: #3c763d; 
-        background: #dff0d8; 
-        border: 1px solid #3c763d;
-        margin-bottom: 20px;
-    }
-
-    .navtop {
-        background-color: #2f3947;
-        height: 60px;
-        width: 100%;
-        border: 0;
-    }
-
-    .navtop div {
-        display: flex;
-        margin: 0 auto;
-        width: 100%;
-        height: 100%;
-        max-width: 1200px; /* Limitar el ancho en pantallas grandes */
-    }
-
-    .navtop div h1, .navtop div a {
-        display: inline-flex;
-        align-items: center;
-    }
-
-    .navtop div h1 {
-        flex: 1;
-        font-size: 1.5rem; /* Responsivo */
-        color: #eaebed;
-        font-weight: normal;
-    }
-
-    .navtop div a {
-        padding: 0 20px;
-        text-decoration: none;
-        color: #E5A65E;
-        font-weight: bold;
-        position: relative;
-        font-size: 1rem; /* Responsivo */
-    }
-
-    .navtop div a:hover {
-        color: #eaebed;
-    }
-
-    .button-selected {
-        background-color: gold;
-    }
-
-    .button:hover {
-        background-color: lightblue;
-    }
-
-    #cerrarSesionBtn:hover {
-        color: red;
-    }
-
-    #background-video {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        object-fit: cover;
-    }
-
-    /* Añadir media queries para pantallas pequeñas */
-    @media (max-width: 768px) {
-        .navtop div {
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
-        .navtop div h1 {
-            text-align: center;
-            font-size: 1.3rem; /* Ajustar el tamaño de fuente para pantallas pequeñas */
-        }
-
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .button {
-            width: 100%; /* Los botones ocupan todo el ancho en pantallas pequeñas */
-            text-align: center;
-            padding: 10px;
-            margin-bottom: 5px;
-        }
-
-        .header {
-            width: 100%;
-            font-size: 1.8rem; /* Responsivo */
-        }
-
-        form, .content {
-            width: 100%;
-            padding: 10px;
-            font-size: 1rem; /* Responsivo */
-        }
-
-        .input-group input {
-            width: 100%; /* Asegura que los inputs ocupen todo el ancho */
-        }
-    }
-
-    /* Ajustes adicionales para pantallas aún más pequeñas */
-    @media (max-width: 480px) {
-        body {
-            font-size: 14px; /* Reduce el tamaño de fuente en pantallas muy pequeñas */
-        }
-
-        .header, form, .content {
-            padding: 10px;
-            font-size: 1rem; /* Responsivo */
-        }
-
-        .navtop div h1 {
-            font-size: 1.2rem; /* Responsivo */
-        }
-
-        .navtop div a {
-            font-size: 0.9rem; /* Reducir tamaño de fuente */
-        }
-    }
-</style>
-
 </head>
 <body>
-<nav class="navtop">
-    <div>
-        <img src="img/thunderbikes.png" alt="thunderbikes" style="width: 55px; height: 55px;">
-        <h1>THUNDERBIKE</h1>
-        <div class="container">
-            <div class="button-container">
-                <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-                    <a href="usuarios.php" id="UsuariosBtn" class="button">Usuarios</a>
-                    <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="insumos.php" id="insumosBtn" class="button">Insumos</a>
-                    <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
-                    <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
-                    <a href="facturacion.php" id="reparacionesBtn" class="button">Facturacion</a>
-                <a href="logout.php" id="cerrarSesionBtn" class="button special">Cerrar Sesión</a>
+    <nav>
+        <ul>
+            <li><a href="index.php">Inicio</a></li>
+            <li><a href="sales.php">Ventas</a></li>
+            <li><a href="reports.php">Reportes</a></li>
+            <li><a href="settings.php">Configuraciones</a></li>
+        </ul>
+    </nav>
+
+    <div class="container my-4">
+        <h1>Dashboard de ThunderBike</h1>
+        
+        <div class="row">
+            <!-- Ventas del Mes Actual -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">Ventas del Mes Actual</div>
+                    <div class="card-body">
+                        <p>Total Ventas: $<?= number_format($ventasMesActual['total_ventas_mes_actual'], 2) ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparativo de Ventas -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">Comparativo de Ventas</div>
+                    <div class="card-body">
+                        <p><strong>Mes Actual vs Mes Anterior:</strong> $<?= number_format($ventasMesActual['total_ventas_mes_actual'], 2) ?> vs $<?= number_format($ventasMesAnterior['total_ventas_mes_anterior'], 2) ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top 5 Vendedores -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">Top 5 Vendedores</div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <?php foreach ($topVendedores as $vendedor): ?>
+                                <li class="list-group-item"><?= $vendedor['nombre'] ?>: $<?= number_format($vendedor['total_ventas'], 2) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 5 Mecánicos -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Top 5 Mecánicos</div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <?php foreach ($topMecanicos as $mecanico): ?>
+                                <li class="list-group-item"><?= $mecanico['nombre'] ?>: <?= $mecanico['total_reparaciones'] ?> reparaciones</li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relación de Productos, Insumos y Servicios -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Relación de Insumos y Productos</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Insumo</th>
+                                    <th>Total Insumo</th>
+                                    <th>Total Producto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($relacionInsumosProductos as $item): ?>
+                                    <tr>
+                                        <td><?= $item['producto'] ?></td>
+                                        <td><?= $item['insumo'] ?></td>
+                                        <td><?= $item['total_insumo'] ?></td>
+                                        <td><?= $item['total_producto'] ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="row mt-4">
+            <!-- Gráfico de Comparativo de Ventas -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Comparativo de Ventas: Mes Actual vs Mes Anterior</div>
+                    <div class="card-body">
+                        <canvas id="ventasComparativoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Top 5 Vendedores -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Top 5 Vendedores</div>
+                    <div class="card-body">
+                        <canvas id="topVendedoresChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</nav>
 
-<div>
-    <h1 style="color: gold;">Bienvenido al Panel de <?= ucfirst($role) ?></h1>
-    <p style="color: gold;">Esta es una página exclusiva para <?= $role === 'administrador' ? 'administradores' : ($role === 'mecanico' ? 'mecánicos' : 'vendedores') ?>.</p>
-</div>
-
-<video id="background-video" autoplay muted loop>
-    <source src="img/salto2.mp4" type="video/mp4">
-    Tu navegador no admite la etiqueta de video.
-</video>
-
-<?php if (isset($_SESSION['success'])) : ?>
-    <div class="error success">
-        <h3>
-            <?php 
-            echo $_SESSION['success']; 
-            unset($_SESSION['success']);
-            ?>
-        </h3>
-    </div>
-<?php endif; ?>
-
-<?php if (isset($_SESSION['username'])) : ?>
-    <p><strong style="font-size: 24px; color: #efb810;"><?php echo $_SESSION['username']; ?></strong></p>
-<?php endif; ?>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Verificar si hay un usuario activo
-        const username = "<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>";
-        
-        if (!username) {
-            // Redirigir si no hay sesión activa
-            window.location.href = 'logeo.php';
-        }
-
-        const productosBtn = document.getElementById('productosBtn');
-        const productosTooltip = document.getElementById('productosTooltip');
-
-        // Mostrar tooltip
-        productosBtn.addEventListener('mouseenter', () => {
-            productosTooltip.style.display = 'block';
-        });
-
-        // Ocultar tooltip
-        productosBtn.addEventListener('mouseleave', () => {
-            productosTooltip.style.display = 'none';
-        });
-
-        // Mantener el tooltip visible al pasar el mouse sobre él
-        productosTooltip.addEventListener('mouseenter', () => {
-            productosTooltip.style.display = 'block';
-        });
-
-        productosTooltip.addEventListener('mouseleave', () => {
-            productosTooltip.style.display = 'none';
-        });
-
-        // Cerrar sesión
-        const logoutButton = document.getElementById('cerrarSesionBtn');
-        logoutButton.addEventListener('mouseenter', () => {
-            logoutButton.style.color = 'red';
-        });
-        logoutButton.addEventListener('mouseleave', () => {
-            logoutButton.style.color = 'white';
-        });
-
-        // Selección de botones
-        const buttons = document.querySelectorAll('.button');
-        buttons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                buttons.forEach(function(btn) {
-                    btn.classList.remove('button-selected');
-                });
-                button.classList.add('button-selected');
-            });
-        });
-    });
-</script>
-<div class="content">
-    <canvas id="myChart"></canvas>
-</div>
-
-<script>
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'bar', // Tipo de gráfico: barra
-        data: {
-            labels: ['Ventas', 'Insumos', 'Reparaciones', 'Clientes'], // Etiquetas
-            datasets: [{
-                label: 'Estadísticas',
-                data: [<?= $totalVentas ?>, <?= $totalProductos ?>, <?= $totalReparaciones ?>, <?= $totalClientes ?>], // Datos de PHP
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)' // Color para clientes
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)' // Borde para clientes
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+    <script>
+              // Gráfico de Comparativo de Ventas
+        var ctx = document.getElementById('ventasComparativoChart').getContext('2d');
+        var ventasComparativoChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Mes Actual', 'Mes Anterior'],
+                datasets: [{
+                    label: 'Ventas ($)',
+                    data: [<?= number_format($ventasMesActual['total_ventas_mes_actual'], 2) ?>, <?= number_format($ventasMesAnterior['total_ventas_mes_anterior'], 2) ?>],
+                    backgroundColor: ['#4CAF50', '#FF5722'],
+                    borderColor: ['#4CAF50', '#FF5722'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const menuToggle = document.querySelector('.menu-toggle');
-        const menuContainer = document.querySelector('.menu-container');
-
-        menuToggle.addEventListener('click', function () {
-            menuContainer.classList.toggle('active'); // Alternar el menú desplegable
         });
-    });
-</script>
 
+        // Gráfico de Top 5 Vendedores
+        var ctxVendedores = document.getElementById('topVendedoresChart').getContext('2d');
+        var topVendedoresChart = new Chart(ctxVendedores, {
+            type: 'bar',
+            data: {
+                labels: [<?php foreach ($topVendedores as $vendedor) { echo '"' . $vendedor['nombre'] . '",'; } ?>],
+                datasets: [{
+                    label: 'Ventas por Vendedor ($)',
+                    data: [<?php foreach ($topVendedores as $vendedor) { echo $vendedor['total_ventas'] . ','; } ?>],
+                    backgroundColor: '#FF9800',
+                    borderColor: '#FF9800',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

@@ -422,8 +422,20 @@ body {
         <label for="total">Total:</label>
         <input type="number" name="total" id="total" step="0.01" required><br>
 
+        <?php
+        $minDate = date('Y-m-d', strtotime('-1 month')); // Hace un mes
+        $maxDate = date('Y-m-d'); // Fecha actual
+        ?>
+
         <label for="fecha_factura">Fecha de Factura:</label>
-        <input type="date" name="fecha_factura" id="fecha_factura" required min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d') ?>"><br>
+        <input 
+    type="date" 
+    name="fecha_factura" 
+    id="fecha_factura" 
+    required 
+    value="<?= date('Y-m-d') ?>" 
+    max="<?= date('Y-m-d') ?>"
+> <br>
 
         <label for="estado">Estado:</label>
         <select name="estado" id="estado" required>
