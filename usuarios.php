@@ -10,25 +10,37 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $accion = $_POST['accion'];
+        $accion = $_POST['accion'] ?? null;
         $id = $_POST['id'] ?? null;
 
         if ($accion === 'editar') {
             $nombre = $_POST['nombre'] ?? null;
+            $documento = $_POST['documento'] ?? null;
+            $telefono = $_POST['telefono'] ?? null;
+            $direccion = $_POST['direccion'] ?? null;
             $correo = $_POST['correo'] ?? null;
             $rol = $_POST['rol'] ?? null;
 
-            if (!$nombre || !$correo || !$rol) {
+            if (!$nombre || !$documento || !$telefono || !$direccion || !$correo || !$rol) {
                 throw new Exception("Todos los campos son obligatorios.");
             }
 
-            editarUsuario($pdo, $id, $nombre, $correo, $rol);
-        } elseif ($accion === 'eliminar') {
-            eliminarUsuario($pdo, $id);
-        } elseif ($accion === 'cambiar_rol') {
+            editarUsuario($pdo, $id, $nombre, $documento, $telefono, $direccion, $correo, $rol);
+        } elseif ($accion === 'agregar') {
+            $nombre = $_POST['nombre'] ?? null;
+            $documento = $_POST['documento'] ?? null;
+            $telefono = $_POST['telefono'] ?? null;
+            $direccion = $_POST['direccion'] ?? null;
+            $correo = $_POST['correo'] ?? null;
             $rol = $_POST['rol'] ?? null;
-            cambiarRol($pdo, $id, $rol);
+
+            if (!$nombre || !$documento || !$telefono || !$direccion || !$correo || !$rol) {
+                throw new Exception("Todos los campos son obligatorios.");
+            }
+
+            agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $correo, $rol);
         }
+
         header("Location: usuarios.php");
         exit;
     }
@@ -40,35 +52,37 @@ try {
 
 function listarUsuarios($pdo) {
     try {
-        $stmt = $pdo->query("SELECT id, nombre, correo, rol, fecha_creacion FROM usuarios");
+        $stmt = $pdo->query("SELECT id, nombre, documento, telefono, direccion, correo, rol, fecha_creacion FROM usuarios");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
         die("Error al listar usuarios: " . $e->getMessage());
     }
 }
 
-function editarUsuario($pdo, $id, $nombre, $correo, $rol) {
+function editarUsuario($pdo, $id, $nombre, $documento, $telefono, $direccion, $correo, $rol) {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE correo = :correo AND id != :id");
     $stmt->execute(['correo' => $correo, 'id' => $id]);
     if ($stmt->fetchColumn() > 0) {
         throw new Exception("El correo ya está en uso por otro usuario.");
     }
 
-    $stmt = $pdo->prepare("UPDATE usuarios SET nombre = :nombre, correo = :correo, rol = :rol WHERE id = :id");
-    $stmt->execute(['nombre' => $nombre, 'correo' => $correo, 'rol' => $rol, 'id' => $id]);
+    $stmt = $pdo->prepare("UPDATE usuarios SET nombre = :nombre, documento = :documento, telefono = :telefono, direccion = :direccion, correo = :correo, rol = :rol WHERE id = :id");
+    $stmt->execute([
+        'nombre' => $nombre,
+        'documento' => $documento,
+        'telefono' => $telefono,
+        'direccion' => $direccion,
+        'correo' => $correo,
+        'rol' => $rol,
+        'id' => $id
+    ]);
 }
 
-function eliminarUsuario($pdo, $id) {
-    $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = ?");
-    $stmt->execute([$id]);
-}
-
-function cambiarRol($pdo, $id, $rol) {
-    $stmt = $pdo->prepare("UPDATE usuarios SET rol = ? WHERE id = ?");
-    $stmt->execute([$rol, $id]);
+function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $correo, $rol) {
+    $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, documento, telefono, direccion, correo, rol, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+    $stmt->execute([$nombre, $documento, $telefono, $direccion, $correo, $rol]);
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -305,6 +319,37 @@ function cambiarRol($pdo, $id, $rol) {
         button[type="button"]:hover {
             background-color: #218838;
         }
+        /* Modal Agregar Usuario */
+#modal-agregar {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    width: 400px;
+    max-width: 100%;
+}
+
+/* Modal Editar Usuario */
+#modal-editar {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    width: 400px;
+    max-width: 100%;
+}
 
 </style>
 
@@ -334,11 +379,16 @@ function cambiarRol($pdo, $id, $rol) {
 
     <div class="container">
         <h1>Gestión de Usuarios</h1>
+        <!-- Botón Agregar Usuario -->
+        <button onclick="abrirModalAgregar()">Agregar Usuario</button>
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Telefono</th>
+                    <th>Dirreción</th>
                     <th>Correo</th>
                     <th>Rol</th>
                     <th>Fecha de Creación</th>
@@ -350,57 +400,111 @@ function cambiarRol($pdo, $id, $rol) {
                     <tr>
                         <td><?= $usuario['id'] ?></td>
                         <td><?= $usuario['nombre'] ?></td>
+                        <td><?= $usuario['documento'] ?></td>
+                        <td><?= $usuario['telefono'] ?></td>
+                        <td><?= $usuario['direccion'] ?></td>
                         <td><?= $usuario['correo'] ?></td>
                         <td><?= $usuario['rol'] ?></td>
                         <td><?= $usuario['fecha_creacion'] ?></td>
                         <td>
                             <button onclick="abrirModal('<?= $usuario['id'] ?>', '<?= $usuario['nombre'] ?>', '<?= $usuario['correo'] ?>')">Editar</button>
-                            <form method="post" style="display:inline;">
-                                <input type="hidden" name="id" value="<?= $usuario['id'] ?>">
-                                <button type="submit" name="accion" value="eliminar" onclick="return confirm('¿Está seguro de eliminar este usuario?')">Eliminar</button>
-                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-
-    <div id="modal-editar">
+        <!-- Modal Agregar Usuario -->
+        <div id="modal-agregar">
         <div class="modal-content">
-            <h2>Editar Usuario</h2>
+            <h2>Agregar Usuario</h2>
             <form method="post">
-                <input type="hidden" name="id" id="editar-id">
-                <label for="editar-nombre">Nombre:</label>
-                <input type="text" name="nombre" id="editar-nombre" required>
-                <br><br>
-                <label for="editar-correo">Correo:</label>
-                <input type="email" name="correo" id="editar-correo" required>
-                <br><br>
-                <label for="editar-rol">Rol:</label>
-                <select name="rol" id="editar-rol" required>
-                    <option value="administrador">Administrador</option>
-                    <option value="mecanico">Mecánico</option>
-                    <option value="vendedor">Vendedor</option>
+                <input type="hidden" name="id" id="agregar-id">
+                <label for="agregar-nombre">Nombre:</label>
+                <input type="text" name="nombre" id="agregar-nombre" required>
+                <label for="agregar-documento">Documento:</label>
+                <input type="text" name="documento" id="agregar-documento" required>
+                <label for="agregar-telefono">Teléfono:</label>
+                <input type="text" name="telefono" id="agregar-telefono" pattern="\d*" required>
+                <label for="agregar-direccion">Dirección:</label>
+                <input type="text" name="direccion" id="agregar-direccion" required>
+                <label for="agregar-correo">Correo:</label>
+                <input type="email" name="correo" id="agregar-correo" required>
+                <label for="agregar-rol">Rol:</label>
+                <select name="rol" id="agregar-rol" required>
+                    <option value="admin">Admin</option>
+                    <option value="usuario">Usuario</option>
                 </select>
-                <br><br>
-                <button type="submit" name="accion" value="editar">Guardar Cambios</button>
+                <button type="submit" name="accion" value="agregar">Agregar</button>
                 <button type="button" onclick="cerrarModal()">Cancelar</button>
             </form>
         </div>
     </div>
+<!-- Modal Editar Usuario -->
+<div id="modal-editar">
+    <div class="modal-content">
+        <h2>Editar Usuario</h2>
+        <form method="post">
+            <input type="hidden" name="id" id="editar-id">
+            
+            <!-- Campo nombre con readonly -->
+            <label for="editar-nombre">Nombre:</label>
+            <input type="text" name="nombre" id="editar-nombre" readonly required>
+            
+            <!-- Campo documento con readonly -->
+            <label for="editar-documento">Documento:</label>
+            <input type="text" name="documento" id="editar-documento" readonly required>
+            
+            <label for="agregar-telefono">Teléfono:</label>
+            <input type="text" name="telefono" id="agregar-telefono" pattern="\d*" required>
+            
+            <label for="editar-direccion">Dirección:</label>
+            <input type="text" name="direccion" id="editar-direccion" required>
+            
+            <label for="editar-correo">Correo:</label>
+            <input type="email" name="correo" id="editar-correo" required>
+            
+            <label for="editar-rol">Rol:</label>
+            <select name="rol" id="editar-rol" required>
+                <option value="administrador">Administrador</option>
+                <option value="mecanico">Mecánico</option>
+                <option value="vendedor">Vendedor</option>
+            </select>
+            <button type="submit" name="accion" value="editar">Guardar Cambios</button>
+            <button type="button" onclick="cerrarModal()">Cancelar</button>
+        </form>
+    </div>
+</div>
 
     <script>
-        function abrirModal(id, nombre, correo) {
-            document.getElementById('editar-id').value = id;
-            document.getElementById('editar-nombre').value = nombre;
-            document.getElementById('editar-correo').value = correo;
-            document.getElementById('modal-editar').style.display = 'flex';
-        }
+// Función para abrir el modal de agregar usuario
+function abrirModalAgregar() {
+    document.getElementById('modal-agregar').style.display = 'flex';
+}
 
-        function cerrarModal() {
-            document.getElementById('modal-editar').style.display = 'none';
-        }
+// Función para abrir el modal de editar usuario
+function abrirModal(id, nombre, correo) {
+    document.getElementById('editar-id').value = id;
+    document.getElementById('editar-nombre').value = nombre;
+    document.getElementById('editar-correo').value = correo;
+    document.getElementById('modal-editar').style.display = 'flex';
+}
+
+function abrirModal(id, nombre, correo) {
+    document.getElementById('editar-id').value = id;
+    document.getElementById('editar-nombre').value = nombre;
+    document.getElementById('editar-correo').value = correo;
+    document.getElementById('modal-editar').style.display = 'flex';
+}
+
+// Función para cerrar ambos modales
+// Función para cerrar el modal
+function cerrarModal() {
+    // Se establece el estilo display a 'none' para ocultar el modal
+    document.getElementById('modal-agregar').style.display = 'none';
+    document.getElementById('modal-editar').style.display = 'none';
+}
+
     </script>
 </body>
 </html>
