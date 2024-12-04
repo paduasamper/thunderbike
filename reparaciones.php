@@ -12,6 +12,10 @@
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
     }
+    h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
     .container {
       background: white;
       border-radius: 10px;

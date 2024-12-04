@@ -135,224 +135,94 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
     <link href="bootstrap-4.6.2-dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Facturación</title>
     <style>
-        .navtop {
-            background: #333;
-            padding: 10px 20px;
-            color: white;
-            text-align: center;
-        }
-        .navtop .button {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .scrollable-table {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background: #f4f4f4;
-        }
-        button, select, input {
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            background: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-                /* Estilos globales */
-                body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: black;
-        }
-
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        /* Barra de navegación */
-        .navtop {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .navtop a {
-            color: white;
-            text-decoration: none;
-            margin: 5px 10px;
-        }
-
-        .navtop a:hover {
-            color: goldenrod;
-        }
-
-        .container {
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 1200px;
-        }
-
-        /* Tabla */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        /* Botones */
-        button, form button {
-            padding: 8px 12px;
-            background-color: gold;
-            color: black;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover, form button:hover {
-            background-color: wheat;
-        }
-
-        /* Modal */
-        #modal-editar {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        #modal-editar .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        /* Responsividad */
-        @media (max-width: 768px) {
-            .navtop {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-
-            th, td {
-                white-space: nowrap;
-            }
-
-            .container {
-                width: 95%;
-                padding: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5em;
-            }
-
-            button, form button {
-                padding: 6px 10px;
-                font-size: 0.9em;
-            }
-        }
-        /* Estilo para el fondo de video */
-.video-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
-}
-
-#background-video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1;
-}
-
-/* Contenido encima del video */
-.content {
-    position: relative;
-    z-index: 1;
-}
-
-/* Ajustes para que el contenido siga siendo legible */
 body {
-    background: rgba(0, 0, 0, 0.5); /* Capa de semitransparencia sobre el video */
-    color: black;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Fondo claro para contraste */
+    color: #333;
 }
-/* Estilos para la paginación */
+
+.navtop {
+    background-color: #343a40; /* Color oscuro para la barra de navegación */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navtop a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.navtop a:hover {
+    color: #ffc107; /* Amarillo para el hover */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+h1, h2 {
+    text-align: center;
+    color: while;
+}
+
+button, select, input {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #007bff; /* Azul para botones */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #343a40;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1; /* Efecto de hover en las filas */
+}
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -361,12 +231,11 @@ body {
 
 .pagination a {
     padding: 8px 16px;
-    margin: 0 4px;
+    margin: 0 5px;
     text-decoration: none;
     color: #007bff;
     border: 1px solid #ddd;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
 }
 
 .pagination a:hover {
@@ -377,12 +246,34 @@ body {
 .pagination .active {
     background-color: #007bff;
     color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
     font-weight: bold;
 }
 
-.pagination .disabled {
-    color: #ccc;
-    cursor: not-allowed;
+.form-group input, .form-group select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.button-group button {
+    flex: 1;
+    padding: 10px;
 }
 
     </style>
