@@ -12,16 +12,67 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Conexión fallida: " . htmlspecialchars($e->getMessage()));
-    $result_facturas = [];
-    $clientes = [];
 }
 
-// Obtener las facturas existentes
-$sql_facturas = 'SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos, f.cantidad, f.vendedor
-                FROM facturas AS f 
-                JOIN clientes AS c ON f.cliente_id = c.id';
-$stmt_facturas = $pdo->query($sql_facturas);
+// Filtrar por cliente (ID o nombre)
+$searchQuery = '';
+if (isset($_GET['search']) && !empty($_GET['search'])) {
+    $search = $_GET['search'];
+    $searchQuery = "WHERE c.nombre LIKE :search OR c.id = :searchExact";
+}
+
+// Obtener las facturas existentes con búsqueda
+$sql_facturas = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos, f.cantidad, f.vendedor
+                 FROM facturas AS f 
+                 JOIN clientes AS c ON f.cliente_id = c.id
+                 $searchQuery";
+$stmt_facturas = $pdo->prepare($sql_facturas);
+
+if ($searchQuery) {
+    $stmt_facturas->execute([':search' => "%$search%", ':searchExact' => $search]);
+} else {
+    $stmt_facturas->execute();
+}
+
 $result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
+
+// Número de resultados por página
+$resultsPerPage = 3;
+
+// Calcular la página actual
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$start = ($page - 1) * $resultsPerPage;
+
+// Modificar la consulta SQL para agregar LIMIT y OFFSET
+$sql_facturas = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos, f.cantidad, f.vendedor
+                 FROM facturas AS f 
+                 JOIN clientes AS c ON f.cliente_id = c.id
+                 $searchQuery
+                 LIMIT :limit OFFSET :offset";
+
+$stmt_facturas = $pdo->prepare($sql_facturas);
+$stmt_facturas->bindValue(':limit', $resultsPerPage, PDO::PARAM_INT);
+$stmt_facturas->bindValue(':offset', $start, PDO::PARAM_INT);
+
+if ($searchQuery) {
+    $stmt_facturas->execute([':search' => "%$search%", ':searchExact' => $search]);
+} else {
+    $stmt_facturas->execute();
+}
+
+$result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
+
+// Obtener el total de facturas para la paginación
+$sql_count = "SELECT COUNT(*) FROM facturas AS f JOIN clientes AS c ON f.cliente_id = c.id $searchQuery";
+$stmt_count = $pdo->prepare($sql_count);
+if ($searchQuery) {
+    $stmt_count->execute([':search' => "%$search%", ':searchExact' => $search]);
+} else {
+    $stmt_count->execute();
+}
+$totalRecords = $stmt_count->fetchColumn();
+$totalPages = ceil($totalRecords / $resultsPerPage);
+
 
 // Obtener todos los clientes
 $sql_clientes = "SELECT id, nombre FROM clientes";
@@ -30,43 +81,38 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
 
 // Verificar si se ha enviado el formulario para agregar una nueva factura
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    echo "<pre>Datos enviados: "; print_r($_POST); echo "</pre>"; // Depuración de datos enviados
+    if (isset($_POST['cliente_id'], $_POST['total'], $_POST['fecha_factura'], $_POST['estado'], $_POST['productos'])) {
+        $cliente_id = $_POST['cliente_id'];
+        $total = $_POST['total'];
+        $fecha_factura = $_POST['fecha_factura'];
+        $estado = $_POST['estado'];
+        $productos = json_encode(array_filter($_POST['productos'], 'trim')); // Filtrar productos vacíos y convertir a JSON
+        $cantidad = $_POST['cantidad'];
+        $vendedor = $_POST['vendedor'];
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (isset($_POST['cliente_id'], $_POST['total'], $_POST['fecha_factura'], $_POST['estado'], $_POST['productos'])) {
-            $cliente_id = $_POST['cliente_id'];
-            $total = $_POST['total'];
-            $fecha_factura = $_POST['fecha_factura'];
-            $estado = $_POST['estado'];
-            $productos = json_encode(array_filter($_POST['productos'], 'trim')); // Filtrar productos vacíos y convertir a JSON
-            $cantidad = $_POST['cantidad'];
-            $vendedor = $_POST['vendedor'];
-    
-            // Validar que la fecha no sea superior al año actual
-            $currentYear = date('Y'); // Obtiene el año actual
-            $inputYear = date('Y', strtotime($fecha_factura)); // Extrae el año de la fecha ingresada
-    
-            if ($inputYear > $currentYear) {
-                echo "Error: La fecha no puede ser superior al año actual.<br>";
-            } else {
-                // Validar datos antes de insertar
-                if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos)) {
-                    $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado, productos, cantidad, vendedor) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                    $stmt_insert = $pdo->prepare($sql_insert);
-                
-                    try {
-                        $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado, $productos, $cantidad, $vendedor]);
-                        echo "Factura agregada exitosamente.<br>";
-                        header("Location: facturacion.php"); // Redireccionar para evitar reenvíos
-                        exit();
-                    } catch (PDOException $e) {
-                        echo "Error al agregar la factura: " . htmlspecialchars($e->getMessage());
-                    }
+        // Validar que la fecha no sea superior al día actual
+        $fechaActual = date('Y-m-d');
+        if ($fecha_factura > $fechaActual) {
+            echo "Error: La fecha no puede ser posterior al día actual.<br>";
+        } else {
+            // Validar datos antes de insertar
+            if (!empty($cliente_id) && !empty($total) && !empty($fecha_factura) && !empty($estado) && !empty($productos)) {
+                $sql_insert = "INSERT INTO facturas (cliente_id, total, fecha_factura, estado, productos, cantidad, vendedor) 
+                               VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $stmt_insert = $pdo->prepare($sql_insert);
+
+                try {
+                    $stmt_insert->execute([$cliente_id, $total, $fecha_factura, $estado, $productos, $cantidad, $vendedor]);
+                    echo "Factura agregada exitosamente.<br>";
+                    header("Location: facturacion.php"); // Redireccionar para evitar reenvíos
+                    exit();
+                } catch (PDOException $e) {
+                    echo "Error al agregar la factura: " . htmlspecialchars($e->getMessage());
                 }
             }
-        }       
+        }
     }
-}    
+}
 
 $pdo = null; // Cerrar la conexión
 ob_end_flush(); // Liberar el almacenamiento en búfer
@@ -297,32 +343,42 @@ body {
     background: rgba(0, 0, 0, 0.5); /* Capa de semitransparencia sobre el video */
     color: black;
 }
-    </style>
-    <script>
-        function agregarProducto() {
-            const productosList = document.getElementById('productos-list');
-            const productoItem = document.createElement('div');
-            productoItem.className = 'producto-item';
-            productoItem.innerHTML = `
-                <input type="text" name="productos[]" placeholder="Producto" required>
-                <button type="button" onclick="eliminarProducto(this)">Eliminar</button>
-            `;
-            productosList.appendChild(productoItem);
-        }
+/* Estilos para la paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
 
-        function eliminarProducto(btn) {
-            const productoItem = btn.parentElement;
-            productoItem.remove();
-        }
-    </script>
-    <script src="bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
+.pagination a {
+    padding: 8px 16px;
+    margin: 0 4px;
+    text-decoration: none;
+    color: #007bff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination .active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.pagination .disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+    </style>
 </head>
 <body>
-<div class="video-background">
-        <video autoplay muted loop id="background-video">
-            <source src="ruta-del-video.mp4" type="video/mp4">
-        </video>
-    </div>
 <nav class="navtop">
         <div>
                     <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
@@ -334,51 +390,56 @@ body {
                     <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
         </div>
     </nav>
-    <div class="container">
-        <h2>Agregar Nueva Factura</h2>
-        <form action="facturacion.php" method="POST">
-            <label for="cliente_id">Cliente:</label>
-            <select name="cliente_id" id="cliente_id" required>
-                <?php foreach ($clientes as $cliente): ?>
-                    <option value="<?= htmlspecialchars($cliente['id']) ?>">
-                        <?= htmlspecialchars($cliente['nombre']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select><br>
+<div class="container">
+    <h2>Buscar Facturas</h2>
+    <form method="GET" action="facturacion.php">
+        <input type="text" name="search" placeholder="Buscar por cliente o ID" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+        <button type="submit">Buscar</button>
+    </form>
 
-            <label for="productos">Productos:</label>
-            <div id="productos-list" class="productos-list">
-                <div class="producto-item">
-                    <input type="text" name="productos[]" placeholder="Producto" required>
-                </div>
+    <h2>Agregar Nueva Factura</h2>
+    <form action="facturacion.php" method="POST">
+        <label for="cliente_id">Cliente:</label>
+        <select name="cliente_id" id="cliente_id" required>
+            <?php foreach ($clientes as $cliente): ?>
+                <option value="<?= htmlspecialchars($cliente['id']) ?>">
+                    <?= htmlspecialchars($cliente['nombre']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select><br>
+
+        <label for="productos">Productos:</label>
+        <div id="productos-list">
+            <div>
+                <input type="text" name="productos[]" placeholder="Producto" required>
             </div>
-            <button type="button" onclick="agregarProducto()">Agregar Producto</button><br>
+        </div>
+        <button type="button" onclick="agregarProducto()">Agregar Producto</button><br>
 
-            <label for="cantidad">Cantidad:</label>
-            <input type="number" name="cantidad" id="cantidad" step="0.01" required><br>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" name="cantidad" id="cantidad" step="1" required><br>
 
-            <label for="total">Total:</label>
-            <input type="number" name="total" id="total" step="0.01" required><br>
+        <label for="total">Total:</label>
+        <input type="number" name="total" id="total" step="0.01" required><br>
 
-            <label for="fecha_factura">Fecha de Factura:</label>
-            <input type="date" name="fecha_factura" id="fecha_factura" required><br>
+        <label for="fecha_factura">Fecha de Factura:</label>
+        <input type="date" name="fecha_factura" id="fecha_factura" required min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d') ?>"><br>
 
-            <label for="estado">Estado:</label>
-            <select name="estado" id="estado" required>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Credito">Credito</option>
-                <option value="Cancelada">Cancelada</option>
-            </select><br>
+        <label for="estado">Estado:</label>
+        <select name="estado" id="estado" required>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Credito">Credito</option>
+            <option value="Cancelada">Cancelada</option>
+        </select><br>
 
-            <label for="vendedor">Vendedor:</label>
-            <input type="text" name="vendedor" id="vendedor" step="0.01" required><br>
+        <label for="vendedor">Vendedor:</label>
+        <input type="text" name="vendedor" id="vendedor" required><br>
 
-            <button type="submit">Guardar Factura</button>
-        </form>
+        <button type="submit">Guardar Factura</button>
+    </form>
 
-        <div class="container">
-        <h2>Facturas Realizadas</h2>
-        <div class="scrollable-table">
+    <h2>Facturas Realizadas</h2>
+    <div class="scrollable-table">
         <table>
             <thead>
                 <tr>
@@ -390,36 +451,48 @@ body {
                     <th>Cantidad</th>
                     <th>Productos</th>
                     <th>Vendedor</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-            <?php if (!empty($result_facturas)): ?>
-                <?php foreach ($result_facturas as $row): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($row['id']) ?></td>
-                        <td><?= htmlspecialchars($row['nombre_cliente']) ?></td>
-                        <td><?= htmlspecialchars($row['total']) ?></td>
-                        <td><?= htmlspecialchars($row['fecha_factura']) ?></td>
-                        <td><?= htmlspecialchars($row['estado']) ?></td>
-                        <td><?= htmlspecialchars($row['cantidad']) ?></td>
-                        <td><?= htmlspecialchars($row['productos']) ?></td>
-                        <td><?= htmlspecialchars($row['vendedor']) ?></td>
-                        <td>
-                                <a href="controladores/EDITA_FACTURA.PHP?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Editar</a>
-                                <a href="controladores/ELIMINAR_FACTURAS.PHP?id=<?= htmlspecialchars($row["id"]) ?>" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta factura?');">Eliminar</a>
-                                <a href="GENERAR_PDFS.PHP?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Generar PDF</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                <?php else: ?>
-                    <tr><td colspan="7">No se encontraron facturas.</td></tr>
-                <?php endif; ?>
+            <?php foreach ($result_facturas as $row): ?>
+                <tr>
+                    <td><?= htmlspecialchars($row['id']) ?></td>
+                    <td><?= htmlspecialchars($row['nombre_cliente']) ?></td>
+                    <td><?= htmlspecialchars($row['total']) ?></td>
+                    <td><?= htmlspecialchars($row['fecha_factura']) ?></td>
+                    <td><?= htmlspecialchars($row['estado']) ?></td>
+                    <td><?= htmlspecialchars($row['cantidad']) ?></td>
+                    <td><?= htmlspecialchars($row['productos']) ?></td>
+                    <td><?= htmlspecialchars($row['vendedor']) ?></td>
+                </tr>
+            <?php endforeach; ?>
             </tbody>
         </table>
+        <div class="pagination">
+    <?php if ($page > 1): ?>
+        <a href="?page=1">Primera</a>
+        <a href="?page=<?= $page - 1 ?>">Anterior</a>
+    <?php endif; ?>
+
+    <span>Página <?= $page ?> de <?= $totalPages ?></span>
+
+    <?php if ($page < $totalPages): ?>
+        <a href="?page=<?= $page + 1 ?>">Siguiente</a>
+        <a href="?page=<?= $totalPages ?>">Última</a>
+    <?php endif; ?>
+</div>
     </div>
 </div>
+<script>
+    function agregarProducto() {
+        const productosList = document.getElementById('productos-list');
+        const productoItem = document.createElement('div');
+        productoItem.innerHTML = `
+            <input type="text" name="productos[]" placeholder="Producto" required>
+            <button type="button" onclick="this.parentElement.remove()">Eliminar</button>
+        `;
+        productosList.appendChild(productoItem);
+    }
+</script>
 </body>
 </html>
-
-
