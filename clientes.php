@@ -12,7 +12,7 @@
         margin: 0;
         padding: 0;
         background-color: black;
-        overflow: hidden; /* Deshabilitar el desplazamiento global */
+        overflow-y: scroll;
     }
 
         h1 {
