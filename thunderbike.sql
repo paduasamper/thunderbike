@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-12-2024 a las 22:03:01
+-- Tiempo de generación: 04-12-2024 a las 16:03:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
 
@@ -60,14 +60,8 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`id`, `numero_identificacion`, `nombre`, `direccion`, `telefono`, `correo`, `estado`) VALUES
-(35, '1234567890', 'Marcos Llorente', 'Calle 32 #87-6', '3215648956', 'marcos.llorente@example.com', 0),
-(36, '9876543210', 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', 'juan.perez@example.com', 1),
-(43, '1242545451', 'leon javier', 'Calle 87 #67-90', '33211234569', 'jashew@gmail.com', 1),
-(46, '', 'Juan hgfdtr', 'Avenida Proveedor B, Pueblo', '3215648956', '', 1),
-(47, '10005939292', 'Juan ', 'Calle 32 #87-', '3215648956', 'anderson@gmail.com', 1),
-(51, '2145545154', 'leon jili', 'calle 89', '321452326', 'jili@gmail.com', 1),
-(53, '658264585', 'kare', 'avenida 1', '624265', 'kre@gmail.com', 1),
-(54, '52867921', 'jimena', 'kll 56', '124674', 'jimena@gmail.com', 1);
+(35, '1234567890', 'Marcos Llorente Castillo', 'Calle 32 #87-65 sur', '1124475755', 'marcos.llorente.12@example.com', 0),
+(36, '9876543210', 'Juan Pérez', 'Calle 123, Ciudad', '33211234569', 'juan.perez@example.com', 1);
 
 -- --------------------------------------------------------
 
@@ -97,7 +91,7 @@ INSERT INTO `facturas` (`id`, `cliente_id`, `fecha_factura`, `estado`, `total`, 
 (23, 35, '2024-11-15', 'Credito', 20000.00, '[\"dczdc\",\"fvdvdvssssss\"]', '', ''),
 (24, 36, '2024-12-25', 'Pendiente', 32233.00, '[\"sadds\"]', '3', 'anderson acosta'),
 (28, 35, '2024-10-23', 'Credito', 400000.00, '[\"dczdc\"]', '10', 'anderson acosta'),
-(30, 43, '2024-12-02', 'Cancelada', 5.00, '[\"cascos ciclismo\"]', '1', 'anderson acosta');
+(30, NULL, '2024-12-02', 'Cancelada', 5.00, '[\"cascos ciclismo\"]', '1', 'anderson acosta');
 
 -- --------------------------------------------------------
 
@@ -215,10 +209,8 @@ CREATE TABLE `proveedores` (
 --
 
 INSERT INTO `proveedores` (`id`, `nit`, `nombre`, `direccion`, `telefono`, `status`, `correo`, `empresa`) VALUES
-(1, '900123456-7', 'Proveedor A', 'Calle Proveedor A, Ciudad', '31315516', 'off', '', ''),
-(2, '800765432-1', 'Proveedor B', 'Avenida Proveedor B, Pueblo', '222222222', 'off', '', ''),
-(3, '25124282278-5', 'Juan ', 'Calle 87 #67-90', '3215648956', 'off', '', ''),
-(4, '123456789-0', 'Proveedor C', 'Calle 45 #12-3', '3101234567', 'on', 'proveedorC@example.com', 'Compañía C');
+(1, '900123456-7', 'Julián Restrepo', 'Carrera 67 # 78 - 90', '3224567467', 'on', 'julian.Restrepo@bicis.com.co', 'OPTIMUS'),
+(2, '800765432-1', 'Carlos Mendoza Villamil', 'Calle 45 # 81 - 67 Sur', '3179807534', 'on', 'Carlos.men.gw@bikes.com.co', 'GW');
 
 -- --------------------------------------------------------
 
@@ -254,22 +246,25 @@ INSERT INTO `reparaciones` (`id`, `cliente_id`, `producto_id`, `descripcion`, `c
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `nombre` varchar(255) NOT NULL,
+  `documento` varchar(30) NOT NULL,
+  `telefono` varchar(15) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
   `correo` varchar(255) NOT NULL,
   `clave` varchar(255) NOT NULL,
   `rol` varchar(255) NOT NULL DEFAULT 'usuario',
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_modificacion` timestamp NULL DEFAULT NULL
+  `fecha_modificacion` timestamp NULL DEFAULT NULL,
+  `activo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `correo`, `clave`, `rol`, `fecha_creacion`, `fecha_modificacion`) VALUES
-(10, 'anderson acosta ', 'anderson12@yahoo.com', '827ccb0eea8a706c4c34a16891f84e7b', 'vendedor', '2024-03-29 05:03:01', NULL),
-(14, 'javier leon', 'javi@hotmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 'administrador', '2024-03-29 05:14:11', NULL),
-(15, 'johan samper', 'johan123@yahoo.com', '01cfcd4f6b8770febfb40cb906715822', 'mecanico', '2024-03-29 05:15:45', NULL),
-(16, 'javier', 'leon@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 'mecanico', '2024-08-24 13:56:31', NULL);
+INSERT INTO `usuarios` (`id`, `nombre`, `documento`, `telefono`, `direccion`, `correo`, `clave`, `rol`, `fecha_creacion`, `fecha_modificacion`, `activo`) VALUES
+(10, 'anderson acosta ', '123456789', '3001234567', 'Calle 123, Ciudad', 'anderson12@yahoo.com', '827ccb0eea8a706c4c34a16891f84e7b', 'vendedor', '2024-03-29 05:03:01', NULL, 0),
+(14, 'javier leon', '1005294503', '3136126144', 'Calle 23 # 67 - 98', 'javi12.leon.0425@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 'administrador', '2024-03-29 05:14:11', NULL, 1),
+(15, 'johan samper', '', NULL, NULL, 'johan123@yahoo.com', '01cfcd4f6b8770febfb40cb906715822', 'mecanico', '2024-03-29 05:15:45', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -417,7 +412,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `reparaciones`
@@ -429,7 +424,7 @@ ALTER TABLE `reparaciones`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
