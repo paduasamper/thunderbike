@@ -178,6 +178,11 @@
             border-radius: 5px;
             width: 200px;
         }
+        .pagination button:hover {
+    background-color: goldenrod;
+    color: white;
+}
+
 
     </style>
 </head>
@@ -270,11 +275,11 @@ if (isset($stmt)) {
                 <label for="proveedorNit">NIT:</label>
                 <input type="text" id="proveedorNit" name="nit" placeholder="NIT" required readonly>
                 
-                <label for="proveedorNit">Correo:</label>
-                <input type="text" id="proveedorEmail" name="nit" placeholder="Correo" required>
+                <label for="proveedorEmail">Correo:</label>
+                <input type="text" id="proveedorEmail" name="correo" placeholder="Correo" required>
 
-                <label for="proveedorNit">Empresa:</label>
-                <input type="text" id="proveedorEmpresa" name="nit" placeholder="Empresa" required readonly>
+                <label for="proveedorEmpresa">Empresa:</label>
+                <input type="text" id="proveedorEmpresa" name="empresa" placeholder="Empresa" required readonly>
 
                 <button type="submit">Guardar</button>
                 <button type="button" onclick="cancelForm()">Cancelar</button>
@@ -421,6 +426,62 @@ function filterTable() {
                 }
             }
         }
+        function paginateTable(tableId, rowsPerPage) {
+    const table = document.getElementById(tableId);
+    const rows = table.getElementsByTagName('tr');
+    const totalRows = rows.length - 1; // Excluye el encabezado
+    const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+    let currentPage = 1;
+
+    // Crear contenedor para botones de paginación
+    const paginationContainer = document.createElement('div');
+    paginationContainer.style.textAlign = 'center';
+    paginationContainer.style.marginTop = '20px';
+    table.parentElement.appendChild(paginationContainer);
+
+    function renderPage(page) {
+        currentPage = page;
+
+        // Mostrar solo las filas correspondientes
+        for (let i = 1; i < rows.length; i++) {
+            if (i > (page - 1) * rowsPerPage && i <= page * rowsPerPage) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+
+        // Actualizar botones de paginación
+        updatePaginationButtons();
+    }
+
+    function updatePaginationButtons() {
+        paginationContainer.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement('button');
+            button.textContent = i;
+            button.style.margin = '0 5px';
+            button.style.padding = '8px 12px';
+            button.style.border = '1px solid #ddd';
+            button.style.backgroundColor = i === currentPage ? 'gold' : 'white';
+            button.style.color = i === currentPage ? 'black' : '#333';
+            button.style.cursor = 'pointer';
+
+            button.addEventListener('click', () => renderPage(i));
+            paginationContainer.appendChild(button);
+        }
+    }
+
+    // Renderizar la primera página inicialmente
+    renderPage(1);
+}
+
+// Inicializar paginación en la tabla de proveedores con 5 filas por página
+document.addEventListener('DOMContentLoaded', () => {
+    paginateTable('proveedores', 4);
+});
+
 
     </script>
 </body>

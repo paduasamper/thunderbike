@@ -9,11 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefono = $_POST['telefono'];
     $nit = $_POST['nit'];
     $correo = $_POST['correo'];
-    $empresa = $_POST['empresa'];
+    $empresa = $_POST['empresa'] ?? null;
 
     try {
         if ($action === 'add') {
-            $sql = "INSERT INTO proveedores (nombre, direccion, telefono, nit) VALUES (:nombre, :direccion, :telefono, :nit)";
+            $sql = "INSERT INTO proveedores (nombre, direccion, telefono, nit, correo, empresa) VALUES (:nombre, :direccion, :telefono, :nit, :correo, :empresa)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':nombre' => $nombre,
@@ -24,12 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':empresa' => $empresa,
             ]);
         } elseif ($action === 'edit' && $id) {
-            $sql = "UPDATE proveedores SET nombre = :nombre, direccion = :direccion, telefono = :telefono WHERE id = :id";
+            $sql = "UPDATE proveedores SET nombre = :nombre, direccion = :direccion, telefono = :telefono, correo = :correo WHERE id = :id";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':nombre' => $nombre,
                 ':direccion' => $direccion,
                 ':telefono' => $telefono,
+                ':correo' => $correo,
                 ':id' => $id,
             ]);
         }
