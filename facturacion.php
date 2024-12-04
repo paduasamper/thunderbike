@@ -43,24 +43,33 @@ $resultsPerPage = 3;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $start = ($page - 1) * $resultsPerPage;
 
-// Modificar la consulta SQL para agregar LIMIT y OFFSET
+// Consulta SQL
 $sql_facturas = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos, f.cantidad, f.vendedor
                  FROM facturas AS f 
                  JOIN clientes AS c ON f.cliente_id = c.id
                  $searchQuery
                  LIMIT :limit OFFSET :offset";
 
+// Preparar la consulta
 $stmt_facturas = $pdo->prepare($sql_facturas);
+
+// Vincular LIMIT y OFFSET
 $stmt_facturas->bindValue(':limit', $resultsPerPage, PDO::PARAM_INT);
 $stmt_facturas->bindValue(':offset', $start, PDO::PARAM_INT);
 
+// Ejecutar según la presencia de $searchQuery
 if ($searchQuery) {
-    $stmt_facturas->execute([':search' => "%$search%", ':searchExact' => $search]);
+    // Asegúrate de pasar los parámetros requeridos
+    $stmt_facturas->bindValue(':search', "%$search%", PDO::PARAM_STR);
+    $stmt_facturas->bindValue(':searchExact', $search, PDO::PARAM_STR);
+    $stmt_facturas->execute();
 } else {
     $stmt_facturas->execute();
 }
 
+// Obtener resultados
 $result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
+
 
 // Obtener el total de facturas para la paginación
 $sql_count = "SELECT COUNT(*) FROM facturas AS f JOIN clientes AS c ON f.cliente_id = c.id $searchQuery";
@@ -476,6 +485,11 @@ body {
                     <td><?= htmlspecialchars($row['cantidad']) ?></td>
                     <td><?= htmlspecialchars($row['productos']) ?></td>
                     <td><?= htmlspecialchars($row['vendedor']) ?></td>
+                    <td>
+                                <a href="controladores/EDITA_FACTURA.PHP?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Editar</a>
+                                <a href="controladores/ELIMINAR_FACTURAS.PHP?id=<?= htmlspecialchars($row["id"]) ?>" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta factura?');">Eliminar</a>
+                                <a href="GENERAR_PDFS.PHP?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Generar PDF</a>
+                        </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
