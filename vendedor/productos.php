@@ -266,13 +266,14 @@ $proveedores = $conexionProductos->obtenerProveedores();
         z-index: -1; /* Colocar el video detrás del contenido */
         }
         .navtop {
-            background-color: goldenrod;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1; /* Asegurarse de que la navegación esté encima del video */
-        }
+  background-color: black; /* Cambia este color al que desees */
+  color: white; /* Ajusta el color del texto si es necesario */
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
         .navtop a {
             color: white;
             text-decoration: none;
@@ -293,45 +294,68 @@ $proveedores = $conexionProductos->obtenerProveedores();
         }
 /* Estilo para las tarjetas de productos */
 .card {
-    position: relative;
-    width: 300px;
-    border: 1px solid #ddd;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    background-color: #fff;
-    border-radius: 10px;
+  width: 300px; /* Ancho fijo para las tarjetas */
+  height: 450px; /* Altura fija para las tarjetas */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: white;
+  text-align: center;
 }
 
-/* Contenedor para los botones */
-.card-buttons {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
+.card img {
+  width: 100%; /* La imagen ocupará todo el ancho del contenedor */
+  height: 200px; /* Altura fija para las imágenes */
+  object-fit: contain; /* Asegura que la imagen no se deforme */
+  margin-bottom: 10px;
 }
 
-/* Estilo para los botones */
-.card-buttons button {
-    background-color: #ffcc00;
-    color: #333;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
+.card h3 {
+  font-size: 1.2em;
+  margin: 10px 0;
 }
 
-.card-buttons button:hover {
-    background-color: #e6b800;
+.card p {
+  font-size: 0.9em;
+  margin: 5px 0;
 }
+
+.card .btn-group {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.card .btn-group button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card .btn-group .btn-edit {
+  background-color: gold;
+  color: white;
+}
+
+.card .btn-group .btn-delete {
+  background-color: red;
+  color: white;
+}
+
 
     </style>
 </head>
 <body>
 <nav class="navtop">
+        <div>
+            <img src="../img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">
+            <h1>THUNDERBIKE</h1>
+        </div>
         <div>
             <div class="container">
                 <div class="button-container">

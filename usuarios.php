@@ -143,7 +143,7 @@ function agregarUsuario($pdo, $nombre, $documento, $telefono, $direccion, $corre
         font-family: 'Roboto', sans-serif; /* Cambié la tipografía a 'Roboto' */
         margin: 0;
         padding: 0;
-        background-color: black;
+        background-color: #808080; /* Gris */
     }
 
     h1 {

@@ -104,7 +104,7 @@ $pdo = null; // Cerrar la conexión
         }
     </style>
     <!-- Funcion para agregar producto -->
-        <script>
+        <!-- <script>
         function agregarProducto() {
             const productosList = document.getElementById('productos-list');
             const productoItem = document.createElement('div');
@@ -120,7 +120,7 @@ $pdo = null; // Cerrar la conexión
             const productoItem = btn.parentElement;
             productoItem.remove();
         }
-    </script>
+    </script> -->
 </head>
 <body>
     <h2>Editar Factura</h2>
@@ -149,7 +149,7 @@ $pdo = null; // Cerrar la conexión
         <label for="vendedor">vendedor:</label>
         <input type="text" name="vendedor" id="vendedor" value="<?= htmlspecialchars($factura['vendedor']) ?>" required><br>
         <!-- agregar Producto y eliminar -->
-        <div class="form-group">
+        <!-- <div class="form-group">
                 <div id="productos-list" class="productos-list">
                     <?php 
                     $productos = json_decode($factura['productos'], true) ?: []; // Convertir a array o inicializar vacío
@@ -161,7 +161,7 @@ $pdo = null; // Cerrar la conexión
                     <?php endforeach; ?>
                 </div>
                 <button type="button" onclick="agregarProducto()">Agregar Producto</button>
-            </div>
+            </div> -->
             
         <label for="cantidad">Cantidad:</label>
         <input type="number" name="cantidad" id="cantidad" value="<?= htmlspecialchars($factura['cantidad']) ?>" required><br>
@@ -171,6 +171,6 @@ $pdo = null; // Cerrar la conexión
 
         <button type="submit">Guardar Cambios</button>
     </form>
-    <a href="../vendedor/facturacion.php">Regresar</a>
+    <a href="../vendedor/facturacion.php ">Regresar</a>
 </body>
 </html>

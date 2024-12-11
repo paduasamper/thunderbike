@@ -6,7 +6,7 @@
   <title>Perfil</title>
   <style>
     body {
-      background-color: #efb810;
+      background-color: while;
       font-family: Arial, sans-serif;
     }
     .container {

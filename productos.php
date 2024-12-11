@@ -217,6 +217,7 @@ $productos = $conexionProductos->obtenerProductos($offset, $productosPorPagina);
             padding: 0;
             overflow-x: hidden; /* Evitar el desbordamiento horizontal */
             color: black; /* Color negro para el texto */
+            background-color: #808080; /* Gris */
         }
         /* Estilo para el video de fondo */
         .background-video {

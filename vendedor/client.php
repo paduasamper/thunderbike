@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clientes</title>
+    <link rel="icon" type="image/png" href="../img/thunderbikes.png">
     <link rel="stylesheet" href="styles.css"> <!-- Puedes mantener tus estilos aquí -->
     <style>
     /* Estilos globales */
@@ -12,7 +13,7 @@
         margin: 0;
         padding: 0;
         background-color: black;
-        overflow: hidden; /* Deshabilitar el desplazamiento global */
+        overflow-y: scroll;
     }
 
         h1 {
@@ -66,12 +67,14 @@
     }
 /* Ajuste de la tabla para desplazamiento horizontal */
 table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        overflow-x: auto; /* Habilitar desplazamiento horizontal */
-        display: block; /* Necesario para aplicar scroll en tablas largas */
-    }
+    width: 96.4%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    overflow-x: auto; /* Habilitar desplazamiento horizontal */
+    display: block; /* Necesario para aplicar scroll en tablas largas */
+    border-radius: 12px; /* Esquinas redondeadas */
+    border: 1px solid #ddd; /* Opcional, para un borde más definido */
+}
 
 
     th, td {
@@ -288,7 +291,7 @@ button[data-status="off"] {
             padding: 10px;
             margin-top: 10px;
             font-size: 16px;
-            background-color: #28a745;
+            background-color: gold;
             color: white;
             border: none;
             border-radius: 5px;
@@ -297,10 +300,57 @@ button[data-status="off"] {
 
         button[type="submit"]:hover,
         button[type="button"]:hover {
-            background-color: #218838;
+            background-color: goldenrod;
         }
 
+        #searchInput {
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        /* Contenedor de la paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 10px; /* Espacio entre los botones */
+}
 
+/* Botones de la paginación */
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Botón activo */
+.pagination a.active {
+    background-color: goldenrod;
+    color: black;
+    font-weight: bold;
+}
+
+/* Efectos al pasar el cursor */
+.pagination a:hover {
+    background-color: wheat;
+    transform: scale(1.05);
+}
+
+/* Deshabilitar los botones extremos si no son válidos */
+.pagination a.disabled {
+    background-color: #888;
+    cursor: not-allowed;
+    pointer-events: none;
+}
     </style>
 </head>
 <body>
@@ -309,13 +359,12 @@ button[data-status="off"] {
             <img src="../img/thunderbikes.png" alt="Thunderbikes" style="width: 50px; height: 50px;">
             <h1>THUNDERBIKE</h1>
         </div>
-        <div class="nav-buttons" style="margin-left: 20px; display: flex; align-items: center;">
-                    <a href="vendedor_dashboard.php" id="Vendedor_dashboardBtn" class="button">Inicio</a>
-                    <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-                    <a href="client.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="productos.php" id="ProductosBtn" class="button">Productos</a>
-                    <a href="facturacion.php" id="FactuaracionBtn" class="button">Facturacion</a>
-                </div>
+        <div>
+        <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
+        <a href="vendedor_dashboard.php" id="indexBtn" class="button">Inicio</a>
+        <a href="productos.php" id="productosBtn" class="button">Productos</a>
+        <a href="facturacion.php" id="facturacionBtn" class="button">Facturacion</a>
+        </div>
     </nav>
 
     <video id="background-video" autoplay muted loop>
@@ -327,6 +376,7 @@ button[data-status="off"] {
         <div class="button-container">
             <button class="button" onclick="showAddForm()">Agregar Cliente</button>
         </div>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre o documento" onkeyup="filterTable()">
         <table id="clientes">
             <tr>
                 <th>ID</th>
@@ -388,20 +438,20 @@ button[data-status="off"] {
             <?php endif; ?>
         </div>
     </div>
-            <!-- Formulario para agregar/editar clientes -->
-            <div id="formContainer">
-            <h2 id="formTitle">Agregar Cliente</h2>
-            <form id="clientForm" method="post" onsubmit="return submitForm()">
-                <input type="hidden" id="clientId" name="clientId"> <!-- Campo oculto para el ID del cliente -->
-                <input type="text" id="clientDocumen" name="numero_identificacion" placeholder="Documento" readonly>
-                <input type="text" id="clientName" name="nombre" placeholder="Nombre" readonly>
-                <input type="text" id="clientAddress" name="direccion" placeholder="Dirección" required>
-                <input type="text" id="clientPhone" name="telefono" placeholder="Teléfono" required>
-                <input type="text" id="clientEmail" name="correo" placeholder="Correo Electrónico" required>
-                <button type="submit">Guardar</button>
-                <button type="button" onclick="cancelForm()">Cancelar</button>
-            </form>
-        </div>
+<!-- El formulario para agregar/editar clientes -->
+<div id="formContainer">
+    <h2 id="formTitle">Agregar Cliente</h2>
+    <form id="clientForm" method="post" action="../controladores/save_client.php?action=add">
+    <input type="hidden" id="clientId" name="clientId"> <!-- Campo oculto para el ID del cliente -->
+    <input type="text" id="clientDocumen" name="numero_identificacion" placeholder="Documento" required>
+    <input type="text" id="clientName" name="nombre" placeholder="Nombre" required>
+    <input type="text" id="clientAddress" name="direccion" placeholder="Dirección" required>
+    <input type="text" id="clientPhone" name="telefono" placeholder="Teléfono" required>
+    <input type="text" id="clientEmail" name="correo" placeholder="Correo Electrónico" required>
+    <button type="submit">Guardar</button>
+    <button type="button" onclick="cancelForm()">Cancelar</button>
+</form>
+</div>
     </div>
     <div id="modalHistorial" style="display: none;">
     <div class="modal-content">
@@ -415,35 +465,61 @@ button[data-status="off"] {
 
 
     <script>
-    // Mostrar formulario de agregar cliente
-    function showAddForm() {
-        document.getElementById('formTitle').innerText = 'Agregar Cliente';
-        document.getElementById('clientForm').action = '../controladores/save_client.php?action=add';
-        document.getElementById('clientId').value = '';
-        document.getElementById('clientDocumen').value = '';
-        document.getElementById('clientName').value = '';
-        document.getElementById('clientAddress').value = '';
-        document.getElementById('clientPhone').value = '';
-        document.getElementById('clientEmail').value = '';
-        document.getElementById('formContainer').style.display = 'block';
+        function filterTable() {
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById("clientes");
+    const rows = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < rows.length; i++) { // Empieza desde 1 para omitir la fila del encabezado
+        const documento = rows[i].getElementsByTagName("td")[1]?.textContent.toLowerCase();
+        const nombre = rows[i].getElementsByTagName("td")[2]?.textContent.toLowerCase();
+
+        if (documento?.includes(filter) || nombre?.includes(filter)) {
+            rows[i].style.display = ""; // Mostrar la fila
+        } else {
+            rows[i].style.display = "none"; // Ocultar la fila
+        }
     }
+}
+
+function showAddForm() {
+    // Cambiar el título del formulario
+    document.getElementById('formTitle').innerText = 'Agregar Cliente';
+
+    // Limpiar los campos del formulario
+    document.getElementById('clientForm').reset();
+
+    // Establecer la acción para agregar un cliente
+    document.getElementById('clientForm').action = '../controladores/save_client.php?action=add';
+
+    // Asegurarse de que los campos sean editables
+    document.getElementById('clientDocumen').readOnly = false;
+    document.getElementById('clientName').readOnly = false;
+
+    // Ocultar el campo de ID, ya que no es necesario para agregar
+    document.getElementById('clientId').value = '';
+
+    // Mostrar el formulario
+    document.getElementById('formContainer').style.display = 'block';
+}
     // Mostrar formulario de editar cliente
-    function showEditForm(id, name, address, phone, email) {
-    // Cambiar título del formulario
+    function showEditForm(id, documento, name, address, phone, email) {
+    // Cambiar el título del formulario
     document.getElementById('formTitle').innerText = 'Editar Cliente';
 
     // Cambiar la acción del formulario
     document.getElementById('clientForm').action = '../controladores/save_client.php?action=edit';
 
-    // Configurar los valores en los campos del formulario
+    // Rellenar los campos con los datos del cliente
     document.getElementById('clientId').value = id;
-    document.getElementById('clientDocumen').value = id; // Documento como no editable
-    document.getElementById('clientName').value = name;  // Nombre como no editable
+    document.getElementById('clientDocumen').value = documento;
+    document.getElementById('clientName').value = name;
     document.getElementById('clientAddress').value = address;
     document.getElementById('clientPhone').value = phone;
     document.getElementById('clientEmail').value = email;
 
-    // Hacer que los campos de documento y nombre sean solo lectura
+    // Hacer que los campos Documento y Nombre sean solo lectura
     document.getElementById('clientDocumen').readOnly = true;
     document.getElementById('clientName').readOnly = true;
 
@@ -460,7 +536,7 @@ button[data-status="off"] {
         const historyContent = document.getElementById('purchaseHistoryContent');
         historyContent.innerHTML = 'Cargando...';
 
-        fetch(`../controladores/historial_compras.php?client_id=${clientId}`)
+        fetch(`controladores/historial_compras.php?client_id=${clientId}`)
             .then(response => response.text())
             .then(data => {
                 historyContent.innerHTML = data;
@@ -556,5 +632,28 @@ function submitForm() {
 
 
     </script>
+    <script>
+    function showSuccessAlert() {
+        const alert = document.getElementById('successAlert');
+        alert.style.display = 'block';
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 3000); // Ocultar después de 3 segundos
+    }
+</script>
+<script>
+    // Verifica si hay un parámetro de éxito en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('status') === 'success') {
+        showSuccessAlert();
+    }
+</script>
+
+
+    <!-- Alerta dinámica -->
+<div id="successAlert" style="display: none; position: fixed; top: 20px; right: 20px; background: green; color: white; padding: 15px; border-radius: 5px; z-index: 1000;">
+    Cliente agregado exitosamente
+</div>
+
 </body>
 </html>

@@ -43,24 +43,33 @@ $resultsPerPage = 3;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $start = ($page - 1) * $resultsPerPage;
 
-// Modificar la consulta SQL para agregar LIMIT y OFFSET
+// Consulta SQL
 $sql_facturas = "SELECT f.id, c.nombre AS nombre_cliente, f.total, f.fecha_factura, f.estado, f.productos, f.cantidad, f.vendedor
                  FROM facturas AS f 
                  JOIN clientes AS c ON f.cliente_id = c.id
                  $searchQuery
                  LIMIT :limit OFFSET :offset";
 
+// Preparar la consulta
 $stmt_facturas = $pdo->prepare($sql_facturas);
+
+// Vincular LIMIT y OFFSET
 $stmt_facturas->bindValue(':limit', $resultsPerPage, PDO::PARAM_INT);
 $stmt_facturas->bindValue(':offset', $start, PDO::PARAM_INT);
 
+// Ejecutar según la presencia de $searchQuery
 if ($searchQuery) {
-    $stmt_facturas->execute([':search' => "%$search%", ':searchExact' => $search]);
+    // Asegúrate de pasar los parámetros requeridos
+    $stmt_facturas->bindValue(':search', "%$search%", PDO::PARAM_STR);
+    $stmt_facturas->bindValue(':searchExact', $search, PDO::PARAM_STR);
+    $stmt_facturas->execute();
 } else {
     $stmt_facturas->execute();
 }
 
+// Obtener resultados
 $result_facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
+
 
 // Obtener el total de facturas para la paginación
 $sql_count = "SELECT COUNT(*) FROM facturas AS f JOIN clientes AS c ON f.cliente_id = c.id $searchQuery";
@@ -126,224 +135,120 @@ ob_end_flush(); // Liberar el almacenamiento en búfer
     <link href="bootstrap-4.6.2-dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Facturación</title>
     <style>
-        .navtop {
-            background: #333;
-            padding: 10px 20px;
-            color: white;
-            text-align: center;
-        }
-        .navtop .button {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .scrollable-table {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background: #f4f4f4;
-        }
-        button, select, input {
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            background: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-                /* Estilos globales */
-                body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: black;
-        }
-
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        /* Barra de navegación */
-        .navtop {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .navtop a {
-            color: white;
-            text-decoration: none;
-            margin: 5px 10px;
-        }
-
-        .navtop a:hover {
-            color: goldenrod;
-        }
-
-        .container {
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 1200px;
-        }
-
-        /* Tabla */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        /* Botones */
-        button, form button {
-            padding: 8px 12px;
-            background-color: gold;
-            color: black;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover, form button:hover {
-            background-color: wheat;
-        }
-
-        /* Modal */
-        #modal-editar {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        #modal-editar .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        /* Responsividad */
-        @media (max-width: 768px) {
-            .navtop {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-
-            th, td {
-                white-space: nowrap;
-            }
-
-            .container {
-                width: 95%;
-                padding: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5em;
-            }
-
-            button, form button {
-                padding: 6px 10px;
-                font-size: 0.9em;
-            }
-        }
-        /* Estilo para el fondo de video */
-.video-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
-}
-
-#background-video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1;
-}
-
-/* Contenido encima del video */
-.content {
-    position: relative;
-    z-index: 1;
-}
-
-/* Ajustes para que el contenido siga siendo legible */
 body {
-    background: rgba(0, 0, 0, 0.5); /* Capa de semitransparencia sobre el video */
-    color: black;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #808080; /* Gris */
+    color: #333;
 }
-/* Estilos para la paginación */
+
+.navtop {
+    background-color: #343a40; /* Color oscuro para la barra de navegación */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navtop a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.navtop a:hover {
+    color: #ffc107; /* Amarillo para el hover */
+}
+.logo-titulo {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.logo-titulo img {
+    width: 50px; /* Ajustamos el tamaño del logo */
+    margin-bottom: 5px; /* Espacio entre el logo y el título */
+}
+.navtop h1 {
+    font-size: 24px; /* Ajustamos el tamaño del título */
+    margin: 0; /* Elimina el margen del título */
+}
+.navtop .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* Espacio entre los botones */
+}
+.navtop .button-group a {
+    font-size: 16px; /* Tamaño de fuente de los botones */
+    color: white; /* Color de las letras */
+    text-decoration: none; /* Sin subrayado */
+}
+.navtop .button-group a:hover {
+    background-color: #0056b3; /* Color más oscuro cuando se pasa el mouse */
+}
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+h1, h2 {
+    text-align: center;
+    color: while;
+}
+
+button, select, input {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #007bff; /* Azul para botones */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #343a40;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1; /* Efecto de hover en las filas */
+}
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -352,12 +257,11 @@ body {
 
 .pagination a {
     padding: 8px 16px;
-    margin: 0 4px;
+    margin: 0 5px;
     text-decoration: none;
     color: #007bff;
     border: 1px solid #ddd;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
 }
 
 .pagination a:hover {
@@ -368,28 +272,54 @@ body {
 .pagination .active {
     background-color: #007bff;
     color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
     font-weight: bold;
 }
 
-.pagination .disabled {
-    color: #ccc;
-    cursor: not-allowed;
+.form-group input, .form-group select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.button-group button {
+    flex: 1;
+    padding: 10px;
 }
 
     </style>
 </head>
 <body>
 <nav class="navtop">
-        <div>
-                    <a href="perfil.php" id="perfilBtn" class="button">Perfil</a>
-                    <a href="inicio.php" id="indexBtn" class="button">Inicio</a>
-                    <a href="usuarios.php" id="UsuariosBtn" class="button">Usuarios</a>
-                    <a href="clientes.php" id="clientesBtn" class="button">Clientes</a>
-                    <a href="insumos.php" id="insumosBtn" class="button">Insumos</a>
-                    <a href="proveedores.php" id="proveedoresBtn" class="button">Proveedores</a>
-                    <a href="reparaciones.php" id="reparacionesBtn" class="button">Reparaciones</a>
-        </div>
-    </nav>
+    <div class="logo-titulo">
+        <img src="img/thunderbikes.png" alt="ThunderBike">
+        <h1>THUNDERBIKE</h1>
+    </div>
+    <div class="button-group">
+        <a href="perfil.php" id="perfilBtn">Perfil</a>
+        <a href="inicio.php" id="indexBtn">Inicio</a>
+        <a href="usuarios.php" id="UsuariosBtn">Usuarios</a>
+        <a href="clientes.php" id="clientesBtn">Clientes</a>
+        <a href="insumos.php" id="insumosBtn">Insumos</a>
+        <a href="proveedores.php" id="proveedoresBtn">Proveedores</a>
+        <a href="reparaciones.php" id="reparacionesBtn">Reparaciones</a>
+    </div>
+</nav>
 <div class="container">
     <h2>Buscar Facturas</h2>
     <form method="GET" action="facturacion.php">
@@ -476,6 +406,11 @@ body {
                     <td><?= htmlspecialchars($row['cantidad']) ?></td>
                     <td><?= htmlspecialchars($row['productos']) ?></td>
                     <td><?= htmlspecialchars($row['vendedor']) ?></td>
+                    <td>
+                                <a href="controladores/EDITA_FACTURA.PHP?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Editar</a>
+                                <a href="controladores/ELIMINAR_FACTURAS.PHP?id=<?= htmlspecialchars($row["id"]) ?>" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta factura?');">Eliminar</a>
+                                <a href="GENERAR_PDFS.PHP?id=<?= htmlspecialchars($row["id"]) ?>" class="btn">Generar PDF</a>
+                        </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

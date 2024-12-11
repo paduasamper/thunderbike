@@ -35,6 +35,6 @@ if (isset($_GET['id'])) {
 </head>
 <body>
     <h2>Factura eliminada</h2>
-    <p><a href="../vendedor/facturacion.php">Regresar a Facturación</a></p>
+    <p><a href="facturacion.php">Regresar a Facturación</a></p>
 </body>
 </html>

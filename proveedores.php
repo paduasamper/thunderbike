@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Módulo de Proveedores</title>
+    <link rel="icon" type="image/png" href="../img/thunderbikes.png">
     <link rel="stylesheet" href="styles.css">
     <style>
         /* Estilos globales */
@@ -11,7 +12,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: black;
+            background-color: #808080; /* Gris */
             overflow: hidden;
         }
 
