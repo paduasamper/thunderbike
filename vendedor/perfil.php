@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="../img/thunderbikes.png">
   <style>
     body {
-      background-color: #efb810;
+      background-color: while;
       font-family: Arial, sans-serif;
     }
     .container {
@@ -65,7 +65,7 @@
   </style>
 </head>
 <body>
-<a href="vendedor_dashboard.php" id="indexBtn" class="button">Inicio</a>
+<a href="vendedor_dashboard.php" id="indexBtn" class="button">Regresar</a>
   <div class="container">
     <div class="card">
       <h2 class="profile-name">Perfil</h2>
