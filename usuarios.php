@@ -429,9 +429,8 @@ button[type="submit"][style] {
             <h1>THUNDERBIKE</h1>
         </div>
         <div>
-            <a href="inicio.php">Inicio</a>
+        <a href="inicio.php">Inicio</a>
             <a href="perfil.php">Perfil</a>
-            <a href="usuarios.php">Usuarios</a>
             <a href="clientes.php">Clientes</a>
             <a href="insumos.php">Insumos</a>
             <a href="proveedores.php">Proveedores</a>

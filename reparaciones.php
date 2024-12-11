@@ -34,11 +34,13 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="inicio.php">Inicio</a></li>
-        <li class="nav-item"><a class="nav-link" href="perfil.php">Perfil</a></li>
-        <li class="nav-item"><a class="nav-link" href="reparaciones.php">Reparaciones</a></li>
-        <li class="nav-item"><a class="nav-link" href="clientes.php">Clientes</a></li>
-        <li class="nav-item"><a class="nav-link" href="facturacion.php">Facturación</a></li>
+      <a href="inicio.php">Inicio</a>
+            <a href="perfil.php">Perfil</a>
+            <a href="usuarios.php">Usuarios</a>
+            <a href="clientes.php">Clientes</a>
+            <a href="insumos.php">Insumos</a>
+            <a href="proveedores.php">Proveedores</a>
+            <a href="facturacion.php">Facturacion</a>
       </ul>
     </div>
   </div>
