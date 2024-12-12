@@ -6,6 +6,7 @@
 -- Tiempo de generación: 04-12-2024 a las 16:06:37
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
+CREATE DATABASE thunderbike;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
